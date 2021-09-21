@@ -1,0 +1,21 @@
+#loginform{
+    margin: auto;
+    width: 37%;
+    background-color: #FFFFFF;
+    border-radius: 25px;
+}
+
+#headingmain{
+    margin: auto;
+    text-align: center;
+    padding-top: 13px;
+}
+
+#headingmain h2{
+    font-family: 'open sans', sans-serif;
+}
+
+body{
+    background: #94a5b7;
+    font-family: "work sans";
+  }
