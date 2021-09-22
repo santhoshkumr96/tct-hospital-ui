@@ -12,6 +12,7 @@ import { Alert } from "@mui/material";
 import { AlertTitle } from "@mui/material";
 import Collapse from '@mui/material/Collapse';
 import IconButton from '@mui/material/IconButton';
+import { errorHelper } from "../../Helpers/ajaxCatchBlockHelper";
 const Login = () => {
     const history = useHistory();
     const location = useLocation();
@@ -26,6 +27,7 @@ const Login = () => {
 
     const validationSchema = Yup.object().shape({
         username: Yup.string()
+            // .email("please enter valid email")
             .required("enter username"),
         password: Yup.string().required("enter password")
     });
@@ -46,13 +48,13 @@ const Login = () => {
                 loginContext.setUserId(res.data.username);
                 loginContext.setUserRole(res.data.roles);
                 loginContext.setAccessToken(res.data.accessToken);
+                loginContext.setTokenExpired(false);
                 history.replace(from);
             })
             .catch((e) => {
-                console.log(e);
-                setErrorMessage(e.message);
-                setSubmitting(false);
-                setError(true);
+                    setErrorMessage(errorHelper(e));                 
+                    setSubmitting(false);
+                    setError(true);
             })
     }
 
