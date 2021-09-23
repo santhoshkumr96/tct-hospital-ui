@@ -21,3 +21,23 @@
     background-color: #1976d2;
     color: white;
 }
+
+#response-table{
+    min-width: 550px;
+}
+
+#create-question-dialog-box{
+    min-width: 800px !important;
+    max-width: 1000px !important;
+    margin: auto;
+}
+
+#create-question-dialog-box .MuiDialog-paper{
+
+    max-width: 800px !important;
+}
+
+#response-table-header{
+    background-color: #1976d2;
+    color: white;
+}
