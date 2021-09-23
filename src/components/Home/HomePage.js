@@ -4,29 +4,23 @@ import { CAMPAIGNS_SECTION, POPULATION_SECTION, QUESTIONNAIRE_SECTION, TOKEN_EXP
 import Context from '../Login/LoginAuthProvider/Context';
 import ajax from '../../Helpers/ajaxHelper';
 import { errorHelper } from '../../Helpers/ajaxCatchBlockHelper';
-import { Button } from '@mui/material';
 import Box from "@mui/material/Box";
 import Backdrop from "@mui/material/Backdrop";
 import SpeedDial from "@mui/material/SpeedDial";
-import SpeedDialIcon from "@mui/material/SpeedDialIcon";
 import SpeedDialAction from "@mui/material/SpeedDialAction";
 import FileCopyIcon from "@mui/icons-material/FileCopyOutlined";
-import SaveIcon from "@mui/icons-material/Save";
-import PrintIcon from "@mui/icons-material/Print";
-import ShareIcon from "@mui/icons-material/Share";
 import MenuIcon from '@mui/icons-material/Menu';
 import QuestionAnswerIcon from '@mui/icons-material/QuestionAnswer';
 import StorageIcon from '@mui/icons-material/Storage';
 import QuestionSection from '../QuestionPage/QuestionSection';
 import CampainSection from '../CampainPage/CampainSection';
 import AssociatePopulationSection from '../AssociatePopulation/AssociatePopulationSection';
+import ErrorContext from '../NetworkAuthProvider/ErrorContext';
 
 
   
 
 const HomePage = () => {
-
-
 
     const actions = [
         { icon: <FileCopyIcon />, name: CAMPAIGNS_SECTION },
@@ -35,11 +29,14 @@ const HomePage = () => {
       ];
 
     const loginContext = useContext(Context);
+    const errorContext = useContext(ErrorContext);
     const [data, setData] = useState('');
     const [open, setOpen] = useState(false);
     const [section , setSection] = useState(QUESTIONNAIRE_SECTION);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
+    const [searched, setSearched] = useState('');
+
 
 
 
@@ -55,9 +52,12 @@ const HomePage = () => {
             .catch((e) => {
                 if (errorHelper(e) == TOKEN_EXPIRED) {
                     loginContext.setTokenExpired(true);
+                } else {
+                    errorContext.setIsErrorDisplayed(true);
+                    errorContext.setError(errorHelper(e));
                 }
             }
-            );
+        );
     }
 
     const selectPage = (sectionName) => {
@@ -66,7 +66,7 @@ const HomePage = () => {
     }
 
     useEffect(() => {
-        getData();
+       
     }, [])
 
     return (

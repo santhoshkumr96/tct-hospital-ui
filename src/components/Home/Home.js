@@ -16,10 +16,12 @@ import Button from '@mui/material/Button';
 import { errorHelper } from '../../Helpers/ajaxCatchBlockHelper';
 import { TOKEN_EXPIRED } from '../../config';
 import HomePage from './HomePage';
+import ErrorContext from '../NetworkAuthProvider/ErrorContext';
 
 
 const Home = () => {
     const loginContext = useContext(Context);
+    const errorContext = useContext(ErrorContext);
     const logout = () => {
         loginContext.setUserId('');
         loginContext.setUserRole([]);
@@ -29,6 +31,11 @@ const Home = () => {
 
     const handleDialogClose = () => {
         logout();
+    }
+
+    const handleDialogCloseForError = () => {
+        errorContext.setIsErrorDisplayed(false);
+        errorContext.setError('');
     }
 
     return (
@@ -70,6 +77,27 @@ const Home = () => {
                 <DialogActions>
                     <Button onClick={handleDialogClose} autoFocus>
                         Login
+                    </Button>
+                </DialogActions>
+            </Dialog>
+
+            <Dialog
+                open={errorContext.isErrorDisplayed}
+                onClose={handleDialogCloseForError}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                <DialogTitle id="alert-dialog-title">
+                    {errorContext.error}
+                </DialogTitle>
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-description">
+                        {'As of now doing nothing'}
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleDialogCloseForError} autoFocus>
+                        exit
                     </Button>
                 </DialogActions>
             </Dialog>

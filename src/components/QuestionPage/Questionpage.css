@@ -1,0 +1,23 @@
+#questionare-search-create {
+    position: relative;
+    padding-bottom: 35px;
+}
+
+#main-questionare-div{
+    margin: 25px;
+}
+
+#questionare-search-bar{
+    float: right;
+}
+
+#question-table{
+    height: 60vh;
+    width: 80%;
+    margin: auto;
+}
+
+#question-table-header{
+    background-color: #1976d2;
+    color: white;
+}
