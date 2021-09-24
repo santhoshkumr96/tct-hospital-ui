@@ -92,7 +92,7 @@ const Home = () => {
                 </DialogTitle>
                 <DialogContent>
                     <DialogContentText id="alert-dialog-description">
-                        {'As of now doing nothing'}
+                        {'please try again later or contact admin'}
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>

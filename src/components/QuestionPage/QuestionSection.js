@@ -35,10 +35,23 @@ const QuestionSection = () => {
     const RESPONSE_NAME = 'responseName';
     const RESPONSE_DESC = 'responseDesc';
     const QUESTION_TYPE = 'questionType';
+    const createdQuestionData = {
+        questionName: '',
+        questionDesc: '',
+        responseType: '',
+        response : []
+    }
+
+    const createdResponseData = {
+        responseName: '',
+        responseDesc: ''
+    }
 
     const loginContext = useContext(Context);
     const errorContext = useContext(ErrorContext);
     const [questionData, setQuestionData] = useState([]);
+    const [createQuestionStore, setCreateQuestionStore] = useState(createdQuestionData);
+    const [createResponseStore, setCreateResponseStore] = useState(createdResponseData);
     const [rows, setRows] = useState(questionData);
     const [searched, setSearched] = useState('');
     const [questionType, setQuestionType] = useState('');
@@ -78,9 +91,29 @@ const QuestionSection = () => {
             headers: { Authorization: `Bearer ${loginContext.accessToken}` }
         };
         ajax
-            .post(`${SERVICE_BASE_URL}v1/createQuestion`,question, config)
+            .post(`${SERVICE_BASE_URL}v1/createquestion`, question, config)
             .then((res) => {
-                console.log('done');
+                setResultQuestion({ ...question });
+            })
+            .catch((e) => {
+                if (errorHelper(e) == TOKEN_EXPIRED) {
+                    loginContext.setTokenExpired(true);
+                } else {
+                    errorContext.setIsErrorDisplayed(true);
+                    errorContext.setError(errorHelper(e));
+                }
+            }
+            );
+    }
+
+    const deleteQuestionRequest = async (questionId) => {
+        const config = {
+            headers: { Authorization: `Bearer ${loginContext.accessToken}` }
+        };
+        ajax
+            .post(`${SERVICE_BASE_URL}v1/deleteQuestion`, {questionId}, config)
+            .then((res) => {
+                setResultQuestion({ ...{}});
             })
             .catch((e) => {
                 if (errorHelper(e) == TOKEN_EXPIRED) {
@@ -112,10 +145,10 @@ const QuestionSection = () => {
 
     const handleDialogClose = () => {
         setIsCreatingQuestion(false);
-        setResponseData({...{}});
-        setNewQuestionData({...{}})
+        setResponseData({ ...{} });
+        setNewQuestionData({ ...{} })
         setResponse([...[]])
-        
+
     }
 
     const handleTypeSelectChange = (event) => {
@@ -126,12 +159,15 @@ const QuestionSection = () => {
     };
 
     const onNewQuestionDataEntryChange = (e, what) => {
+        let value = createdQuestionData;
         let val = newQuestionData;
         if (what === QUESTION_NAME) {
             val.questionName = e;
+            createdQuestionData.questionName = e;
         }
         if (what === QUESTION_DESC) {
             val.questionDesc = e;
+            createdQuestionData.questionName = e;
         }
         setNewQuestionData(val);
     }
@@ -160,7 +196,7 @@ const QuestionSection = () => {
             setResponseDataDesc(e.target.value);
             val.responseDesc = e.target.value;
         }
-        
+
         setResponseData(val);
     }
 
@@ -170,10 +206,14 @@ const QuestionSection = () => {
         result.questionName = newQuestionData.questionName;
         result.questionDesc = newQuestionData.questionDesc;
         result.response = response;
-        setResultQuestion({...result});
         createQuestionRequest(result);
-        console.log(result);
+        handleDialogClose();
     }
+
+    const deleteQuesiton = (qid) => {
+        deleteQuestionRequest(qid);
+
+    } 
 
 
     useEffect(() => {
@@ -194,7 +234,7 @@ const QuestionSection = () => {
                     </div>
                 </div>
             }
-            <QuestionTable questions={questionData} />
+            <QuestionTable questions={questionData} deleteQuestionOnclick={deleteQuesiton} />
 
             <Dialog
                 open={isCreatingQuestion}
@@ -259,7 +299,6 @@ const QuestionSection = () => {
 
                                     {response.map((row, i) => (
                                         <TableRow
-
                                             sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                                         >
                                             <TableCell>
@@ -282,7 +321,7 @@ const QuestionSection = () => {
                                             sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                                         >
                                             <TableCell>
-                                                <Input placeholder="name"  value={responseDataName} onChange={(e) => { onResponseUpdate(e, RESPONSE_NAME) }} />
+                                                <Input placeholder="name" value={responseDataName} onChange={(e) => { onResponseUpdate(e, RESPONSE_NAME) }} />
                                             </TableCell>
                                             <TableCell>
                                                 <Input placeholder="description" value={responseDataDesc} onChange={(e) => { onResponseUpdate(e, RESPONSE_DESC) }} />
@@ -294,9 +333,6 @@ const QuestionSection = () => {
                                             </TableCell>
                                         </TableRow>
                                     }
-
-
-
                                 </TableBody>
                             </Table>
                             {/* {
