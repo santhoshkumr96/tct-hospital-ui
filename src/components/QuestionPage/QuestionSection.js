@@ -25,6 +25,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
+import CancelIcon from '@mui/icons-material/Cancel';
 
 import QuestionTable from './QuestionTable';
 
@@ -35,11 +36,15 @@ const QuestionSection = () => {
     const RESPONSE_NAME = 'responseName';
     const RESPONSE_DESC = 'responseDesc';
     const QUESTION_TYPE = 'questionType';
+    const APPROVE = 'APPROVED';
+    const REJECT = 'REJECTED';
+
     const createdQuestionData = {
         questionName: '',
         questionDesc: '',
         responseType: '',
-        response : []
+        comment: '',
+        response: []
     }
 
     const createdResponseData = {
@@ -51,19 +56,17 @@ const QuestionSection = () => {
     const errorContext = useContext(ErrorContext);
     const [questionData, setQuestionData] = useState([]);
     const [createQuestionStore, setCreateQuestionStore] = useState(createdQuestionData);
-    const [createResponseStore, setCreateResponseStore] = useState(createdResponseData);
     const [rows, setRows] = useState(questionData);
     const [searched, setSearched] = useState('');
-    const [questionType, setQuestionType] = useState('');
-    const [response, setResponse] = useState([]);
-    const [responseData, setResponseData] = useState({});
+    const [responseData, setResponseData] = useState(createdResponseData);
     const [responseDataName, setResponseDataName] = useState('');
     const [responseDataDesc, setResponseDataDesc] = useState('');
-    const [numberOfResponse, setnumberOfResponse] = useState(0);
     const [isCreatingQuestion, setIsCreatingQuestion] = useState(false);
-    const [newQuestionData, setNewQuestionData] = useState({});
+    const [isViewingQuestion, setIsViewingQuestion] = useState(false);
+    const [isApprovingQuestion, setIsApprovingQuestion] = useState(false);
     const [resultQuestion, setResultQuestion] = useState({});
-
+    const [qidFromChild , setQidFromChild] = useState(0);
+    const [comment, setComment] = useState('')
 
 
     const getData = async () => {
@@ -74,6 +77,27 @@ const QuestionSection = () => {
             .get(`${SERVICE_BASE_URL}v1/getquestionlist`, config)
             .then((res) => {
                 setQuestionData(res.data);
+            })
+            .catch((e) => {
+                if (errorHelper(e) == TOKEN_EXPIRED) {
+                    loginContext.setTokenExpired(true);
+                } else {
+                    errorContext.setIsErrorDisplayed(true);
+                    errorContext.setError(errorHelper(e));
+                }
+            }
+            );
+    }
+
+    const getOneQuestionData = async (questionId) => {
+        const config = {
+            headers: { Authorization: `Bearer ${loginContext.accessToken}` }
+        };
+        ajax
+            .post(`${SERVICE_BASE_URL}v1/getquestion`, { questionId }, config)
+            .then((res) => {
+                setCreateQuestionStore({ ...res.data });
+                setIsViewingQuestion(true);
             })
             .catch((e) => {
                 if (errorHelper(e) == TOKEN_EXPIRED) {
@@ -106,14 +130,36 @@ const QuestionSection = () => {
             );
     }
 
+    const updateQuestionStatus = async (data) => {
+        const config = {
+            headers: { Authorization: `Bearer ${loginContext.accessToken}` }
+        };
+        ajax
+            .post(`${SERVICE_BASE_URL}v1/update-question-status`, data, config)
+            .then((res) => {
+                handleDialogClose();
+                setResultQuestion({ ...{} });
+            })
+            .catch((e) => {
+                if (errorHelper(e) == TOKEN_EXPIRED) {
+                    loginContext.setTokenExpired(true);
+                } else {
+                    errorContext.setIsErrorDisplayed(true);
+                    errorContext.setError(errorHelper(e));
+                }
+            }
+            );
+    }
+
+
     const deleteQuestionRequest = async (questionId) => {
         const config = {
             headers: { Authorization: `Bearer ${loginContext.accessToken}` }
         };
         ajax
-            .post(`${SERVICE_BASE_URL}v1/deleteQuestion`, {questionId}, config)
+            .post(`${SERVICE_BASE_URL}v1/deleteQuestion`, { questionId }, config)
             .then((res) => {
-                setResultQuestion({ ...{}});
+                setResultQuestion({ ...{} });
             })
             .catch((e) => {
                 if (errorHelper(e) == TOKEN_EXPIRED) {
@@ -130,7 +176,7 @@ const QuestionSection = () => {
         const filteredRows = questionData.filter((row) => {
             return _.toLower(row.questionName).includes(_.toLower(searchedVal));
         });
-        setRows(filteredRows);
+        setRows({ ...filteredRows });
     };
 
     const cancelSearch = () => {
@@ -139,55 +185,59 @@ const QuestionSection = () => {
     };
 
 
-    const createQuestion = () => {
+    const onCreateQuestionButtonClick = () => {
+        setIsViewingQuestion(false);
+        setIsApprovingQuestion(false);
         setIsCreatingQuestion(true);
     }
 
     const handleDialogClose = () => {
         setIsCreatingQuestion(false);
-        setResponseData({ ...{} });
-        setNewQuestionData({ ...{} })
-        setResponse([...[]])
-
+        setIsViewingQuestion(false);
+        setIsApprovingQuestion(false);
+        setResponseDataName('');
+        setResponseDataDesc('');
+        setCreateQuestionStore({ ...createdQuestionData });
+        setResponseData({ ...createdResponseData });
     }
 
     const handleTypeSelectChange = (event) => {
-        let val = newQuestionData;
-        val.questionType = event.target.value;
-        setNewQuestionData(val);
-        setQuestionType(event.target.value);
+        let val = { ...createQuestionStore }
+        val.responseType = event.target.value;
+        setCreateQuestionStore(val);
     };
 
     const onNewQuestionDataEntryChange = (e, what) => {
-        let value = createdQuestionData;
-        let val = newQuestionData;
+        let data = { ...createQuestionStore }
         if (what === QUESTION_NAME) {
-            val.questionName = e;
-            createdQuestionData.questionName = e;
+            data.questionName = e;
+            setCreateQuestionStore(data);
         }
         if (what === QUESTION_DESC) {
-            val.questionDesc = e;
-            createdQuestionData.questionName = e;
+            data.questionDesc = e;
+            setCreateQuestionStore(data);
         }
-        setNewQuestionData(val);
+
+
+
     }
 
     const addNewResponse = () => {
-        let data = response;
-        data.push(responseData);
-        setResponseData({ ...{} });
+        let data = { ...createQuestionStore };
+        data.response.push(responseData);
+        setCreateQuestionStore(data);
         setResponseDataName('');
         setResponseDataDesc('');
-        setResponse([...data]);
     }
 
     const deleteResponse = (event, i) => {
-        response.splice(i, 1);
-        setResponse([...response]);
+        let data = { ...createQuestionStore };
+        data.response.splice(i, 1);
+        setCreateQuestionStore(data);
     }
 
     const onResponseUpdate = (e, what) => {
-        let val = responseData;
+        let val = { ...responseData };
         if (what == RESPONSE_NAME) {
             setResponseDataName(e.target.value);
             val.responseName = e.target.value
@@ -202,10 +252,10 @@ const QuestionSection = () => {
 
     const handleDialogOnQuestionCreate = () => {
         const result = {};
-        result.responseType = questionType;
-        result.questionName = newQuestionData.questionName;
-        result.questionDesc = newQuestionData.questionDesc;
-        result.response = response;
+        result.responseType = createQuestionStore.responseType;
+        result.questionName = createQuestionStore.questionName;
+        result.questionDesc = createQuestionStore.questionDesc;
+        result.response = createQuestionStore.response;
         createQuestionRequest(result);
         handleDialogClose();
     }
@@ -213,7 +263,32 @@ const QuestionSection = () => {
     const deleteQuesiton = (qid) => {
         deleteQuestionRequest(qid);
 
-    } 
+    }
+
+    const viewQuesiton = (qid) => {
+        setIsCreatingQuestion(true);
+        getOneQuestionData(qid);
+    }
+
+    const approverQuestion = (qid) => {
+        setIsCreatingQuestion(true);
+        viewQuesiton(qid);
+        setQidFromChild(qid)
+        setIsApprovingQuestion(true);
+    }
+
+    const onCommentEntry = (comment) => {
+        setComment(comment);
+    }
+
+    const onClickApproveOrReject = (selection) => {
+        let data = {  }
+        data.statusDesc = selection;
+        data.comments = comment;
+        data.questionId = qidFromChild;
+        updateQuestionStatus(data);
+        console.log(data);
+    }
 
 
     useEffect(() => {
@@ -225,7 +300,7 @@ const QuestionSection = () => {
             {loginContext.userRole.includes(QUESTION_CREATOR_ROLE) &&
                 <div id='questionare-search-create'>
 
-                    <Button variant="contained" onClick={() => { createQuestion() }}>
+                    <Button variant="contained" onClick={() => { onCreateQuestionButtonClick() }}>
                         Create Question
                     </Button>
 
@@ -234,7 +309,11 @@ const QuestionSection = () => {
                     </div>
                 </div>
             }
-            <QuestionTable questions={questionData} deleteQuestionOnclick={deleteQuesiton} />
+            <QuestionTable questions={questionData}
+                viewQuestionOnClick={viewQuesiton}
+                deleteQuestionOnclick={deleteQuesiton}
+                approveQuestionOnClick={approverQuestion}
+            />
 
             <Dialog
                 open={isCreatingQuestion}
@@ -243,7 +322,7 @@ const QuestionSection = () => {
 
             >
                 <DialogTitle id="alert-dialog-title">
-                    {'Create New Question'}
+                    {'Question Data'}
                 </DialogTitle>
                 <DialogContent >
                     <br />
@@ -252,6 +331,7 @@ const QuestionSection = () => {
                         id="standard-basic"
                         label="Name"
                         variant="outlined"
+                        value={createQuestionStore.questionName.toString()}
                         onChange={(e) => { onNewQuestionDataEntryChange(e.target.value, QUESTION_NAME) }}
                     />
                     <br />
@@ -260,6 +340,7 @@ const QuestionSection = () => {
                         fullWidth
                         id="standard-basic"
                         label="Description"
+                        value={createQuestionStore.questionDesc.toString()}
                         multiline
                         rows={4}
                         variant="outlined"
@@ -272,7 +353,7 @@ const QuestionSection = () => {
                         <Select
                             labelId="demo-simple-select-label"
                             id="demo-simple-select"
-                            value={questionType}
+                            value={createQuestionStore.responseType.toString()}
                             label="Response Type"
                             onChange={handleTypeSelectChange}
                         >
@@ -284,20 +365,23 @@ const QuestionSection = () => {
                     <br />
                     <br />
                     {
-                        (questionType != 'text' && _.isEqual(questionType, '') == false) &&
+                        (createQuestionStore.responseType != 'text' && _.isEqual(createQuestionStore.responseType, '') == false) &&
                         <TableContainer component={Paper}>
                             <Table id='response-table' sx={{ minWidth: 650 }} aria-label="simple table">
                                 <TableHead id='response-table-head'>
                                     <TableRow id='response-table-row'>
                                         <TableCell id="response-table-header" >Response Name</TableCell>
                                         <TableCell id="response-table-header">Response Description</TableCell>
-                                        <TableCell id="response-table-header">Action</TableCell>
+                                        {
+                                            isViewingQuestion === false &&
+                                            <TableCell id="response-table-header">Action</TableCell>
+                                        }
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
 
 
-                                    {response.map((row, i) => (
+                                    {createQuestionStore.response.map((row, i) => (
                                         <TableRow
                                             sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                                         >
@@ -307,15 +391,18 @@ const QuestionSection = () => {
                                             <TableCell>
                                                 <Input disabled value={row.responseDesc} placeholder="description" />
                                             </TableCell>
-                                            <TableCell>
-                                                <Fab responseid={row.id} onClick={(e) => deleteResponse(e, i)} color="primary" aria-label="add">
-                                                    <DeleteIcon />
-                                                </Fab>
-                                            </TableCell>
+                                            {
+                                                isViewingQuestion === false &&
+                                                <TableCell>
+                                                    <Fab responseid={row.id} onClick={(e) => deleteResponse(e, i)} color="primary" aria-label="add">
+                                                        <DeleteIcon />
+                                                    </Fab>
+                                                </TableCell>
+                                            }
                                         </TableRow>
                                     ))}
 
-                                    {(_.size(response) < 4) &&
+                                    {(_.size(createQuestionStore.response) < 4) && isViewingQuestion === false &&
                                         <TableRow
 
                                             sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
@@ -326,11 +413,14 @@ const QuestionSection = () => {
                                             <TableCell>
                                                 <Input placeholder="description" value={responseDataDesc} onChange={(e) => { onResponseUpdate(e, RESPONSE_DESC) }} />
                                             </TableCell>
-                                            <TableCell>
-                                                <Fab onClick={(e) => addNewResponse()} color="primary" aria-label="add">
-                                                    <AddIcon />
-                                                </Fab>
-                                            </TableCell>
+                                            {
+                                                isViewingQuestion === false &&
+                                                <TableCell>
+                                                    <Fab onClick={(e) => addNewResponse()} color="primary" aria-label="add">
+                                                        <AddIcon />
+                                                    </Fab>
+                                                </TableCell>
+                                            }
                                         </TableRow>
                                     }
                                 </TableBody>
@@ -341,14 +431,42 @@ const QuestionSection = () => {
                             } */}
                         </TableContainer>
                     }
+                    <br />
+                    {
+                        isApprovingQuestion === true &&
+                        <TextField
+                            fullWidth
+                            id="standard-basic"
+                            label="Comments"
+                            value={comment}
+                            multiline
+                            rows={2}
+                            variant="outlined"
+                            onChange={(e) => { onCommentEntry(e.target.value) }}
+                        />
+                    }
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleDialogClose} autoFocus>
+                    <Button onClick={handleDialogClose} >
                         cancel
                     </Button>
-                    <Button onClick={handleDialogOnQuestionCreate} autoFocus>
-                        create
-                    </Button>
+                    {
+                        isViewingQuestion === false &&
+                        <Button variant="contained" onClick={handleDialogOnQuestionCreate} >
+                            create
+                        </Button>
+                    }
+                    {
+                        isApprovingQuestion === true &&
+                        <div id="approve-deny-buttons">
+                            <Button variant="contained" color="success" onClick={()=>onClickApproveOrReject(APPROVE)} >
+                                approve
+                            </Button>
+                            <Button variant="contained" color="error" onClick={()=>onClickApproveOrReject(REJECT)} >
+                                reject
+                            </Button>
+                        </div>
+                    }
                 </DialogActions>
             </Dialog>
         </div>

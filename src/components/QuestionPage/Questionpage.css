@@ -17,9 +17,18 @@
     margin: auto;
 }
 
+#question-table-head{
+    width: 200px;
+}
+
+#question-table-action-icons{
+    display: inherit;
+}
+
 #question-table-header{
     background-color: #1976d2;
     color: white;
+    width: 100px;
 }
 
 #response-table{
@@ -40,4 +49,8 @@
 #response-table-header{
     background-color: #1976d2;
     color: white;
+}
+
+#approve-deny-buttons button{
+    margin-right: 10px;
 }

@@ -16,7 +16,7 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 
 
-const QuestionTable = ({ questions, deleteQuestionOnclick }) => {
+const QuestionTable = ({ questions, deleteQuestionOnclick , viewQuestionOnClick ,approveQuestionOnClick}) => {
 
     const loginContext = useContext(Context);
 
@@ -28,10 +28,18 @@ const QuestionTable = ({ questions, deleteQuestionOnclick }) => {
         deleteQuestionOnclick(qid);
     }
 
+    const viewQuestion = (qid) => {
+        viewQuestionOnClick(qid);
+    }
+
+    const approveQuestion = (qid) => {
+        approveQuestionOnClick(qid);
+    }
+
     return (
         <TableContainer id='question-table' component={Paper}>
-            <Table sx={{ minWidth: 650 }} stickyHeader aria-label="simple table">
-                <TableHead>
+            <Table sx={{ minWidth: 800 }} stickyHeader aria-label="simple table">
+                <TableHead id='question-table-head'>
                     <TableRow>
                         {(questions !== null) && (questions !== undefined) && questions.length > 0 &&
                             Object.keys(checkNullOrUndefined(questions)).map((e, i) => (
@@ -56,9 +64,9 @@ const QuestionTable = ({ questions, deleteQuestionOnclick }) => {
                                         <TableCell key={i} align="left">{e}</TableCell>
                                     ))
                                 }
-                                <TableCell align="left">
+                                <TableCell align="left" id='question-table-action-icons'>
 
-                                    <Button onClick={() => { deleteQuestion(row.questionId) }}>
+                                    <Button onClick={() => { viewQuestion(row.questionId) }}>
                                         <VisibilityIcon />
                                     </Button>
                                     {
@@ -69,8 +77,8 @@ const QuestionTable = ({ questions, deleteQuestionOnclick }) => {
                                     }
 
                                     {
-                                        loginContext.userRole.includes(QUESTION_APPROVER_ROLE) &&
-                                        <Button onClick={() => { deleteQuestion(row.questionId) }}>
+                                        row.statusDesc === 'PENDING' && loginContext.userRole.includes(QUESTION_APPROVER_ROLE) &&
+                                        <Button onClick={() => { approveQuestion(row.questionId) }}>
                                             <CheckCircleIcon />
                                         </Button>
                                     }

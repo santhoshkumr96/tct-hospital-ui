@@ -11,7 +11,7 @@ export const LOGIN_URL=`/v1/auth/login`;
 export const TOKEN_EXPIRED='Token Expired';
 
 
-//EXTENDED CONFIG
+//ROLE EXTENDED CONFIG
 export const QUESTION_CREATOR_ROLE='ROLE_USER';
 export const QUESTION_APPROVER_ROLE='ROLE_ADMIN';
 export const CAMPAIN_CREATOR_ROLE='ROLE_USER';
