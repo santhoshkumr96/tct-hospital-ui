@@ -32,7 +32,7 @@ const HomePage = () => {
     const errorContext = useContext(ErrorContext);
     const [data, setData] = useState('');
     const [open, setOpen] = useState(false);
-    const [section , setSection] = useState(QUESTIONNAIRE_SECTION);
+    const [section , setSection] = useState(CAMPAIGNS_SECTION);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
     const [searched, setSearched] = useState('');

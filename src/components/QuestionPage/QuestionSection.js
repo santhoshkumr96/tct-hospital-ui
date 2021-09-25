@@ -28,6 +28,7 @@ import Paper from '@mui/material/Paper';
 import CancelIcon from '@mui/icons-material/Cancel';
 
 import QuestionTable from './QuestionTable';
+import QuestionSearch from './Search';
 
 const QuestionSection = () => {
 
@@ -67,6 +68,7 @@ const QuestionSection = () => {
     const [resultQuestion, setResultQuestion] = useState({});
     const [qidFromChild , setQidFromChild] = useState(0);
     const [comment, setComment] = useState('')
+    const [searchValue , setSearchValue] = useState('');
 
 
     const getData = async () => {
@@ -74,7 +76,7 @@ const QuestionSection = () => {
             headers: { Authorization: `Bearer ${loginContext.accessToken}` }
         };
         ajax
-            .get(`${SERVICE_BASE_URL}v1/getquestionlist`, config)
+            .get(`${SERVICE_BASE_URL}v1/getquestionlist?search=${searchValue}`, config)
             .then((res) => {
                 setQuestionData(res.data);
             })
@@ -173,10 +175,7 @@ const QuestionSection = () => {
     }
 
     const requestSearch = (searchedVal) => {
-        const filteredRows = questionData.filter((row) => {
-            return _.toLower(row.questionName).includes(_.toLower(searchedVal));
-        });
-        setRows({ ...filteredRows });
+        console.log(searchedVal);
     };
 
     const cancelSearch = () => {
@@ -291,9 +290,14 @@ const QuestionSection = () => {
     }
 
 
+    const onSearchOkButton = (searchValue) => {
+        setSearchValue(searchValue);
+    }
+
+
     useEffect(() => {
         getData();
-    }, [resultQuestion])
+    }, [resultQuestion, searchValue])
 
     return (
         <div id='main-questionare-div'>
@@ -304,9 +308,12 @@ const QuestionSection = () => {
                         Create Question
                     </Button>
 
-                    <div id='questionare-search-bar'>
-                        <TextField disabled id="outlined-basic" type="search" label="search disabled" variant="outlined" onChange={(e) => { requestSearch(e.target.value) }} />
-                    </div>
+                    
+
+                     <div id='questionare-search-bar'>
+                        <QuestionSearch getSearchText={onSearchOkButton} />
+                        {/* <TextField  id="outlined-basic" type="search" label="search disabled" variant="outlined" onChange={(e) => { requestSearch(e.target.value) }} /> */}
+                    </div> 
                 </div>
             }
             <QuestionTable questions={questionData}
