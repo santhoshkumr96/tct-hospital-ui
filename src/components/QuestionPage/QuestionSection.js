@@ -1,7 +1,7 @@
 
 import { Button, Fab, InputLabel, MenuItem, Select, TextField } from '@mui/material';
 import { useContext, useState, React } from 'react';
-import { QUESTION_CREATOR_ROLE, SERVICE_BASE_URL, TOKEN_EXPIRED } from '../../config';
+import { QUESTION_CREATOR_ROLE, SERVICE_BASE_URL, TOKEN_EXPIRED, QUESTION_TYPE_TEXT, QUESTION_TYPE_RADIO, QUESTION_TYPE_DROPDOWN } from '../../config';
 import Context from '../Login/LoginAuthProvider/Context';
 import ajax from '../../Helpers/ajaxHelper';
 import { errorHelper } from '../../Helpers/ajaxCatchBlockHelper';
@@ -364,9 +364,9 @@ const QuestionSection = () => {
                             label="Response Type"
                             onChange={handleTypeSelectChange}
                         >
-                            <MenuItem value={'text'}>text</MenuItem>
-                            <MenuItem value={'radio'}>radio</MenuItem>
-                            <MenuItem value={'dropdown'}>dropdown</MenuItem>
+                            <MenuItem value={QUESTION_TYPE_TEXT}>text</MenuItem>
+                            <MenuItem value={QUESTION_TYPE_RADIO}>radio</MenuItem>
+                            <MenuItem value={QUESTION_TYPE_DROPDOWN}>dropdown</MenuItem>
                         </Select>
                     </FormControl>
                     <br />

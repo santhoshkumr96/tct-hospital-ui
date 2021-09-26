@@ -77,7 +77,7 @@ const QuestionSearch = ({getSearchText}) => {
       }, [inputValue, getOptionsDelayed]);
 
     return (
-        <div style={{display:"inline-flex"}}>
+        <div style={{display:"inline-flex"}} className = {'search-button-with-ok'}>
             <Autocomplete
                 options={options}
                 getOptionLabel={(option) => option}
@@ -92,7 +92,7 @@ const QuestionSearch = ({getSearchText}) => {
                 renderInput={(params) => <TextField variant="standard" {...params} label="Search Questions" />}
             />
             <Button variant="contained" onClick={()=>onClickOkButton()}>
-                ok
+                search
             </Button>
         </div>
     )

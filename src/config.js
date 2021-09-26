@@ -23,3 +23,8 @@ export const CAMPAIGNS_SECTION = 'Campaigns'  ;
 export const QUESTIONNAIRE_SECTION = 'Questionnaire';
 export const POPULATION_SECTION = 'Population';
 
+
+//question type
+export const QUESTION_TYPE_TEXT = 'text';
+export const QUESTION_TYPE_RADIO = 'radio';
+export const QUESTION_TYPE_DROPDOWN = 'dropdown';
