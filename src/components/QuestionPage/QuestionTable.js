@@ -9,14 +9,14 @@ import _ from 'lodash';
 import './Questionpage.css'
 import { useContext } from 'react';
 import Context from '../Login/LoginAuthProvider/Context';
-import { QUESTION_APPROVER_ROLE, QUESTION_CREATOR_ROLE } from '../../config';
+import { CAMPAIGNS_SECTION, QUESTION_APPROVER_ROLE, QUESTION_CREATOR_ROLE } from '../../config';
 import { Button } from '@mui/material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 
 
-const QuestionTable = ({ questions, deleteQuestionOnclick , viewQuestionOnClick ,approveQuestionOnClick}) => {
+const QuestionTable = ({ questions, deleteQuestionOnclick, viewQuestionOnClick, approveQuestionOnClick, typeOfTable }) => {
 
     const loginContext = useContext(Context);
 
@@ -24,25 +24,41 @@ const QuestionTable = ({ questions, deleteQuestionOnclick , viewQuestionOnClick 
         return (data[0]) ? data[0] : [];
     }
 
-    const deleteQuestion = (qid) => {
-        deleteQuestionOnclick(qid);
+    const deleteQuestion = (obj) => {
+        if (typeOfTable === CAMPAIGNS_SECTION) {
+            deleteQuestionOnclick(obj.campaignId);
+        } else {
+            deleteQuestionOnclick(obj.questionId);
+        }
+
     }
 
-    const viewQuestion = (qid) => {
-        viewQuestionOnClick(qid);
+    const viewQuestion = (obj) => {
+        if (typeOfTable === CAMPAIGNS_SECTION) {
+            viewQuestionOnClick(obj.campaignId);
+        } else {
+            viewQuestionOnClick(obj.questionId);
+        }
+
     }
 
-    const approveQuestion = (qid) => {
-        approveQuestionOnClick(qid);
+    const approveQuestion = (obj) => {
+        if (typeOfTable === CAMPAIGNS_SECTION) {
+            approveQuestionOnClick(obj.campaignId);
+        } else {
+            approveQuestionOnClick(obj.questionId);
+        }
+
     }
+
 
     return (
         <TableContainer id='question-table' component={Paper}>
             <Table sx={{ minWidth: 800 }} stickyHeader aria-label="simple table">
                 <TableHead id='question-table-head'>
                     <TableRow>
-                        {(questions !== null) && (questions !== undefined) && questions.length > 0 &&
-                            Object.keys(checkNullOrUndefined(questions)).map((e, i) => (
+                        {((questions) !== null) && ((questions) !== undefined) && (questions).length > 0 &&
+                            Object.keys(checkNullOrUndefined((questions))).filter(e => e !== 'response').map((e, i) => (
                                 <TableCell id='question-table-header' key={i} align="left">{_.startCase(e)}</TableCell>
                             ))
                         }
@@ -53,32 +69,32 @@ const QuestionTable = ({ questions, deleteQuestionOnclick , viewQuestionOnClick 
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {(questions !== null) && (questions !== undefined) && questions.length > 0 &&
-                        questions.map((row) => (
+                    {((questions) !== null) && ((questions) !== undefined) && (questions).length > 0 &&
+                        (questions).map((row) => (
                             <TableRow
                                 key={row.name}
                                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                             >
                                 {questions.length > 0 &&
-                                    Object.values(row).map((e, i) => (
+                                    Object.values(row).filter(e => !(e instanceof Array)).map((e, i) => (
                                         <TableCell key={i} align="left">{e}</TableCell>
                                     ))
                                 }
                                 <TableCell align="left" id='question-table-action-icons'>
 
-                                    <Button onClick={() => { viewQuestion(row.questionId) }}>
+                                    <Button onClick={() => { viewQuestion(row) }}>
                                         <VisibilityIcon />
                                     </Button>
                                     {
                                         loginContext.userRole.includes(QUESTION_CREATOR_ROLE) &&
-                                        <Button onClick={() => { deleteQuestion(row.questionId) }}>
+                                        <Button onClick={() => { deleteQuestion(row) }}>
                                             <DeleteForeverIcon />
                                         </Button>
                                     }
 
                                     {
                                         row.statusDesc === 'PENDING' && loginContext.userRole.includes(QUESTION_APPROVER_ROLE) &&
-                                        <Button onClick={() => { approveQuestion(row.questionId) }}>
+                                        <Button onClick={() => { approveQuestion(row) }}>
                                             <CheckCircleIcon />
                                         </Button>
                                     }

@@ -15,7 +15,7 @@ import { display } from '@mui/system';
 
 
 
-const QuestionSearch = ({getSearchText}) => {
+const QuestionSearch = ({getSearchText , buttonTitle , extraData}) => {
 
     const loginContext = useContext(Context);
     const errorContext = useContext(ErrorContext);
@@ -65,7 +65,15 @@ const QuestionSearch = ({getSearchText}) => {
     
       const onClickOkButton = () =>{
         
-        getSearchText(inputValue);
+        if(extraData){
+          let data = {...extraData};
+          data.searchValue = inputValue;
+          // console.log(extraData);
+          getSearchText(data)
+        } else {
+          getSearchText(inputValue);
+        }
+        
       }
 
 
@@ -92,7 +100,7 @@ const QuestionSearch = ({getSearchText}) => {
                 renderInput={(params) => <TextField variant="standard" {...params} label="Search Questions" />}
             />
             <Button variant="contained" onClick={()=>onClickOkButton()}>
-                search
+                  {buttonTitle}
             </Button>
         </div>
     )

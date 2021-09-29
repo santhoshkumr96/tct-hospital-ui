@@ -53,9 +53,37 @@ const QuestionSection = () => {
         responseDesc: ''
     }
 
+    const defaultQuestionData = [
+        {
+          questionName: "seomthing",
+          questionId: 50,
+          questionDesc: "nerw",
+          comments: null,
+          responseType: "dropdown",
+          response: [
+            {
+              responseId: 37,
+              responseName: "sdf",
+              responseDesc: "asdf",
+              questionId: 50,
+              createdBy: "santy",
+              changedBy: null,
+              approvedBy: null,
+              statusDesc: null,
+              createdDate: "2021-09-26T12:55:02.000+00:00",
+              changedDate: null,
+              approvedDate: null,
+              enabled: null,
+              comments: null
+            }
+          ],
+          statusDesc: "PENDING"
+        }
+    ]
+
     const loginContext = useContext(Context);
     const errorContext = useContext(ErrorContext);
-    const [questionData, setQuestionData] = useState([]);
+    const [questionData, setQuestionData] = useState(defaultQuestionData);
     const [createQuestionStore, setCreateQuestionStore] = useState(createdQuestionData);
     const [rows, setRows] = useState(questionData);
     const [searched, setSearched] = useState('');
@@ -78,6 +106,7 @@ const QuestionSection = () => {
         ajax
             .get(`${SERVICE_BASE_URL}v1/getquestionlist?search=${searchValue}`, config)
             .then((res) => {
+                // console.log(res.data);
                 setQuestionData(res.data);
             })
             .catch((e) => {
@@ -311,7 +340,7 @@ const QuestionSection = () => {
                     
 
                      <div id='questionare-search-bar'>
-                        <QuestionSearch getSearchText={onSearchOkButton} />
+                        <QuestionSearch getSearchText={onSearchOkButton} buttonTitle={'Search'} />
                         {/* <TextField  id="outlined-basic" type="search" label="search disabled" variant="outlined" onChange={(e) => { requestSearch(e.target.value) }} /> */}
                     </div> 
                 </div>
