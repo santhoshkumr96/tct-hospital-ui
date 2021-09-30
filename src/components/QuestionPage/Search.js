@@ -21,7 +21,7 @@ const QuestionSearch = ({getSearchText , buttonTitle , extraData}) => {
     const errorContext = useContext(ErrorContext);
 
     const [options, setOptions] = useState([]);
-    const [inputValue, setInputValue] = useState("");
+    const [inputValue, setInputValue] = useState('');
     const [loading, setLoading] = useState(true);
     const getOptionsDelayed = useCallback(
       debounce((text, callback) => {
@@ -93,7 +93,7 @@ const QuestionSearch = ({getSearchText , buttonTitle , extraData}) => {
                 id="clear-on-escape"
                 clearOnEscape
                 // // disable filtering on client
-                // filterOptions={(x) => x}
+                filterOptions={(x) => x}
                 loading={loading}
                 sx={{ width: 300 }}
                 onInputChange={(e, newInputValue) => setInputValue(newInputValue)}

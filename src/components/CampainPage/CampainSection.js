@@ -105,6 +105,10 @@ const CampainSection = () => {
         getCampaign(value);
     }
 
+    const onPuslishCampaign = (value) =>{
+        console.log(value)
+    } 
+
      useEffect(() => {
         getData();
      }, [campaignDetails])
@@ -125,7 +129,9 @@ const CampainSection = () => {
             }
             {
                 createCampainBool === true && 
-                <CreateCampain onCancelCampain={onCancelCampign} campaignDataFromParent={campaignData}/>
+                <CreateCampain onPublishBool={true} 
+                onCancelCampain={onCancelCampign} 
+                campaignDataFromParent={campaignData}/>
             }
             {
                 createCampainBool === false && 
@@ -135,6 +141,7 @@ const CampainSection = () => {
                             deleteQuestionOnclick={onCampaignDelete} 
                             viewQuestionOnClick = {onCampaignView}
                             questions={campaignDetails}
+                            publishOnClick={onPuslishCampaign}
                             />
                     </Box>   
             }

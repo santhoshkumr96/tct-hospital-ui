@@ -14,9 +14,10 @@ import { Button } from '@mui/material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+import PublishIcon from '@mui/icons-material/Publish';
 
 
-const QuestionTable = ({ questions, deleteQuestionOnclick, viewQuestionOnClick, approveQuestionOnClick, typeOfTable }) => {
+const QuestionTable = ({ questions,publishOnClick, deleteQuestionOnclick, viewQuestionOnClick, approveQuestionOnClick, typeOfTable }) => {
 
     const loginContext = useContext(Context);
 
@@ -44,9 +45,18 @@ const QuestionTable = ({ questions, deleteQuestionOnclick, viewQuestionOnClick, 
 
     const approveQuestion = (obj) => {
         if (typeOfTable === CAMPAIGNS_SECTION) {
-            approveQuestionOnClick(obj.campaignId);
+            publishOnClick(obj.campaignId);
         } else {
-            approveQuestionOnClick(obj.questionId);
+            publishOnClick(obj.questionId);
+        }
+
+    }
+
+    const publish = (obj) => {
+        if (typeOfTable === CAMPAIGNS_SECTION) {
+            publishOnClick(obj.campaignId);
+        } else {
+            publishOnClick(obj.questionId);
         }
 
     }
@@ -90,6 +100,15 @@ const QuestionTable = ({ questions, deleteQuestionOnclick, viewQuestionOnClick, 
                                         <Button onClick={() => { deleteQuestion(row) }}>
                                             <DeleteForeverIcon />
                                         </Button>
+
+                                    }
+
+                                    {
+                                        loginContext.userRole.includes(QUESTION_CREATOR_ROLE) && typeOfTable === CAMPAIGNS_SECTION &&
+                                        <Button onClick={() => { publish(row) }}>
+                                            <PublishIcon />
+                                        </Button>
+
                                     }
 
                                     {

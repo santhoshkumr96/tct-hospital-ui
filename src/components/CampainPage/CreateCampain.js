@@ -28,7 +28,7 @@ import { QUESTION_TYPE_DROPDOWN, QUESTION_TYPE_RADIO, QUESTION_TYPE_TEXT, SERVIC
 import { errorHelper } from "../../Helpers/ajaxCatchBlockHelper";
 import ajax from "../../Helpers/ajaxHelper";
 
-const CreateCampain = ({ onCancelCampain, campaignDataFromParent }) => {
+const CreateCampain = ({ onCancelCampain, campaignDataFromParent, onPublishBool }) => {
 
 
 
@@ -59,6 +59,7 @@ const CreateCampain = ({ onCancelCampain, campaignDataFromParent }) => {
     const errorContext = useContext(ErrorContext);
     const [dragAndDrop, setDragAndDrop] = useState(initialDnDState);
     const [list, setList] = useState(defaultSection);
+    const [campaignAnswer , setCampaignAnswer] = useState({});
 
 
     const getQuestionData = async (search) => {
@@ -95,6 +96,26 @@ const CreateCampain = ({ onCancelCampain, campaignDataFromParent }) => {
             .post(`${SERVICE_BASE_URL}v1/create-campaign`, result, config)
             .then((res) => {
                 console.log('campign uploaded');
+            })
+            .catch((e) => {
+                if (errorHelper(e) == TOKEN_EXPIRED) {
+                    loginContext.setTokenExpired(true);
+                } else {
+                    errorContext.setIsErrorDisplayed(true);
+                    errorContext.setError(errorHelper(e));
+                }
+            }
+            );
+    }
+
+    const updateCampaignAnswers = async (result) => {
+        const config = {
+            headers: { Authorization: `Bearer ${loginContext.accessToken}` }
+        };
+        ajax
+            .post(`${SERVICE_BASE_URL}v1/campaign-answer-update`, result, config)
+            .then((res) => {
+                console.log('campign answer uploaded');
             })
             .catch((e) => {
                 if (errorHelper(e) == TOKEN_EXPIRED) {
@@ -273,16 +294,51 @@ const CreateCampain = ({ onCancelCampain, campaignDataFromParent }) => {
         createCampaignApi(result);
     }
 
+    const onAddCampaignAnswer = () => {
+        console.log(campaignAnswer);
+        updateCampaignAnswers(Object.values(campaignAnswer));
+    }
+
+
+    const onHandleAnswerChange = (e, campaignId , sectionId , questionId ) => {
+        if(Object.keys(campaignDataFromParent).length !== 0){
+            let data = {
+                campaignId : campaignId,
+                sectionId : sectionId,
+                questionId : questionId,
+                answer : e.target.value
+            }
+    
+            let temp = {...campaignAnswer};
+            temp[campaignId.toString()+sectionId.toString()+questionId.toString()] = data;
+            setCampaignAnswer(temp);
+        }
+
+    }
+
+
+    const valueForInupts = ( campaignId , sectionId , questionId) => {
+        if(Object.keys(campaignDataFromParent).length === 0){
+            return ''
+        } else {
+            if(campaignAnswer[campaignId.toString()+sectionId.toString()+questionId.toString()]){
+                let data =  campaignAnswer[campaignId.toString()+sectionId.toString()+questionId.toString()].answer;
+                return data;
+            }
+            return '';
+        }
+
+    }
 
     useEffect(() => {
         if (Object.keys(campaignDataFromParent).length !== 0) {
             const cData = {
                 campaignName: campaignDataFromParent.campaignName,
                 campaignDesc: campaignDataFromParent.campaignDesc,
-                campaignObjective: campaignDataFromParent.campaignObjective
+                campaignObjective: campaignDataFromParent.campaignObjective,
+                campaignId : campaignDataFromParent.campaignId
             }
             setCampaignData({ ...cData })
-            console.log(campaignDataFromParent.sections)
             setList([...campaignDataFromParent.sections]);
         }
         else
@@ -447,12 +503,17 @@ const CreateCampain = ({ onCancelCampain, campaignDataFromParent }) => {
                                                 <br />
                                                 {
                                                     question.responseType === QUESTION_TYPE_TEXT &&
-                                                    <TextField fullWidth placeholder='Text' id="standard-basic" variant="standard" />
+                                                    <TextField 
+                                                        fullWidth 
+                                                        placeholder='Text' 
+                                                        id="standard-basic" 
+                                                        variant="standard" 
+                                                        
+                                                        value = { valueForInupts(campaignData.campaignId,section.sectionId,question.questionId)}
+                                                        onChange={(e) => onHandleAnswerChange(e,campaignData.campaignId,section.sectionId,question.questionId)}
+                                                    />
 
                                                 }
-
-
-
 
                                                 {
                                                     question.responseType === QUESTION_TYPE_DROPDOWN &&
@@ -462,9 +523,9 @@ const CreateCampain = ({ onCancelCampain, campaignDataFromParent }) => {
                                                         <Select
                                                             labelId="demo-simple-select-label"
                                                             id="demo-simple-select"
-                                                            // value={question.response[0].responseName.toString()}
+                                                            value = { valueForInupts(campaignData.campaignId,section.sectionId,question.questionId)}
                                                             label={'select input'}
-                                                        // onChange={handleChange}
+                                                            onChange={(e) => onHandleAnswerChange(e,campaignData.campaignId,section.sectionId,question.questionId)}
                                                         >
                                                             {
                                                                 question.response.map((e, i) => {
@@ -482,7 +543,11 @@ const CreateCampain = ({ onCancelCampain, campaignDataFromParent }) => {
                                                     question.responseType === QUESTION_TYPE_RADIO &&
                                                     <FormControl component="fieldset">
                                                         <FormLabel component="legend">options</FormLabel>
-                                                        <RadioGroup row aria-label="gender" name="row-radio-buttons-group">
+                                                        <RadioGroup 
+                                                            onChange={(e) => onHandleAnswerChange(e,campaignData.campaignId,section.sectionId,question.questionId)}
+                                                            row aria-label="gender" 
+                                                            // value = { valueForInupts(campaignData.campaignId,section.sectionId,question.questionId)}
+                                                            name="row-radio-buttons-group">
                                                             {
                                                                 question.response.map((e, i) => {
                                                                     return <FormControlLabel value={e.responseName} control={<Radio />} label={e.responseName} />
@@ -502,7 +567,11 @@ const CreateCampain = ({ onCancelCampain, campaignDataFromParent }) => {
                                         {/* <Button onClick={(e)=>onAddQuestion(e,sectionIndex,section.questions.length)}  variant="contained">
                                             add question
                                         </Button> */}
-                                        <QuestionSearch getSearchText={onSearchQuesiton} buttonTitle={'Add Question'} extraData={{ sectionIndex: sectionIndex }} />
+                                        {
+                                            Object.keys(campaignDataFromParent).length === 0 &&
+                                            <QuestionSearch getSearchText={onSearchQuesiton} buttonTitle={'Add Question'} extraData={{ sectionIndex: sectionIndex }} />
+                                        }
+                                       
                                     </Box>
 
                                 </div>
@@ -522,9 +591,20 @@ const CreateCampain = ({ onCancelCampain, campaignDataFromParent }) => {
 
                 }
 
+                {
+                   
+                    onPublishBool &&
+                    <Button style={{ marginLeft: '20px' }} variant="contained" onClick={() => { onAddCampaignAnswer() }}>
+                        Add Answer
+                    </Button>
+                    
+                }
+
                 <Button onClick={() => { onCampainCancel() }}>
                     cancel
                 </Button>
+
+
 
             </section>
         </div>
