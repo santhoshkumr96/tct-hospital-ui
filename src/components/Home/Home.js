@@ -1,9 +1,9 @@
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import Context from '../Login/LoginAuthProvider/Context';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
+// import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import HomeIcon from '@mui/icons-material/Home';
 import ajax from '../../Helpers/ajaxHelper';
@@ -17,6 +17,20 @@ import { errorHelper } from '../../Helpers/ajaxCatchBlockHelper';
 import { TOKEN_EXPIRED } from '../../config';
 import HomePage from './HomePage';
 import ErrorContext from '../NetworkAuthProvider/ErrorContext';
+import 'antd/dist/antd.css';
+import './Home.scss'
+import { Layout, Menu, Typography } from 'antd';
+import React from 'react';
+import {
+    MenuUnfoldOutlined,
+    MenuFoldOutlined,
+    UserOutlined,
+    VideoCameraOutlined,
+    UploadOutlined,
+} from '@ant-design/icons';
+const { Header, Sider, Content } = Layout;
+const { Paragraph } = Typography;
+
 
 
 const Home = () => {
@@ -38,9 +52,10 @@ const Home = () => {
         errorContext.setError('');
     }
 
+
     return (
         <div>
-            <Box sx={{ flexGrow: 1 }}>
+            {/* <Box sx={{ flexGrow: 1 }}>
                 <AppBar position="static">
                     <Toolbar>
                         <IconButton
@@ -58,7 +73,8 @@ const Home = () => {
                         <Button onClick={() => { logout() }} color="inherit">Logout</Button>
                     </Toolbar>
                 </AppBar>
-            </Box>
+            </Box> */}
+
             <HomePage />
             <Dialog
                 open={loginContext.tokenExpired}

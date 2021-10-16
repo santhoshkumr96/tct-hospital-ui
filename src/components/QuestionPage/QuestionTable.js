@@ -15,9 +15,10 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import PublishIcon from '@mui/icons-material/Publish';
+import AddCircleIcon from '@mui/icons-material/AddCircle';
 
 
-const QuestionTable = ({ questions,publishOnClick, deleteQuestionOnclick, viewQuestionOnClick, approveQuestionOnClick, typeOfTable }) => {
+const QuestionTable = ({ questions, publishOnClick, deleteQuestionOnclick, viewQuestionOnClick, approveQuestionOnClick, typeOfTable }) => {
 
     const loginContext = useContext(Context);
 
@@ -45,9 +46,9 @@ const QuestionTable = ({ questions,publishOnClick, deleteQuestionOnclick, viewQu
 
     const approveQuestion = (obj) => {
         if (typeOfTable === CAMPAIGNS_SECTION) {
-            publishOnClick(obj.campaignId);
+            approveQuestionOnClick(obj.campaignId);
         } else {
-            publishOnClick(obj.questionId);
+            approveQuestionOnClick(obj.questionId);
         }
 
     }
@@ -74,7 +75,7 @@ const QuestionTable = ({ questions,publishOnClick, deleteQuestionOnclick, viewQu
                         }
                         {
                             // questions.length > 0 && loginContext.userRole.includes(QUESTION_APPROVER_ROLE) &&
-                            <TableCell id='question-table-header' align="left">{_.startCase('Action')}</TableCell>
+                            <TableCell id='question-table-header-action' align="left">{_.startCase('Action')}</TableCell>
                         }
                     </TableRow>
                 </TableHead>
@@ -92,31 +93,36 @@ const QuestionTable = ({ questions,publishOnClick, deleteQuestionOnclick, viewQu
                                 }
                                 <TableCell align="left" id='question-table-action-icons'>
 
-                                    <Button onClick={() => { viewQuestion(row) }}>
-                                        <VisibilityIcon />
-                                    </Button>
-                                    {
-                                        loginContext.userRole.includes(QUESTION_CREATOR_ROLE) &&
-                                        <Button onClick={() => { deleteQuestion(row) }}>
-                                            <DeleteForeverIcon />
+                                    <div className="action-icon-div">
+                                        <Button onClick={() => { viewQuestion(row) }}>
+                                            <VisibilityIcon />
                                         </Button>
 
-                                    }
+                                        {
+                                            loginContext.userRole.includes(QUESTION_CREATOR_ROLE) && typeOfTable === CAMPAIGNS_SECTION &&
+                                            <Button onClick={() => { publish(row) }}>
+                                                <AddCircleIcon />
+                                            </Button>
 
-                                    {
-                                        loginContext.userRole.includes(QUESTION_CREATOR_ROLE) && typeOfTable === CAMPAIGNS_SECTION &&
-                                        <Button onClick={() => { publish(row) }}>
-                                            <PublishIcon />
-                                        </Button>
+                                        }
 
-                                    }
 
-                                    {
-                                        row.statusDesc === 'PENDING' && loginContext.userRole.includes(QUESTION_APPROVER_ROLE) &&
-                                        <Button onClick={() => { approveQuestion(row) }}>
-                                            <CheckCircleIcon />
-                                        </Button>
-                                    }
+                                        {
+                                            loginContext.userRole.includes(QUESTION_CREATOR_ROLE) &&
+                                            <Button onClick={() => { deleteQuestion(row) }}>
+                                                <DeleteForeverIcon />
+                                            </Button>
+
+                                        }
+
+
+                                        {
+                                            row.statusDesc === 'PENDING' && loginContext.userRole.includes(QUESTION_APPROVER_ROLE) &&
+                                            <Button onClick={() => { approveQuestion(row) }}>
+                                                <CheckCircleIcon />
+                                            </Button>
+                                        }
+                                    </div>
                                 </TableCell>
                             </TableRow>
                         ))}

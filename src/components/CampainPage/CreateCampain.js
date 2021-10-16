@@ -27,6 +27,8 @@ import ErrorContext from "../NetworkAuthProvider/ErrorContext";
 import { QUESTION_TYPE_DROPDOWN, QUESTION_TYPE_RADIO, QUESTION_TYPE_TEXT, SERVICE_BASE_URL, TOKEN_EXPIRED } from "../../config";
 import { errorHelper } from "../../Helpers/ajaxCatchBlockHelper";
 import ajax from "../../Helpers/ajaxHelper";
+import { Row, Col } from 'antd';
+import 'antd/dist/antd.css';
 
 const CreateCampain = ({ onCancelCampain, campaignDataFromParent, onPublishBool }) => {
 
@@ -59,7 +61,7 @@ const CreateCampain = ({ onCancelCampain, campaignDataFromParent, onPublishBool 
     const errorContext = useContext(ErrorContext);
     const [dragAndDrop, setDragAndDrop] = useState(initialDnDState);
     const [list, setList] = useState(defaultSection);
-    const [campaignAnswer , setCampaignAnswer] = useState({});
+    const [campaignAnswer, setCampaignAnswer] = useState({});
 
 
     const getQuestionData = async (search) => {
@@ -300,29 +302,29 @@ const CreateCampain = ({ onCancelCampain, campaignDataFromParent, onPublishBool 
     }
 
 
-    const onHandleAnswerChange = (e, campaignId , sectionId , questionId ) => {
-        if(Object.keys(campaignDataFromParent).length !== 0){
+    const onHandleAnswerChange = (e, campaignId, sectionId, questionId) => {
+        if (Object.keys(campaignDataFromParent).length !== 0) {
             let data = {
-                campaignId : campaignId,
-                sectionId : sectionId,
-                questionId : questionId,
-                answer : e.target.value
+                campaignId: campaignId,
+                sectionId: sectionId,
+                questionId: questionId,
+                answer: e.target.value
             }
-    
-            let temp = {...campaignAnswer};
-            temp[campaignId.toString()+sectionId.toString()+questionId.toString()] = data;
+
+            let temp = { ...campaignAnswer };
+            temp[campaignId.toString() + sectionId.toString() + questionId.toString()] = data;
             setCampaignAnswer(temp);
         }
 
     }
 
 
-    const valueForInupts = ( campaignId , sectionId , questionId) => {
-        if(Object.keys(campaignDataFromParent).length === 0){
+    const valueForInupts = (campaignId, sectionId, questionId) => {
+        if (Object.keys(campaignDataFromParent).length === 0) {
             return ''
         } else {
-            if(campaignAnswer[campaignId.toString()+sectionId.toString()+questionId.toString()]){
-                let data =  campaignAnswer[campaignId.toString()+sectionId.toString()+questionId.toString()].answer;
+            if (campaignAnswer[campaignId.toString() + sectionId.toString() + questionId.toString()]) {
+                let data = campaignAnswer[campaignId.toString() + sectionId.toString() + questionId.toString()].answer;
                 return data;
             }
             return '';
@@ -336,7 +338,7 @@ const CreateCampain = ({ onCancelCampain, campaignDataFromParent, onPublishBool 
                 campaignName: campaignDataFromParent.campaignName,
                 campaignDesc: campaignDataFromParent.campaignDesc,
                 campaignObjective: campaignDataFromParent.campaignObjective,
-                campaignId : campaignDataFromParent.campaignId
+                campaignId: campaignDataFromParent.campaignId
             }
             setCampaignData({ ...cData })
             setList([...campaignDataFromParent.sections]);
@@ -386,200 +388,218 @@ const CreateCampain = ({ onCancelCampain, campaignDataFromParent, onPublishBool 
 
 
 
-            <section className={"campaign-section"}>
-                <ul>
-
-                    {list[0] && list.map((section, sectionIndex) => {
-                        return (
-                            <li
-                                key={sectionIndex}
-                                data-position={sectionIndex}
-                                draggable
-
-                                onDragStart={onDragStart}
-
-                                onDragOver={onDragOver}
-
-                                onDrop={onDrop}
-
-                                onDragEnd={onDragEnd}
-
-                                onDragLeave={onDragLeave}
-
-                                onDragEnter={onDragEnter}
-
-                                className={dragAndDrop && dragAndDrop.draggedEnteredTo === Number(sectionIndex) ? "dropArea" : ""}
-                            >
-                                <div id='draggable-portion'>
-                                    {sectionIndex !== 0 &&
-                                        <Button className={'section-up-down'} onClick={(e) => onSectionGoUp(e, sectionIndex)}>
-                                            <KeyboardArrowUpIcon />
-                                        </Button>
-                                    }
-                                    {
-                                        sectionIndex !== (list.length - 1) &&
-                                        <Button className={'section-up-down'} onClick={(e) => onSectionGoDown(e, sectionIndex)}>
-                                            <KeyboardArrowDownIcon />
-                                        </Button>
-                                    }
-                                    <DragIndicatorIcon />
-                                    <Button onClick={(e) => onAddSection(e, sectionIndex)} >
-                                        <AddCircleIcon />
-                                    </Button>
-                                </div>
-
-                                <div id='campaign-section-desc'>
-
-                                    <div id='campaign-section-name-delete'>
-                                        <TextField
-                                            placeholder={'Enter Section Name'}
-                                            value={section.title}
-                                            id="standard-basic"
-                                            onChange={(e) => onSectionNameEnter(e, sectionIndex)}
-                                            variant="standard"
-                                        />
-                                        <Button onClick={(e) => onDeleteSection(e, sectionIndex)}>
-                                            <DeleteIcon />
-                                        </Button>
-                                    </div>
-                                    <Box id='campaign-box'>
-                                        {section.questions[0] && section.questions.map((question, questionIndex) => {
-                                            return (<Card className={"campain-question-description-box"} variant="outlined">
-                                                <TextField
-                                                    label="Question Id"
-                                                    id="standard-start-adornment"
-                                                    sx={{ m: 1, width: "25ch" }}
-                                                    value={question.questionId}
-                                                    InputProps={{
-                                                        readOnly: true,
-                                                    }}
-                                                    InputProps={{
-                                                        startAdornment: (
-                                                            <InputAdornment position="start"> </InputAdornment>
-                                                        )
-                                                    }}
-                                                    variant="standard"
-                                                />
-
-                                                <TextField
-                                                    label="Question Name"
-                                                    id="standard-start-adornment"
-                                                    sx={{ m: 1, width: "25ch" }}
-                                                    value={question.questionName}
-                                                    InputProps={{
-                                                        readOnly: true,
-                                                    }}
-                                                    InputProps={{
-                                                        startAdornment: (
-                                                            <InputAdornment position="start"> </InputAdornment>
-                                                        )
-                                                    }}
-                                                    variant="standard"
-                                                />
 
 
-                                                <TextField
-                                                    label="Question Desc"
-                                                    id="standard-start-adornment"
-                                                    sx={{ m: 1, width: "25ch" }}
-                                                    value={question.questionDesc}
-                                                    InputProps={{
-                                                        readOnly: true,
-                                                    }}
-                                                    InputProps={{
-                                                        startAdornment: (
-                                                            <InputAdornment position="start"> </InputAdornment>
-                                                        )
-                                                    }}
-                                                    variant="standard"
-                                                />
 
-                                                <Button id='delete-question-button' onClick={(e) => onQuestionDelete(e, sectionIndex, questionIndex)}>
-                                                    <ClearIcon />
+
+
+            <section>
+                <Row>
+                    <Col span={16}>
+                        <section className={"campaign-section"}>
+                            <ul>
+
+                                {list[0] && list.map((section, sectionIndex) => {
+                                    return (
+                                        <li
+                                            key={sectionIndex}
+                                            data-position={sectionIndex}
+
+                                            draggable
+
+                                            onDragStart={onDragStart}
+
+                                            onDragOver={onDragOver}
+
+                                            onDrop={onDrop}
+
+                                            onDragEnd={onDragEnd}
+
+                                            onDragLeave={onDragLeave}
+
+                                            onDragEnter={onDragEnter}
+
+                                            className={dragAndDrop && dragAndDrop.draggedEnteredTo === Number(sectionIndex) ? "dropArea" : ""}
+                                        >
+                                            <div id='draggable-portion'>
+                                                {sectionIndex !== 0 &&
+                                                    <Button className={'section-up-down'} onClick={(e) => onSectionGoUp(e, sectionIndex)}>
+                                                        <KeyboardArrowUpIcon />
+                                                    </Button>
+                                                }
+                                                {
+                                                    sectionIndex !== (list.length - 1) &&
+                                                    <Button className={'section-up-down'} onClick={(e) => onSectionGoDown(e, sectionIndex)}>
+                                                        <KeyboardArrowDownIcon />
+                                                    </Button>
+                                                }
+                                                <DragIndicatorIcon />
+                                                <Button onClick={(e) => onAddSection(e, sectionIndex)} >
+                                                    <AddCircleIcon />
                                                 </Button>
+                                            </div>
 
-                                                <br />
-                                                <br />
-                                                <br />
-                                                {
-                                                    question.responseType === QUESTION_TYPE_TEXT &&
-                                                    <TextField 
-                                                        fullWidth 
-                                                        placeholder='Text' 
-                                                        id="standard-basic" 
-                                                        variant="standard" 
-                                                        
-                                                        value = { valueForInupts(campaignData.campaignId,section.sectionId,question.questionId)}
-                                                        onChange={(e) => onHandleAnswerChange(e,campaignData.campaignId,section.sectionId,question.questionId)}
+                                            <div id='campaign-section-desc'>
+
+                                                <div id='campaign-section-name-delete'>
+                                                    <TextField
+                                                        placeholder={'Enter Section Name'}
+                                                        value={section.title}
+                                                        id="standard-basic"
+                                                        onChange={(e) => onSectionNameEnter(e, sectionIndex)}
+                                                        variant="standard"
                                                     />
+                                                    <Button onClick={(e) => onDeleteSection(e, sectionIndex)}>
+                                                        <DeleteIcon />
+                                                    </Button>
+                                                </div>
+                                                <Box id='campaign-box'>
+                                                    {section.questions[0] && section.questions.map((question, questionIndex) => {
+                                                        return (
+                                                            <Card className={"campain-question-description-box"} variant="outlined">
+                                                                <TextField
+                                                                    label="Question Id"
+                                                                    id="standard-start-adornment"
+                                                                    sx={{ m: 1, width: "25ch" }}
+                                                                    value={question.questionId}
+                                                                    InputProps={{
+                                                                        readOnly: true,
+                                                                    }}
+                                                                    InputProps={{
+                                                                        startAdornment: (
+                                                                            <InputAdornment position="start"> </InputAdornment>
+                                                                        )
+                                                                    }}
+                                                                    variant="standard"
+                                                                />
 
-                                                }
-
-                                                {
-                                                    question.responseType === QUESTION_TYPE_DROPDOWN &&
-
-                                                    <FormControl fullWidth>
-                                                        <InputLabel id="demo-simple-select-label">Select Input</InputLabel>
-                                                        <Select
-                                                            labelId="demo-simple-select-label"
-                                                            id="demo-simple-select"
-                                                            value = { valueForInupts(campaignData.campaignId,section.sectionId,question.questionId)}
-                                                            label={'select input'}
-                                                            onChange={(e) => onHandleAnswerChange(e,campaignData.campaignId,section.sectionId,question.questionId)}
-                                                        >
-                                                            {
-                                                                question.response.map((e, i) => {
-                                                                    return <MenuItem value={e.responseName}>{e.responseName}</MenuItem>
-                                                                })
-                                                            }
-                                                        </Select>
-                                                    </FormControl>
-
-                                                }
-
-
-                                                {
-
-                                                    question.responseType === QUESTION_TYPE_RADIO &&
-                                                    <FormControl component="fieldset">
-                                                        <FormLabel component="legend">options</FormLabel>
-                                                        <RadioGroup 
-                                                            onChange={(e) => onHandleAnswerChange(e,campaignData.campaignId,section.sectionId,question.questionId)}
-                                                            row aria-label="gender" 
-                                                            // value = { valueForInupts(campaignData.campaignId,section.sectionId,question.questionId)}
-                                                            name="row-radio-buttons-group">
-                                                            {
-                                                                question.response.map((e, i) => {
-                                                                    return <FormControlLabel value={e.responseName} control={<Radio />} label={e.responseName} />
-                                                                })
-                                                            }
-                                                        </RadioGroup>
-                                                    </FormControl>
-                                                }
-                                            </Card>
-                                            )
-                                        })}
-                                    </Box>
+                                                                <TextField
+                                                                    label="Question Name"
+                                                                    id="standard-start-adornment"
+                                                                    sx={{ m: 1, width: "25ch" }}
+                                                                    value={question.questionName}
+                                                                    InputProps={{
+                                                                        readOnly: true,
+                                                                    }}
+                                                                    InputProps={{
+                                                                        startAdornment: (
+                                                                            <InputAdornment position="start"> </InputAdornment>
+                                                                        )
+                                                                    }}
+                                                                    variant="standard"
+                                                                />
 
 
+                                                                <TextField
+                                                                    label="Question Desc"
+                                                                    id="standard-start-adornment"
+                                                                    sx={{ m: 1, width: "25ch" }}
+                                                                    value={question.questionDesc}
+                                                                    InputProps={{
+                                                                        readOnly: true,
+                                                                    }}
+                                                                    InputProps={{
+                                                                        startAdornment: (
+                                                                            <InputAdornment position="start"> </InputAdornment>
+                                                                        )
+                                                                    }}
+                                                                    variant="standard"
+                                                                />
 
-                                    <Box id='campaign-question-add-button'>
-                                        {/* <Button onClick={(e)=>onAddQuestion(e,sectionIndex,section.questions.length)}  variant="contained">
+                                                                <Button id='delete-question-button' onClick={(e) => onQuestionDelete(e, sectionIndex, questionIndex)}>
+                                                                    <ClearIcon />
+                                                                </Button>
+
+                                                                <br />
+                                                                <br />
+                                                                <br />
+                                                                {
+                                                                    question.responseType === QUESTION_TYPE_TEXT &&
+                                                                    <TextField
+                                                                        fullWidth
+                                                                        placeholder='Text'
+                                                                        id="standard-basic"
+                                                                        variant="standard"
+
+                                                                        value={valueForInupts(campaignData.campaignId, section.sectionId, question.questionId)}
+                                                                        onChange={(e) => onHandleAnswerChange(e, campaignData.campaignId, section.sectionId, question.questionId)}
+                                                                    />
+
+                                                                }
+
+                                                                {
+                                                                    question.responseType === QUESTION_TYPE_DROPDOWN &&
+
+                                                                    <FormControl fullWidth>
+                                                                        <InputLabel id="demo-simple-select-label">Select Input</InputLabel>
+                                                                        <Select
+                                                                            labelId="demo-simple-select-label"
+                                                                            id="demo-simple-select"
+                                                                            value={valueForInupts(campaignData.campaignId, section.sectionId, question.questionId)}
+                                                                            label={'select input'}
+                                                                            onChange={(e) => onHandleAnswerChange(e, campaignData.campaignId, section.sectionId, question.questionId)}
+                                                                        >
+                                                                            {
+                                                                                question.response.map((e, i) => {
+                                                                                    return <MenuItem value={e.responseName}>{e.responseName}</MenuItem>
+                                                                                })
+                                                                            }
+                                                                        </Select>
+                                                                    </FormControl>
+
+                                                                }
+                                                                {
+                                                                    question.responseType === QUESTION_TYPE_RADIO &&
+                                                                    <FormControl component="fieldset">
+                                                                        <FormLabel component="legend">options</FormLabel>
+                                                                        <RadioGroup
+                                                                            onChange={(e) => onHandleAnswerChange(e, campaignData.campaignId, section.sectionId, question.questionId)}
+                                                                            row aria-label="gender"
+                                                                            // value = { valueForInupts(campaignData.campaignId,section.sectionId,question.questionId)}
+                                                                            name="row-radio-buttons-group">
+                                                                            {
+                                                                                question.response.map((e, i) => {
+                                                                                    return <FormControlLabel value={e.responseName} control={<Radio />} label={e.responseName} />
+                                                                                })
+                                                                            }
+                                                                        </RadioGroup>
+                                                                    </FormControl>
+                                                                }
+                                                            </Card>
+                                                        )
+                                                    })}
+                                                </Box>
+
+
+
+                                                {/* <Box id='campaign-question-add-button'>
+                                         <Button onClick={(e)=>onAddQuestion(e,sectionIndex,section.questions.length)}  variant="contained">
                                             add question
-                                        </Button> */}
+                                        </Button> 
                                         {
                                             Object.keys(campaignDataFromParent).length === 0 &&
                                             <QuestionSearch getSearchText={onSearchQuesiton} buttonTitle={'Add Question'} extraData={{ sectionIndex: sectionIndex }} />
                                         }
                                        
-                                    </Box>
+                                    </Box> */}
 
-                                </div>
-                            </li>
-                        )
-                    })}
+                                            </div>
+                                        </li>
+                                    )
+                                })}
 
-                </ul>
+                            </ul>
+                        </section>
+                    </Col>
+                    <Col className="campaign-section-question-selection" span={8}>
+                        <div className="campaign-section-question-selection-pane">
+                            {
+                                Object.keys(campaignDataFromParent).length === 0 &&
+                                <QuestionSearch getSearchText={onSearchQuesiton} buttonTitle={'search'} />
+                            }
+                        </div>
+                    </Col>
+                </Row>
             </section>
 
             <section className={"campaign-section"} id='campaign-create-add-section'>
@@ -591,22 +611,24 @@ const CreateCampain = ({ onCancelCampain, campaignDataFromParent, onPublishBool 
 
                 }
 
-                {
+                {/* {
                    
                     onPublishBool &&
                     <Button style={{ marginLeft: '20px' }} variant="contained" onClick={() => { onAddCampaignAnswer() }}>
                         Add Answer
                     </Button>
                     
-                }
+                } */}
 
                 <Button onClick={() => { onCampainCancel() }}>
                     cancel
                 </Button>
 
-
-
             </section>
+
+
+
+
         </div>
     )
 }

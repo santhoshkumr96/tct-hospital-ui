@@ -4,7 +4,7 @@ import Context from './LoginAuthProvider/Context';
 import { Formik, Field, Form } from "formik";
 import { TextField } from "formik-material-ui";
 import { Button, LinearProgress, ButtonGroup, Box } from "@material-ui/core";
-import './Login.css'
+import './Login.scss'
 import ajax from '../../Helpers/ajaxHelper';
 import { LOGIN_URL } from '../../config';
 import * as Yup from "yup";
@@ -13,6 +13,8 @@ import { AlertTitle } from "@mui/material";
 import Collapse from '@mui/material/Collapse';
 import IconButton from '@mui/material/IconButton';
 import { errorHelper } from "../../Helpers/ajaxCatchBlockHelper";
+import { Row, Col } from 'antd';
+import 'antd/dist/antd.css';
 const Login = () => {
     const history = useHistory();
     const location = useLocation();
@@ -52,20 +54,16 @@ const Login = () => {
                 history.replace(from);
             })
             .catch((e) => {
-                    setErrorMessage(errorHelper(e));                 
-                    setSubmitting(false);
-                    setError(true);
+                setErrorMessage(errorHelper(e));
+                setSubmitting(false);
+                setError(true);
             })
     }
 
     return (
-        <div id='loginform'>
-            <div style={{ margin: "80px" }}>
-                <div id='headingmain'>
-                    <h2> Welcome to TCT Hospitals Trust </h2>
-                </div>
-                <br />
-                <br />
+        <Row>
+            <Col className='login-image-col' span={16}></Col>
+            <Col className='login-from' span={5}>
                 <Formik
                     initialValues={initialValues}
                     validationSchema={validationSchema}
@@ -113,38 +111,38 @@ const Login = () => {
 
                             {isSubmitting && <LinearProgress />}
 
-                            <Collapse in={isError}>
-                                <Alert
-                                    severity="error"
-                                    action={
-                                        
-                                        <Button
-                                            aria-label="close"
-                                            color="inherit"
-                                            size="small"
-                                            onClick={() => {
-                                                setError(false);
-                                            }}
-                                        >
-                                            close
-                                        </Button>
-                                    }
-                                    sx={{ mb: 2 }}
-                                >
-                                    {errorMessage}
-                                </Alert>
-                            </Collapse>
+                            {
+                                isError &&
+                                <Collapse in={isError}>
+                                    <Alert
+                                        severity="error"
+                                        action={
 
-    
+                                            <Button
+                                                aria-label="close"
+                                                color="inherit"
+                                                size="small"
+                                                onClick={() => {
+                                                    setError(false);
+                                                }}
+                                            >
+                                                close
+                                            </Button>
+                                        }
+                                        sx={{ mb: 2 }}
+                                    >
+                                        {errorMessage}
+                                    </Alert>
+                                </Collapse>
+                            }
 
-                            <br />
-                            <br />
 
                         </Form>
                     )}
                 />
-            </div>
-        </div>
+            </Col>
+            <Col span={3}></Col>
+        </Row>
     );
 }
 

@@ -77,7 +77,7 @@ $cyan: #79e7eb;
 #draggable-portion{
     background: #1976d2;
     margin-top: 0px;
-    height: 17px;
+    height: 30px;
     display: flex;
     cursor: move;
     width: 100%;
@@ -97,6 +97,15 @@ $cyan: #79e7eb;
         padding: 0%;
     }
 
+}
+
+.campaign-section-question-selection{
+
+    .campaign-section-question-selection-pane{
+        text-align: center;
+        margin-top: 22px;
+    }
+    
 }
 
 

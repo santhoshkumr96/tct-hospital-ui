@@ -55,29 +55,29 @@ const QuestionSection = () => {
 
     const defaultQuestionData = [
         {
-          questionName: "seomthing",
-          questionId: 50,
-          questionDesc: "nerw",
-          comments: null,
-          responseType: "dropdown",
-          response: [
-            {
-              responseId: 37,
-              responseName: "sdf",
-              responseDesc: "asdf",
-              questionId: 50,
-              createdBy: "santy",
-              changedBy: null,
-              approvedBy: null,
-              statusDesc: null,
-              createdDate: "2021-09-26T12:55:02.000+00:00",
-              changedDate: null,
-              approvedDate: null,
-              enabled: null,
-              comments: null
-            }
-          ],
-          statusDesc: "PENDING"
+            questionName: "seomthing",
+            questionId: 50,
+            questionDesc: "nerw",
+            comments: null,
+            responseType: "dropdown",
+            response: [
+                {
+                    responseId: 37,
+                    responseName: "sdf",
+                    responseDesc: "asdf",
+                    questionId: 50,
+                    createdBy: "santy",
+                    changedBy: null,
+                    approvedBy: null,
+                    statusDesc: null,
+                    createdDate: "2021-09-26T12:55:02.000+00:00",
+                    changedDate: null,
+                    approvedDate: null,
+                    enabled: null,
+                    comments: null
+                }
+            ],
+            statusDesc: "PENDING"
         }
     ]
 
@@ -94,9 +94,9 @@ const QuestionSection = () => {
     const [isViewingQuestion, setIsViewingQuestion] = useState(false);
     const [isApprovingQuestion, setIsApprovingQuestion] = useState(false);
     const [resultQuestion, setResultQuestion] = useState({});
-    const [qidFromChild , setQidFromChild] = useState(0);
+    const [qidFromChild, setQidFromChild] = useState(0);
     const [comment, setComment] = useState('')
-    const [searchValue , setSearchValue] = useState('');
+    const [searchValue, setSearchValue] = useState('');
 
 
     const getData = async () => {
@@ -310,7 +310,7 @@ const QuestionSection = () => {
     }
 
     const onClickApproveOrReject = (selection) => {
-        let data = {  }
+        let data = {}
         data.statusDesc = selection;
         data.comments = comment;
         data.questionId = qidFromChild;
@@ -330,21 +330,22 @@ const QuestionSection = () => {
 
     return (
         <div id='main-questionare-div'>
-            {loginContext.userRole.includes(QUESTION_CREATOR_ROLE) &&
-                <div id='questionare-search-create'>
+
+            <div id='questionare-search-create'>
+                {loginContext.userRole.includes(QUESTION_CREATOR_ROLE) &&
 
                     <Button variant="contained" onClick={() => { onCreateQuestionButtonClick() }}>
                         Create Question
                     </Button>
 
-                    
+                }
 
-                     <div id='questionare-search-bar'>
-                        <QuestionSearch getSearchText={onSearchOkButton} buttonTitle={'Search'} />
-                        {/* <TextField  id="outlined-basic" type="search" label="search disabled" variant="outlined" onChange={(e) => { requestSearch(e.target.value) }} /> */}
-                    </div> 
+                <div id='questionare-search-bar'>
+                    <QuestionSearch getSearchText={onSearchOkButton} buttonTitle={'Search'} />
+                    {/* <TextField  id="outlined-basic" type="search" label="search disabled" variant="outlined" onChange={(e) => { requestSearch(e.target.value) }} /> */}
                 </div>
-            }
+            </div>
+
             <QuestionTable questions={questionData}
                 viewQuestionOnClick={viewQuesiton}
                 deleteQuestionOnclick={deleteQuesiton}
@@ -495,10 +496,10 @@ const QuestionSection = () => {
                     {
                         isApprovingQuestion === true &&
                         <div id="approve-deny-buttons">
-                            <Button variant="contained" color="success" onClick={()=>onClickApproveOrReject(APPROVE)} >
+                            <Button variant="contained" color="success" onClick={() => onClickApproveOrReject(APPROVE)} >
                                 approve
                             </Button>
-                            <Button variant="contained" color="error" onClick={()=>onClickApproveOrReject(REJECT)} >
+                            <Button variant="contained" color="error" onClick={() => onClickApproveOrReject(REJECT)} >
                                 reject
                             </Button>
                         </div>
