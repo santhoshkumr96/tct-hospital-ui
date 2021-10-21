@@ -31,5 +31,6 @@ export const QUESTION_TYPE_DROPDOWN = 'dropdown';
 
 
 //approve and reject 
+export const PENDING = 'PENDING'
 export const APPROVE = 'APPROVED';
 export const REJECT = 'REJECTED';

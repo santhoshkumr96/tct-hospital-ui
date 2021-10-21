@@ -26,7 +26,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import { Alert , message } from 'antd';
+import { Alert, message } from 'antd';
 import CancelIcon from '@mui/icons-material/Cancel';
 
 import QuestionTable from './QuestionTable';
@@ -46,6 +46,7 @@ const QuestionSection = () => {
         questionName: '',
         questionDesc: '',
         responseType: '',
+        questionId: 0,
         comment: '',
         response: []
     }
@@ -107,6 +108,7 @@ const QuestionSection = () => {
     const [isCreatingQuestion, setIsCreatingQuestion] = useState(false);
     const [isViewingQuestion, setIsViewingQuestion] = useState(false);
     const [isApprovingQuestion, setIsApprovingQuestion] = useState(false);
+    const [isEditQuestion, setIsEditQuestion] = useState(false);
     const [resultQuestion, setResultQuestion] = useState({});
     const [qidFromChild, setQidFromChild] = useState(0);
     const [comment, setComment] = useState('')
@@ -135,7 +137,7 @@ const QuestionSection = () => {
             );
     }
 
-    const getOneQuestionData = async (questionId) => {
+    const getOneQuestionData = async (questionId, type) => {
         const config = {
             headers: { Authorization: `Bearer ${loginContext.accessToken}` }
         };
@@ -143,7 +145,13 @@ const QuestionSection = () => {
             .post(`${SERVICE_BASE_URL}v1/getquestion`, { questionId }, config)
             .then((res) => {
                 setCreateQuestionStore({ ...res.data });
-                setIsViewingQuestion(true);
+                if (type === 'viewQuestion') {
+                    setIsViewingQuestion(true);
+                }
+                if (type === 'editQuestion') {
+                    setIsEditQuestion(true);
+                }
+
             })
             .catch((e) => {
                 if (errorHelper(e) == TOKEN_EXPIRED) {
@@ -177,6 +185,27 @@ const QuestionSection = () => {
             );
     }
 
+    const editQuestionRequest = async (question) => {
+        const config = {
+            headers: { Authorization: `Bearer ${loginContext.accessToken}` }
+        };
+        ajax
+            .post(`${SERVICE_BASE_URL}v1/editquestion`, question, config)
+            .then((res) => {
+                setResultQuestion({ ...question });
+                message.success('Question Edit Created');
+            })
+            .catch((e) => {
+                if (errorHelper(e) == TOKEN_EXPIRED) {
+                    loginContext.setTokenExpired(true);
+                } else {
+                    errorContext.setIsErrorDisplayed(true);
+                    errorContext.setError(errorHelper(e));
+                }
+            }
+            );
+    }
+
     const updateQuestionStatus = async (data) => {
         const config = {
             headers: { Authorization: `Bearer ${loginContext.accessToken}` }
@@ -186,7 +215,7 @@ const QuestionSection = () => {
             .then((res) => {
                 handleDialogClose();
                 setResultQuestion({ ...{} });
-                message.success('Question '+data.statusDesc);
+                message.success('Question ' + data.statusDesc);
             })
             .catch((e) => {
                 if (errorHelper(e) == TOKEN_EXPIRED) {
@@ -208,7 +237,7 @@ const QuestionSection = () => {
             .post(`${SERVICE_BASE_URL}v1/deleteQuestion`, { questionId }, config)
             .then((res) => {
                 setResultQuestion({ ...{} });
-                message.success('Question '+questionId+' Deleted');
+                message.success('Question ' + questionId + ' Deleted');
             })
             .catch((e) => {
                 if (errorHelper(e) == TOKEN_EXPIRED) {
@@ -241,6 +270,7 @@ const QuestionSection = () => {
         setIsCreatingQuestion(false);
         setIsViewingQuestion(false);
         setIsApprovingQuestion(false);
+        setIsEditQuestion(false);
         setResponseDataName('');
         setResponseDataDesc('');
         setCreateQuestionStore({ ...createdQuestionData });
@@ -408,19 +438,18 @@ const QuestionSection = () => {
                 responseTypeBool: false
             }))
         }
-        console.log(questionDataEntryCheck);
         if (
             result.responseType !== "" &&
             result.questionName !== "" &&
             result.questionDesc !== ""
         ) {
-            if(QUESTION_TYPE_TEXT === result.responseType){
+            if (QUESTION_TYPE_TEXT === result.responseType) {
                 createQuestionRequest(result);
                 handleDialogClose();
             } else {
-                if(result.response.length >= 2){
+                if (result.response.length >= 2) {
                     createQuestionRequest(result);
-                    handleDialogClose(); 
+                    handleDialogClose();
                 } else {
                     setQuestionDataEntryCheck(prevState => ({
                         ...prevState,
@@ -433,6 +462,68 @@ const QuestionSection = () => {
 
     }
 
+    const handleDialogOnQuestionEdit = () => {
+        const result = {};
+        result.responseType = createQuestionStore.responseType;
+        result.questionName = createQuestionStore.questionName;
+        result.questionDesc = createQuestionStore.questionDesc;
+        result.questionId = createQuestionStore.questionId;
+        result.response = createQuestionStore.response;
+        if (createQuestionStore.questionName === "") {
+            setQuestionDataEntryCheck(prevState => ({
+                ...prevState,
+                questionNameBool: true
+            }))
+        } else {
+            setQuestionDataEntryCheck(prevState => ({
+                ...prevState,
+                questionNameBool: false
+            }))
+        }
+        if (createQuestionStore.questionDesc === "") {
+            setQuestionDataEntryCheck(prevState => ({
+                ...prevState,
+                questionDescBool: true
+            }))
+        } else {
+            setQuestionDataEntryCheck(prevState => ({
+                ...prevState,
+                questionDescBool: false
+            }))
+        }
+        if (createQuestionStore.responseType === "") {
+            setQuestionDataEntryCheck(prevState => ({
+                ...prevState,
+                responseTypeBool: true
+            }))
+        } else {
+            setQuestionDataEntryCheck(prevState => ({
+                ...prevState,
+                responseTypeBool: false
+            }))
+        }
+        if (
+            result.responseType !== "" &&
+            result.questionName !== "" &&
+            result.questionDesc !== ""
+        ) {
+            if (QUESTION_TYPE_TEXT === result.responseType) {
+                editQuestionRequest(result);
+                handleDialogClose();
+            } else {
+                if (result.response.length >= 2) {
+                    editQuestionRequest(result);
+                    handleDialogClose();
+                } else {
+                    setQuestionDataEntryCheck(prevState => ({
+                        ...prevState,
+                        responseSizeBool: true
+                    }))
+                }
+            }
+        }
+    }
+
     const deleteQuesiton = (qid) => {
         deleteQuestionRequest(qid);
 
@@ -440,7 +531,15 @@ const QuestionSection = () => {
 
     const viewQuesiton = (qid) => {
         setIsCreatingQuestion(true);
-        getOneQuestionData(qid);
+        getOneQuestionData(qid, 'viewQuestion');
+    }
+
+    const onEditQuestionButtonOnTable = (questionId) => {
+        setIsCreatingQuestion(true);
+        let temp = { ...createQuestionStore };
+        temp.questionId = questionId;
+        setCreateQuestionStore(temp);
+        getOneQuestionData(questionId, 'editQuestion');
     }
 
     const approverQuestion = (qid) => {
@@ -451,7 +550,7 @@ const QuestionSection = () => {
     }
 
     const onCommentEntry = (comment) => {
-        if(comment === ""){
+        if (comment === "") {
             setQuestionDataEntryCheck(prevState => ({
                 ...prevState,
                 commentBool: true
@@ -460,7 +559,7 @@ const QuestionSection = () => {
             setQuestionDataEntryCheck(prevState => ({
                 ...prevState,
                 commentBool: false
-            })) 
+            }))
         }
         setComment(comment);
     }
@@ -470,7 +569,7 @@ const QuestionSection = () => {
         data.statusDesc = selection;
         data.comments = comment;
         data.questionId = qidFromChild;
-        if(comment !== ""){
+        if (comment !== "") {
             updateQuestionStatus(data);
         } else {
             setQuestionDataEntryCheck(prevState => ({
@@ -484,6 +583,8 @@ const QuestionSection = () => {
     const onSearchOkButton = (searchValue) => {
         setSearchValue(searchValue);
     }
+
+
 
 
     useEffect(() => {
@@ -501,6 +602,9 @@ const QuestionSection = () => {
                     </Button>
 
                 }
+                <Button style={{marginLeft:'20px'}} onClick={() => { onCreateQuestionButtonClick() }}>
+                    Total Questions : {questionData.length}
+                </Button>
 
                 <div id='questionare-search-bar'>
                     <QuestionSearch getSearchText={onSearchOkButton} buttonTitle={'Search'} />
@@ -512,6 +616,7 @@ const QuestionSection = () => {
                 viewQuestionOnClick={viewQuesiton}
                 deleteQuestionOnclick={deleteQuesiton}
                 approveQuestionOnClick={approverQuestion}
+                editQuestionOnClick={onEditQuestionButtonOnTable}
             />
 
             <Dialog
@@ -526,7 +631,7 @@ const QuestionSection = () => {
                 <DialogContent >
                     <br />
                     <TextField
-                        disabled = {isViewingQuestion}
+                        disabled={isViewingQuestion}
                         error={questionDataEntryCheck.questionNameBool}
                         helperText={questionDataEntryCheck.questionNameBool ? questionDataEntryCheck.helperText : ""}
                         fullWidth
@@ -539,7 +644,7 @@ const QuestionSection = () => {
                     <br />
                     <br />
                     <TextField
-                        disabled = {isViewingQuestion}
+                        disabled={isViewingQuestion}
                         error={questionDataEntryCheck.questionDescBool}
                         helperText={questionDataEntryCheck.questionDescBool ? questionDataEntryCheck.helperText : ""}
                         fullWidth
@@ -556,7 +661,7 @@ const QuestionSection = () => {
                     <FormControl fullWidth>
                         <InputLabel id="demo-simple-select-label">Response Type</InputLabel>
                         <Select
-                            disabled = {isViewingQuestion}
+                            disabled={isViewingQuestion}
                             error={questionDataEntryCheck.responseTypeBool}
                             labelId="demo-simple-select-label"
                             id="demo-simple-select"
@@ -666,7 +771,7 @@ const QuestionSection = () => {
                         <TextField
                             fullWidth
                             error={questionDataEntryCheck.commentBool}
-                            helperText={questionDataEntryCheck.commentBool ? questionDataEntryCheck.helperText : ""}    
+                            helperText={questionDataEntryCheck.commentBool ? questionDataEntryCheck.helperText : ""}
                             id="standard-basic"
                             label="Comments"
                             value={comment}
@@ -686,9 +791,15 @@ const QuestionSection = () => {
                         cancel
                     </Button>
                     {
-                        isViewingQuestion === false &&
+                        isViewingQuestion === false && isEditQuestion === false &&
                         <Button variant="contained" onClick={handleDialogOnQuestionCreate} >
                             create
+                        </Button>
+                    }
+                    {
+                        isEditQuestion === true &&
+                        <Button variant="contained" onClick={handleDialogOnQuestionEdit} >
+                            Edit
                         </Button>
                     }
                     {

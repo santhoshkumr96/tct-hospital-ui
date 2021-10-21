@@ -9,21 +9,30 @@ import _ from 'lodash';
 import './Questionpage.css'
 import { useContext } from 'react';
 import Context from '../Login/LoginAuthProvider/Context';
-import { CAMPAIGNS_SECTION, QUESTION_APPROVER_ROLE, QUESTION_CREATOR_ROLE } from '../../config';
+import { CAMPAIGNS_SECTION, PENDING,APPROVE , QUESTION_APPROVER_ROLE, QUESTION_CREATOR_ROLE } from '../../config';
 import { Button } from '@mui/material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import PublishIcon from '@mui/icons-material/Publish';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
+import EditIcon from '@mui/icons-material/Edit';
 
 
-const QuestionTable = ({ questions, createNewFromExistingOnClick, deleteQuestionOnclick, viewQuestionOnClick, approveQuestionOnClick, typeOfTable }) => {
+const QuestionTable = ({ questions, editQuestionOnClick, createNewFromExistingOnClick, deleteQuestionOnclick, viewQuestionOnClick, approveQuestionOnClick, typeOfTable }) => {
 
     const loginContext = useContext(Context);
 
     const checkNullOrUndefined = (data) => {
         return (data[0]) ? data[0] : [];
+    }
+
+    const editQuestion = (obj) => {
+        if (typeOfTable === CAMPAIGNS_SECTION) {
+            editQuestionOnClick(obj.campaignId);
+        } else {
+            editQuestionOnClick(obj.questionId);
+        }
     }
 
     const deleteQuestion = (obj) => {
@@ -106,8 +115,18 @@ const QuestionTable = ({ questions, createNewFromExistingOnClick, deleteQuestion
 
                                         }
 
+                                        {
+                                            row.statusDesc !== APPROVE && loginContext.userId === row.createdBy &&
+                                            loginContext.userRole.includes(QUESTION_CREATOR_ROLE) &&
+                                            <Button onClick={() => { editQuestion(row) }}>
+                                                <EditIcon />
+                                            </Button>
+
+                                        }
+
 
                                         {
+                                            row.statusDesc !== APPROVE && loginContext.userId === row.createdBy &&
                                             loginContext.userRole.includes(QUESTION_CREATOR_ROLE) &&
                                             <Button onClick={() => { deleteQuestion(row) }}>
                                                 <DeleteForeverIcon />
@@ -117,7 +136,7 @@ const QuestionTable = ({ questions, createNewFromExistingOnClick, deleteQuestion
 
 
                                         {
-                                            row.statusDesc === 'PENDING' && loginContext.userRole.includes(QUESTION_APPROVER_ROLE) &&
+                                            row.statusDesc === PENDING && loginContext.userRole.includes(QUESTION_APPROVER_ROLE) &&
                                             <Button onClick={() => { approveQuestion(row) }}>
                                                 <CheckCircleIcon />
                                             </Button>
