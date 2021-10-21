@@ -394,9 +394,9 @@ const QuestionSection = () => {
                             label="Response Type"
                             onChange={handleTypeSelectChange}
                         >
-                            <MenuItem value={QUESTION_TYPE_TEXT}>text</MenuItem>
-                            <MenuItem value={QUESTION_TYPE_RADIO}>radio</MenuItem>
-                            <MenuItem value={QUESTION_TYPE_DROPDOWN}>dropdown</MenuItem>
+                            <MenuItem value={QUESTION_TYPE_TEXT}>Text</MenuItem>
+                            <MenuItem value={QUESTION_TYPE_RADIO}>Radio</MenuItem>
+                            <MenuItem value={QUESTION_TYPE_DROPDOWN}>Dropdown</MenuItem>
                         </Select>
                     </FormControl>
                     <br />
@@ -445,10 +445,10 @@ const QuestionSection = () => {
                                             sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                                         >
                                             <TableCell>
-                                                <Input placeholder="name" value={responseDataName} onChange={(e) => { onResponseUpdate(e, RESPONSE_NAME) }} />
+                                                <Input placeholder="Name" value={responseDataName} onChange={(e) => { onResponseUpdate(e, RESPONSE_NAME) }} />
                                             </TableCell>
                                             <TableCell>
-                                                <Input placeholder="description" value={responseDataDesc} onChange={(e) => { onResponseUpdate(e, RESPONSE_DESC) }} />
+                                                <Input placeholder="Description" value={responseDataDesc} onChange={(e) => { onResponseUpdate(e, RESPONSE_DESC) }} />
                                             </TableCell>
                                             {
                                                 isViewingQuestion === false &&

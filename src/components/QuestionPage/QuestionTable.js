@@ -18,7 +18,7 @@ import PublishIcon from '@mui/icons-material/Publish';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 
 
-const QuestionTable = ({ questions, publishOnClick, deleteQuestionOnclick, viewQuestionOnClick, approveQuestionOnClick, typeOfTable }) => {
+const QuestionTable = ({ questions, createNewFromExistingOnClick, deleteQuestionOnclick, viewQuestionOnClick, approveQuestionOnClick, typeOfTable }) => {
 
     const loginContext = useContext(Context);
 
@@ -53,11 +53,11 @@ const QuestionTable = ({ questions, publishOnClick, deleteQuestionOnclick, viewQ
 
     }
 
-    const publish = (obj) => {
+    const createNewFromExisting = (obj) => {
         if (typeOfTable === CAMPAIGNS_SECTION) {
-            publishOnClick(obj.campaignId);
+            createNewFromExistingOnClick(obj.campaignId);
         } else {
-            publishOnClick(obj.questionId);
+            createNewFromExistingOnClick(obj.questionId);
         }
 
     }
@@ -100,7 +100,7 @@ const QuestionTable = ({ questions, publishOnClick, deleteQuestionOnclick, viewQ
 
                                         {
                                             loginContext.userRole.includes(QUESTION_CREATOR_ROLE) && typeOfTable === CAMPAIGNS_SECTION &&
-                                            <Button onClick={() => { publish(row) }}>
+                                            <Button onClick={() => { createNewFromExisting(row) }}>
                                                 <AddCircleIcon />
                                             </Button>
 

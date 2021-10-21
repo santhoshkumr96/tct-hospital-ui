@@ -20,22 +20,26 @@ const CampainSection = () => {
 
     const loginContext = useContext(Context);
     const errorContext = useContext(ErrorContext);
-    const [createCampainBool , setCreateCampainBool] = useState(false);
-    const [campaignDetails , setCampaignDetails] = useState({});
-    const [campaignData, setCampaignData] = useState({}); 
+    const [createCampainBool, setCreateCampainBool] = useState(false);
+    const [campaignDetails, setCampaignDetails] = useState({});
+    const [campaignData, setCampaignData] = useState({});
+    const [viewCampaignBool,setViewCampaignBool] = useState(false);
+    const [approveCampaignBool, setApproveCampaignBool] = useState(false);
 
 
 
-    const onCreateCampign = () =>{
-       setCreateCampainBool(true);
+    const onCreateCampign = () => {
+        setCreateCampainBool(true);
     }
 
-    const onCancelCampign = () =>{
-        setCampaignData({...{}})
+    const onCancelCampign = () => {
+        setCampaignData({ ...{} })
         setCreateCampainBool(false);
-     }
+        setViewCampaignBool(false);
+        setApproveCampaignBool(false);
+    }
 
-     const getData = async () => {
+    const getData = async () => {
         const config = {
             headers: { Authorization: `Bearer ${loginContext.accessToken}` }
         };
@@ -102,21 +106,28 @@ const CampainSection = () => {
 
 
     const onCampaignView = (value) => {
+        setViewCampaignBool(true);
         getCampaign(value);
     }
 
-    const onPuslishCampaign = (value) =>{
-        console.log(value)
-    } 
+    const onCreateNewCampaingFromExisting = (value) => {
+        getCampaign(value);
+    }
 
-     useEffect(() => {
+    const onApproveCampaign = (campaignId) => {
+        setViewCampaignBool(true);
+        setApproveCampaignBool(true);
+        getCampaign(campaignId);
+    }
+
+    useEffect(() => {
         getData();
-     }, [campaignDetails])
+    }, [campaignData])
 
     return (
         <div id='campaign-main-div'>
-            {loginContext.userRole.includes(QUESTION_CREATOR_ROLE)  &&
-                createCampainBool === false && 
+            {loginContext.userRole.includes(QUESTION_CREATOR_ROLE) &&
+                createCampainBool === false &&
                 <div id='campaign-search-create'>
 
                     <Button variant="contained" onClick={() => { onCreateCampign() }}>
@@ -128,22 +139,26 @@ const CampainSection = () => {
                 </div>
             }
             {
-                createCampainBool === true && 
-                <CreateCampain onPublishBool={true} 
-                onCancelCampain={onCancelCampign} 
-                campaignDataFromParent={campaignData}/>
+                createCampainBool === true &&
+                <CreateCampain
+                    onCancelCampain={onCancelCampign}
+                    campaignDataFromParent={{ ...campaignData }} 
+                    viewCampaignBool = {viewCampaignBool}
+                    approveCampaignBool = {approveCampaignBool}
+                />
             }
             {
-                createCampainBool === false && 
-                    <Box className ={'campaign-table-wrapper'}>
-                         <QuestionTable 
-                            typeOfTable={CAMPAIGNS_SECTION}
-                            deleteQuestionOnclick={onCampaignDelete} 
-                            viewQuestionOnClick = {onCampaignView}
-                            questions={campaignDetails}
-                            publishOnClick={onPuslishCampaign}
-                            />
-                    </Box>   
+                createCampainBool === false &&
+                <Box className={'campaign-table-wrapper'}>
+                    <QuestionTable
+                        typeOfTable={CAMPAIGNS_SECTION}
+                        deleteQuestionOnclick={onCampaignDelete}
+                        viewQuestionOnClick={onCampaignView}
+                        questions={campaignDetails}
+                        createNewFromExistingOnClick={onCreateNewCampaingFromExisting}
+                        approveQuestionOnClick={onApproveCampaign}
+                    />
+                </Box>
             }
         </div>
     )

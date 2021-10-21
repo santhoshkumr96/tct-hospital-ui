@@ -98,7 +98,8 @@ const HomePage = () => {
 
         <Layout className="home-page-layout">
             <Sider trigger={null} collapsible collapsed={collapsed}>
-                <div className="logo" >TCT</div>
+                <div className="logo" />
+                {/* TCT</div> */}
                 <Menu theme="dark" mode="inline" defaultSelectedKeys={['1']}>
                     <Menu.Item onClick={(e) => { selectPage(CAMPAIGNS_SECTION) }} key="1" icon={<FileCopyIcon />}>
                         Campaign

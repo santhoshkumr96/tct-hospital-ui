@@ -24,13 +24,13 @@ import QuestionSearch from '../QuestionPage/Search';
 import styleFunctionSx from "@mui/system/styleFunctionSx";
 import Context from "../Login/LoginAuthProvider/Context";
 import ErrorContext from "../NetworkAuthProvider/ErrorContext";
-import { QUESTION_TYPE_DROPDOWN, QUESTION_TYPE_RADIO, QUESTION_TYPE_TEXT, SERVICE_BASE_URL, TOKEN_EXPIRED } from "../../config";
+import { CAMPAIN_APPROVER_ROLE, QUESTION_TYPE_DROPDOWN, QUESTION_TYPE_RADIO, QUESTION_TYPE_TEXT, SERVICE_BASE_URL, TOKEN_EXPIRED, APPROVE, REJECT } from "../../config";
 import { errorHelper } from "../../Helpers/ajaxCatchBlockHelper";
 import ajax from "../../Helpers/ajaxHelper";
 import { Row, Col } from 'antd';
 import 'antd/dist/antd.css';
 
-const CreateCampain = ({ onCancelCampain, campaignDataFromParent, onPublishBool }) => {
+const CreateCampain = ({ onCancelCampain, campaignDataFromParent, viewCampaignBool, approveCampaignBool }) => {
 
 
 
@@ -47,13 +47,18 @@ const CreateCampain = ({ onCancelCampain, campaignDataFromParent, onPublishBool 
         }
     ]
 
+    // const initialDnDState = {
+    //     draggedFrom: null,
+    //     draggedTo: null,
+    //     draggedEnteredTo: null,
+    //     isDragging: false,
+    //     originalOrder: [],
+    //     updatedOrder: [],
+    // }
+
     const initialDnDState = {
-        draggedFrom: null,
-        draggedTo: null,
-        draggedEnteredTo: null,
-        isDragging: false,
-        originalOrder: [],
-        updatedOrder: []
+        questionData: {},
+        sectionPosition: null
     }
 
     const [campaignData, setCampaignData] = useState(defaultCampaingData);
@@ -62,22 +67,28 @@ const CreateCampain = ({ onCancelCampain, campaignDataFromParent, onPublishBool 
     const [dragAndDrop, setDragAndDrop] = useState(initialDnDState);
     const [list, setList] = useState(defaultSection);
     const [campaignAnswer, setCampaignAnswer] = useState({});
+    const [questionList, setQuestionList] = useState([]);
+    const [campaignComment , setCampaignComment] = useState('');
 
 
     const getQuestionData = async (search) => {
+
         const config = {
             headers: { Authorization: `Bearer ${loginContext.accessToken}` }
         };
         ajax
-            .get(`${SERVICE_BASE_URL}v1/getquestionlist?search=${search.searchValue}`, config)
+            .get(`${SERVICE_BASE_URL}v1/getquestionlist?search=${search}`, config)
             .then((res) => {
-                let newList = [...list];
-                let section = newList[search.sectionIndex]
-                let arr = res.data;
-                arr.map((e, i) => {
-                    section.questions.splice(section.questions.length, 0, e);
-                })
-                setList([...newList]);
+                // let newList = [...list];
+                // let section = newList[search.sectionIndex]
+                // let arr = res.data;
+                // arr.map((e, i) => {
+                //     section.questions.splice(section.questions.length, 0, e);
+                // })
+                // setList([...newList]);
+                setQuestionList(res.data);
+                // console.log(res.data);
+
             })
             .catch((e) => {
                 if (errorHelper(e) == TOKEN_EXPIRED) {
@@ -98,6 +109,7 @@ const CreateCampain = ({ onCancelCampain, campaignDataFromParent, onPublishBool 
             .post(`${SERVICE_BASE_URL}v1/create-campaign`, result, config)
             .then((res) => {
                 console.log('campign uploaded');
+                onCancelCampain();
             })
             .catch((e) => {
                 if (errorHelper(e) == TOKEN_EXPIRED) {
@@ -130,81 +142,137 @@ const CreateCampain = ({ onCancelCampain, campaignDataFromParent, onPublishBool 
             );
     }
 
+    const updateCampaignStatus = async (data) => {
+        const config = {
+            headers: { Authorization: `Bearer ${loginContext.accessToken}` }
+        };
+        ajax
+            .post(`${SERVICE_BASE_URL}v1/udpate-campaign-status`, data, config)
+            .then((res) => {
+                console.log('campign status uploaded');
+                onCancelCampain();
+            })
+            .catch((e) => {
+                if (errorHelper(e) == TOKEN_EXPIRED) {
+                    loginContext.setTokenExpired(true);
+                } else {
+                    errorContext.setIsErrorDisplayed(true);
+                    errorContext.setError(errorHelper(e));
+                }
+            }
+            );
+    }
+
     const onDragStart = (event) => {
         const initialPosition = Number(event.currentTarget.dataset.position);
         setDragAndDrop({
             ...dragAndDrop,
-            draggedFrom: initialPosition,
-            isDragging: true,
-            originalOrder: list
+            questionData: questionList[initialPosition]
         })
-        event.dataTransfer.setData("text/html", '');
-
     }
 
     const onDragOver = (event) => {
-        event.preventDefault();
 
-        let newList = dragAndDrop.originalOrder;
-        const draggedFrom = dragAndDrop.draggedFrom;
-        const draggedTo = Number(event.currentTarget.dataset.position);
-
-        const itemDragged = newList[draggedFrom];
-        const remainingItems = newList.filter((item, index) => index !== draggedFrom);
-
-        newList = [
-            ...remainingItems.slice(0, draggedTo),
-            itemDragged,
-            ...remainingItems.slice(draggedTo)
-        ];
-
-
-        if (draggedTo !== dragAndDrop.draggedTo) {
-            // setList([...newList]);
-            setDragAndDrop({
-                ...dragAndDrop,
-                updatedOrder: newList,
-                draggedTo: draggedTo
-            })
-        }
-    }
-
-    const onDrop = () => {
-        setList([...dragAndDrop.updatedOrder]);
+        const initialPosition = Number(event.currentTarget.dataset.position);
+        const sectionPosition = Number(event.currentTarget.dataset.section);
         setDragAndDrop({
             ...dragAndDrop,
-            draggedFrom: null,
-            draggedEnteredTo: null,
-            draggedTo: null,
-            isDragging: false
-        });
-    }
-
-    const onDragLeave = () => {
-        setDragAndDrop({
-            ...dragAndDrop,
-            draggedTo: null
-        });
-    }
-
-    const onDragEnter = (event) => {
-        const draggedTo = Number(event.currentTarget.dataset.position);
-
-        if (dragAndDrop.draggedEnteredTo !== draggedTo) {
-
-            setDragAndDrop({
-                ...dragAndDrop,
-                draggedEnteredTo: draggedTo
-            });
+            sectionPosition: sectionPosition
+        })
+        let tempList = list;
+        if (isNaN(sectionPosition) !== true) {
+            tempList[sectionPosition].questions.push(dragAndDrop.questionData);
+            setList(tempList);
         }
+        console.log("drag over ===>", initialPosition)
+
+    }
+
+    const onDrop = (event) => {
+        console.log("drag drop ===>")
     }
 
     const onDragEnd = (event) => {
-        setDragAndDrop({
-            ...dragAndDrop,
-            draggedEnteredTo: null
-        });
+
+        console.log("drag end ===>")
     }
+
+
+    // const onDragStart = (event) => {
+    //     const initialPosition = Number(event.currentTarget.dataset.position);
+    //     setDragAndDrop({
+    //         ...dragAndDrop,
+    //         draggedFrom: initialPosition,
+    //         isDragging: true,
+    //         originalOrder: list
+    //     })
+    //     event.dataTransfer.setData("text/html", '');
+
+    // }
+
+    // const onDragOver = (event) => {
+    //     event.preventDefault();
+
+    //     let newList = dragAndDrop.originalOrder;
+    //     const draggedFrom = dragAndDrop.draggedFrom;
+    //     const draggedTo = Number(event.currentTarget.dataset.position);
+
+    //     const itemDragged = newList[draggedFrom];
+    //     const remainingItems = newList.filter((item, index) => index !== draggedFrom);
+
+    //     newList = [
+    //         ...remainingItems.slice(0, draggedTo),
+    //         itemDragged,
+    //         ...remainingItems.slice(draggedTo)
+    //     ];
+
+
+    //     if (draggedTo !== dragAndDrop.draggedTo) {
+    //         // setList([...newList]);
+    //         setDragAndDrop({
+    //             ...dragAndDrop,
+    //             updatedOrder: newList,
+    //             draggedTo: draggedTo
+    //         })
+    //     }
+    // }
+
+    // const onDrop = () => {
+    //     setList([...dragAndDrop.updatedOrder]);
+    //     setDragAndDrop({
+    //         ...dragAndDrop,
+    //         draggedFrom: null,
+    //         draggedEnteredTo: null,
+    //         draggedTo: null,
+    //         isDragging: false
+    //     });
+    // }
+
+    // const onDragLeave = () => {
+    //     setDragAndDrop({
+    //         ...dragAndDrop,
+    //         draggedTo: null
+    //     });
+    // }
+
+    // const onDragEnter = (event) => {
+    //     const draggedTo = Number(event.currentTarget.dataset.position);
+
+    //     if (dragAndDrop.draggedEnteredTo !== draggedTo) {
+
+    //         setDragAndDrop({
+    //             ...dragAndDrop,
+    //             draggedEnteredTo: draggedTo
+    //         });
+    //     }
+    // }
+
+    // const onDragEnd = (event) => {
+    //     setDragAndDrop({
+    //         ...dragAndDrop,
+    //         draggedEnteredTo: null
+    //     });
+    // }
 
     const onCampainCancel = () => {
         onCancelCampain();
@@ -269,8 +337,9 @@ const CreateCampain = ({ onCancelCampain, campaignDataFromParent, onPublishBool 
     }
 
     const onSearchQuesiton = (searchValue) => {
-        if (searchValue.searchValue !== '')
-            getQuestionData(searchValue);
+
+        // if (searchValue!== '')
+        getQuestionData(searchValue);
     }
 
     const onCampaignDetailsEnter = (e, value) => {
@@ -332,7 +401,21 @@ const CreateCampain = ({ onCancelCampain, campaignDataFromParent, onPublishBool 
 
     }
 
+
+    const onUpdateCampaignStatus = (status) => {
+        let data = {};
+        data.statusDesc = status;
+        data.comments = campaignComment;
+        data.campaignId = campaignDataFromParent.campaignId;
+        updateCampaignStatus(data);
+    }
+
+    const onUpdateCampaignComment = (comment) => {
+        setCampaignComment(comment);
+    }
+
     useEffect(() => {
+        getQuestionData('');
         if (Object.keys(campaignDataFromParent).length !== 0) {
             const cData = {
                 campaignName: campaignDataFromParent.campaignName,
@@ -352,7 +435,6 @@ const CreateCampain = ({ onCancelCampain, campaignDataFromParent, onPublishBool 
 
     return (
         <div>
-
 
 
             <section className={"campaign-section"} id="campain-details-enter">
@@ -386,16 +468,75 @@ const CreateCampain = ({ onCancelCampain, campaignDataFromParent, onPublishBool 
                 />
             </section>
 
+            <section id='campaign-create-add-section'>
+                {
+                    // Object.keys(campaignDataFromParent).length === 0 &&
+                    !viewCampaignBool &&
+                    <Button style={{ marginLeft: '20px' }} variant="contained" onClick={() => { onCreateCampaign() }}>
+                        create campaign
+                    </Button>
+
+                }
+
+                {/* {
+                   
+                    onPublishBool &&
+                    <Button style={{ marginLeft: '20px' }} variant="contained" onClick={() => { onAddCampaignAnswer() }}>
+                        Add Answer
+                    </Button>
+                    
+                } */}
+
+                {
+                    approveCampaignBool &&
+                    <TextField
+                        style = {{   width: '65%', marginLeft: '14px'}}
+                        id="standard-basic"
+                        label="Comment"
+                        value={campaignComment}
+                        // variant="outlined"
+                        onChange={(e) => { onUpdateCampaignComment(e.target.value) }}
+                    />
+                }
 
 
 
+                {
+                    approveCampaignBool &&
+                    <Button
+                        style={{ marginLeft: '20px' }}
+                        variant="contained"
+                        color="success"
+                        onClick={() => { onUpdateCampaignStatus(APPROVE) }}
+                    >
+                        Approve
+                    </Button>
 
+                }
 
+                {
+                    approveCampaignBool &&
+                    <Button
+                        style={{ marginLeft: '20px' }}
+                        variant="contained"
+                        color="error"
+                        onClick={() => { onUpdateCampaignStatus(REJECT) }}
+                    >
+                        Reject
+                    </Button>
+
+                }
+
+                <Button onClick={() => { onCampainCancel() }}>
+                    cancel
+                </Button>
+
+            </section>
 
 
             <section>
                 <Row>
-                    <Col span={16}>
+                    <Col span={(!viewCampaignBool) ? 16 : 24}>
                         <section className={"campaign-section"}>
                             <ul>
 
@@ -405,38 +546,42 @@ const CreateCampain = ({ onCancelCampain, campaignDataFromParent, onPublishBool 
                                             key={sectionIndex}
                                             data-position={sectionIndex}
 
-                                            draggable
+                                        // draggable
 
-                                            onDragStart={onDragStart}
+                                        // onDragStart={onDragStart}
 
-                                            onDragOver={onDragOver}
+                                        // onDragOver={onDragOver}
 
-                                            onDrop={onDrop}
+                                        // onDrop={onDrop}
 
-                                            onDragEnd={onDragEnd}
+                                        // onDragEnd={onDragEnd}
 
-                                            onDragLeave={onDragLeave}
+                                        // onDragLeave={onDragLeave}
 
-                                            onDragEnter={onDragEnter}
+                                        // onDragEnter={onDragEnter}
 
-                                            className={dragAndDrop && dragAndDrop.draggedEnteredTo === Number(sectionIndex) ? "dropArea" : ""}
+                                        // className={dragAndDrop && dragAndDrop.draggedEnteredTo === Number(sectionIndex) ? "dropArea" : ""}
                                         >
                                             <div id='draggable-portion'>
-                                                {sectionIndex !== 0 &&
+                                                {sectionIndex !== 0 && !viewCampaignBool &&
                                                     <Button className={'section-up-down'} onClick={(e) => onSectionGoUp(e, sectionIndex)}>
                                                         <KeyboardArrowUpIcon />
                                                     </Button>
                                                 }
                                                 {
-                                                    sectionIndex !== (list.length - 1) &&
+                                                    sectionIndex !== (list.length - 1) && !viewCampaignBool &&
                                                     <Button className={'section-up-down'} onClick={(e) => onSectionGoDown(e, sectionIndex)}>
                                                         <KeyboardArrowDownIcon />
                                                     </Button>
                                                 }
-                                                <DragIndicatorIcon />
-                                                <Button onClick={(e) => onAddSection(e, sectionIndex)} >
-                                                    <AddCircleIcon />
-                                                </Button>
+                                                {/* <DragIndicatorIcon /> */}
+
+                                                {!viewCampaignBool &&
+                                                    <Button onClick={(e) => onAddSection(e, sectionIndex)} >
+                                                        <AddCircleIcon />
+                                                    </Button>
+                                                }
+
                                             </div>
 
                                             <div id='campaign-section-desc'>
@@ -449,14 +594,27 @@ const CreateCampain = ({ onCancelCampain, campaignDataFromParent, onPublishBool 
                                                         onChange={(e) => onSectionNameEnter(e, sectionIndex)}
                                                         variant="standard"
                                                     />
-                                                    <Button onClick={(e) => onDeleteSection(e, sectionIndex)}>
-                                                        <DeleteIcon />
-                                                    </Button>
+                                                    {
+                                                        !viewCampaignBool &&
+                                                        <Button onClick={(e) => onDeleteSection(e, sectionIndex)}>
+                                                            <DeleteIcon />
+                                                        </Button>
+                                                    }
+
                                                 </div>
                                                 <Box id='campaign-box'>
+
                                                     {section.questions[0] && section.questions.map((question, questionIndex) => {
                                                         return (
-                                                            <Card className={"campain-question-description-box"} variant="outlined">
+                                                            <Card
+                                                                className={"campain-question-description-box"}
+                                                                variant="outlined"
+                                                            // draggable
+                                                            // onDragOver={onDragOver}
+                                                            // onDrop={onDrop}
+                                                            // data-position={0}
+                                                            // data-section={sectionIndex}
+                                                            >
                                                                 <TextField
                                                                     label="Question Id"
                                                                     id="standard-start-adornment"
@@ -506,9 +664,12 @@ const CreateCampain = ({ onCancelCampain, campaignDataFromParent, onPublishBool 
                                                                     variant="standard"
                                                                 />
 
-                                                                <Button id='delete-question-button' onClick={(e) => onQuestionDelete(e, sectionIndex, questionIndex)}>
-                                                                    <ClearIcon />
-                                                                </Button>
+                                                                {
+                                                                    !viewCampaignBool &&
+                                                                    <Button id='delete-question-button' onClick={(e) => onQuestionDelete(e, sectionIndex, questionIndex)}>
+                                                                        <ClearIcon />
+                                                                    </Button>
+                                                                }
 
                                                                 <br />
                                                                 <br />
@@ -568,6 +729,24 @@ const CreateCampain = ({ onCancelCampain, campaignDataFromParent, onPublishBool 
                                                             </Card>
                                                         )
                                                     })}
+
+                                                    {
+                                                        // !section.questions[0] &&
+                                                        // Object.keys(campaignDataFromParent).length === 0 &&
+                                                        !viewCampaignBool &&
+                                                        <div
+                                                            draggable
+                                                            onDragStart={onDragStart}
+                                                            onDragOver={onDragOver}
+                                                            onDrop={onDrop}
+                                                            onDragEnd={onDragEnd}
+                                                            // data-position={0}
+                                                            data-section={sectionIndex}
+                                                            className="empty-question-box"
+                                                        >
+                                                            <p> drag and drop questions </p>
+                                                        </div>
+                                                    }
                                                 </Box>
 
 
@@ -591,40 +770,43 @@ const CreateCampain = ({ onCancelCampain, campaignDataFromParent, onPublishBool 
                             </ul>
                         </section>
                     </Col>
-                    <Col className="campaign-section-question-selection" span={8}>
+                    <Col className="campaign-section-question-selection" span={(!viewCampaignBool) ? 8 : 0}>
                         <div className="campaign-section-question-selection-pane">
                             {
-                                Object.keys(campaignDataFromParent).length === 0 &&
+                                // Object.keys(campaignDataFromParent).length === 0 &&
+                                !viewCampaignBool &&
                                 <QuestionSearch getSearchText={onSearchQuesiton} buttonTitle={'search'} />
+
                             }
+                            <div className="question-list-drag">
+                                {
+                                    questionList.map((e, questionIndex) => {
+                                        return (
+                                            <Card
+                                                key={questionIndex}
+                                                data-position={questionIndex}
+                                                draggable
+                                                className={"question-list-drag-card"}
+                                                onDragStart={onDragStart}
+                                                onDragOver={onDragOver}
+                                                onDrop={onDrop}
+                                                onDragEnd={onDragEnd}
+                                                variant="outlined"
+                                            >
+                                                <p> {e.questionName} </p>
+                                                <p> {e.questionDesc} </p>
+                                            </Card>
+
+                                        )
+                                    })
+                                }
+                            </div>
                         </div>
                     </Col>
                 </Row>
             </section>
 
-            <section className={"campaign-section"} id='campaign-create-add-section'>
-                {
-                    Object.keys(campaignDataFromParent).length === 0 &&
-                    <Button style={{ marginLeft: '20px' }} variant="contained" onClick={() => { onCreateCampaign() }}>
-                        create campaign
-                    </Button>
 
-                }
-
-                {/* {
-                   
-                    onPublishBool &&
-                    <Button style={{ marginLeft: '20px' }} variant="contained" onClick={() => { onAddCampaignAnswer() }}>
-                        Add Answer
-                    </Button>
-                    
-                } */}
-
-                <Button onClick={() => { onCampainCancel() }}>
-                    cancel
-                </Button>
-
-            </section>
 
 
 

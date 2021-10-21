@@ -11,9 +11,13 @@
   }
   
   .logo {
-    height: 32px;
-    margin: 16px;
-    background: rgba(255, 255, 255, 0.3);
+    height: 71px;
+    margin: 15px;
+    background-repeat: no-repeat;
+    text-align: center;
+    background-position: center;
+    background-image: url('../../resources/images/tct_logo_small.jpg');
+    // background: rgba(255, 255, 255, 0.3);
     text-align: center;
     font-size: large;
     color: white;

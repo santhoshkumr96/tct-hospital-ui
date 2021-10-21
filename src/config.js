@@ -28,3 +28,8 @@ export const POPULATION_SECTION = 'Population';
 export const QUESTION_TYPE_TEXT = 'text';
 export const QUESTION_TYPE_RADIO = 'radio';
 export const QUESTION_TYPE_DROPDOWN = 'dropdown';
+
+
+//approve and reject 
+export const APPROVE = 'APPROVED';
+export const REJECT = 'REJECTED';
