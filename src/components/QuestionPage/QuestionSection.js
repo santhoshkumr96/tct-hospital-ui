@@ -14,6 +14,7 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
+import FormHelperText from '@mui/material/FormHelperText';
 import DialogContentText from '@mui/material/DialogContentText';
 import Input from '@mui/material/Input';
 import DialogTitle from '@mui/material/DialogTitle';
@@ -25,6 +26,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
+import { Alert , message } from 'antd';
 import CancelIcon from '@mui/icons-material/Cancel';
 
 import QuestionTable from './QuestionTable';
@@ -46,6 +48,18 @@ const QuestionSection = () => {
         responseType: '',
         comment: '',
         response: []
+    }
+
+
+    const defaultQuestionDataEntryCheck = {
+        questionNameBool: false,
+        questionDescBool: false,
+        responseTypeBool: false,
+        commentBool: false,
+        responseNameBool: false,
+        responseDescBool: false,
+        responseSizeBool: false,
+        helperText: "Enter Data"
     }
 
     const createdResponseData = {
@@ -97,6 +111,7 @@ const QuestionSection = () => {
     const [qidFromChild, setQidFromChild] = useState(0);
     const [comment, setComment] = useState('')
     const [searchValue, setSearchValue] = useState('');
+    const [questionDataEntryCheck, setQuestionDataEntryCheck] = useState(defaultQuestionDataEntryCheck);
 
 
     const getData = async () => {
@@ -149,6 +164,7 @@ const QuestionSection = () => {
             .post(`${SERVICE_BASE_URL}v1/createquestion`, question, config)
             .then((res) => {
                 setResultQuestion({ ...question });
+                message.success('Question Created');
             })
             .catch((e) => {
                 if (errorHelper(e) == TOKEN_EXPIRED) {
@@ -170,6 +186,7 @@ const QuestionSection = () => {
             .then((res) => {
                 handleDialogClose();
                 setResultQuestion({ ...{} });
+                message.success('Question '+data.statusDesc);
             })
             .catch((e) => {
                 if (errorHelper(e) == TOKEN_EXPIRED) {
@@ -191,6 +208,7 @@ const QuestionSection = () => {
             .post(`${SERVICE_BASE_URL}v1/deleteQuestion`, { questionId }, config)
             .then((res) => {
                 setResultQuestion({ ...{} });
+                message.success('Question '+questionId+' Deleted');
             })
             .catch((e) => {
                 if (errorHelper(e) == TOKEN_EXPIRED) {
@@ -204,7 +222,7 @@ const QuestionSection = () => {
     }
 
     const requestSearch = (searchedVal) => {
-        console.log(searchedVal);
+        // console.log(searchedVal);
     };
 
     const cancelSearch = () => {
@@ -227,12 +245,24 @@ const QuestionSection = () => {
         setResponseDataDesc('');
         setCreateQuestionStore({ ...createdQuestionData });
         setResponseData({ ...createdResponseData });
+        setQuestionDataEntryCheck({ ...defaultQuestionDataEntryCheck });
     }
 
     const handleTypeSelectChange = (event) => {
         let val = { ...createQuestionStore }
         val.responseType = event.target.value;
         setCreateQuestionStore(val);
+        if (event.target.value === "") {
+            setQuestionDataEntryCheck(prevState => ({
+                ...prevState,
+                responseTypeBool: true
+            }))
+        } else {
+            setQuestionDataEntryCheck(prevState => ({
+                ...prevState,
+                responseTypeBool: false
+            }))
+        }
     };
 
     const onNewQuestionDataEntryChange = (e, what) => {
@@ -240,22 +270,61 @@ const QuestionSection = () => {
         if (what === QUESTION_NAME) {
             data.questionName = e;
             setCreateQuestionStore(data);
+            if (e === "") {
+                setQuestionDataEntryCheck(prevState => ({
+                    ...prevState,
+                    questionNameBool: true
+                }))
+            } else {
+                setQuestionDataEntryCheck(prevState => ({
+                    ...prevState,
+                    questionNameBool: false
+                }))
+            }
         }
         if (what === QUESTION_DESC) {
             data.questionDesc = e;
             setCreateQuestionStore(data);
+            if (e === "") {
+                setQuestionDataEntryCheck(prevState => ({
+                    ...prevState,
+                    questionDescBool: true
+                }))
+            } else {
+                setQuestionDataEntryCheck(prevState => ({
+                    ...prevState,
+                    questionDescBool: false
+                }))
+            }
         }
-
-
-
     }
 
     const addNewResponse = () => {
-        let data = { ...createQuestionStore };
-        data.response.push(responseData);
-        setCreateQuestionStore(data);
-        setResponseDataName('');
-        setResponseDataDesc('');
+        if (responseData.responseName === "") {
+            setQuestionDataEntryCheck(prevState => ({
+                ...prevState,
+                responseNameBool: true
+            }))
+        }
+        if (responseData.responseDesc === "") {
+            setQuestionDataEntryCheck(prevState => ({
+                ...prevState,
+                responseDescBool: true
+            }))
+        }
+        if (responseData.responseName !== "" && responseData.responseDesc !== "") {
+            let data = { ...createQuestionStore };
+            data.response.push(responseData);
+            setCreateQuestionStore(data);
+            setResponseDataName("");
+            setResponseDataDesc("");
+            setResponseData({ ...createdResponseData });
+            setQuestionDataEntryCheck(prevState => ({
+                ...prevState,
+                responseDescBool: false,
+                responseTypeBool: false
+            }))
+        }
     }
 
     const deleteResponse = (event, i) => {
@@ -269,10 +338,32 @@ const QuestionSection = () => {
         if (what == RESPONSE_NAME) {
             setResponseDataName(e.target.value);
             val.responseName = e.target.value
+            if (e.target.value === "") {
+                setQuestionDataEntryCheck(prevState => ({
+                    ...prevState,
+                    responseNameBool: true
+                }))
+            } else {
+                setQuestionDataEntryCheck(prevState => ({
+                    ...prevState,
+                    responseNameBool: false
+                }))
+            }
         }
         if (what == RESPONSE_DESC) {
             setResponseDataDesc(e.target.value);
             val.responseDesc = e.target.value;
+            if (e.target.value === "") {
+                setQuestionDataEntryCheck(prevState => ({
+                    ...prevState,
+                    responseDescBool: true
+                }))
+            } else {
+                setQuestionDataEntryCheck(prevState => ({
+                    ...prevState,
+                    responseDescBool: false
+                }))
+            }
         }
 
         setResponseData(val);
@@ -284,8 +375,62 @@ const QuestionSection = () => {
         result.questionName = createQuestionStore.questionName;
         result.questionDesc = createQuestionStore.questionDesc;
         result.response = createQuestionStore.response;
-        createQuestionRequest(result);
-        handleDialogClose();
+        if (createQuestionStore.questionName === "") {
+            setQuestionDataEntryCheck(prevState => ({
+                ...prevState,
+                questionNameBool: true
+            }))
+        } else {
+            setQuestionDataEntryCheck(prevState => ({
+                ...prevState,
+                questionNameBool: false
+            }))
+        }
+        if (createQuestionStore.questionDesc === "") {
+            setQuestionDataEntryCheck(prevState => ({
+                ...prevState,
+                questionDescBool: true
+            }))
+        } else {
+            setQuestionDataEntryCheck(prevState => ({
+                ...prevState,
+                questionDescBool: false
+            }))
+        }
+        if (createQuestionStore.responseType === "") {
+            setQuestionDataEntryCheck(prevState => ({
+                ...prevState,
+                responseTypeBool: true
+            }))
+        } else {
+            setQuestionDataEntryCheck(prevState => ({
+                ...prevState,
+                responseTypeBool: false
+            }))
+        }
+        console.log(questionDataEntryCheck);
+        if (
+            result.responseType !== "" &&
+            result.questionName !== "" &&
+            result.questionDesc !== ""
+        ) {
+            if(QUESTION_TYPE_TEXT === result.responseType){
+                createQuestionRequest(result);
+                handleDialogClose();
+            } else {
+                if(result.response.length >= 2){
+                    createQuestionRequest(result);
+                    handleDialogClose(); 
+                } else {
+                    setQuestionDataEntryCheck(prevState => ({
+                        ...prevState,
+                        responseSizeBool: true
+                    }))
+                }
+            }
+        }
+        // createQuestionRequest(result);
+
     }
 
     const deleteQuesiton = (qid) => {
@@ -306,6 +451,17 @@ const QuestionSection = () => {
     }
 
     const onCommentEntry = (comment) => {
+        if(comment === ""){
+            setQuestionDataEntryCheck(prevState => ({
+                ...prevState,
+                commentBool: true
+            }))
+        } else {
+            setQuestionDataEntryCheck(prevState => ({
+                ...prevState,
+                commentBool: false
+            })) 
+        }
         setComment(comment);
     }
 
@@ -314,8 +470,14 @@ const QuestionSection = () => {
         data.statusDesc = selection;
         data.comments = comment;
         data.questionId = qidFromChild;
-        updateQuestionStatus(data);
-        console.log(data);
+        if(comment !== ""){
+            updateQuestionStatus(data);
+        } else {
+            setQuestionDataEntryCheck(prevState => ({
+                ...prevState,
+                commentBool: true
+            }))
+        }
     }
 
 
@@ -364,6 +526,9 @@ const QuestionSection = () => {
                 <DialogContent >
                     <br />
                     <TextField
+                        disabled = {isViewingQuestion}
+                        error={questionDataEntryCheck.questionNameBool}
+                        helperText={questionDataEntryCheck.questionNameBool ? questionDataEntryCheck.helperText : ""}
                         fullWidth
                         id="standard-basic"
                         label="Name"
@@ -374,6 +539,9 @@ const QuestionSection = () => {
                     <br />
                     <br />
                     <TextField
+                        disabled = {isViewingQuestion}
+                        error={questionDataEntryCheck.questionDescBool}
+                        helperText={questionDataEntryCheck.questionDescBool ? questionDataEntryCheck.helperText : ""}
                         fullWidth
                         id="standard-basic"
                         label="Description"
@@ -388,6 +556,8 @@ const QuestionSection = () => {
                     <FormControl fullWidth>
                         <InputLabel id="demo-simple-select-label">Response Type</InputLabel>
                         <Select
+                            disabled = {isViewingQuestion}
+                            error={questionDataEntryCheck.responseTypeBool}
                             labelId="demo-simple-select-label"
                             id="demo-simple-select"
                             value={createQuestionStore.responseType.toString()}
@@ -423,10 +593,18 @@ const QuestionSection = () => {
                                             sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                                         >
                                             <TableCell>
-                                                <Input disabled value={row.responseName} placeholder="name" />
+                                                <Input
+                                                    disabled
+                                                    value={row.responseName}
+                                                    placeholder="name"
+                                                />
                                             </TableCell>
                                             <TableCell>
-                                                <Input disabled value={row.responseDesc} placeholder="description" />
+                                                <Input
+                                                    disabled
+                                                    value={row.responseDesc}
+                                                    placeholder="description"
+                                                />
                                             </TableCell>
                                             {
                                                 isViewingQuestion === false &&
@@ -445,10 +623,24 @@ const QuestionSection = () => {
                                             sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                                         >
                                             <TableCell>
-                                                <Input placeholder="Name" value={responseDataName} onChange={(e) => { onResponseUpdate(e, RESPONSE_NAME) }} />
+                                                <TextField
+                                                    error={questionDataEntryCheck.responseNameBool}
+                                                    helperText={questionDataEntryCheck.responseNameBool ? questionDataEntryCheck.helperText : ""}
+                                                    placeholder="Name"
+                                                    variant="standard"
+                                                    value={responseDataName}
+                                                    onChange={(e) => { onResponseUpdate(e, RESPONSE_NAME) }}
+                                                />
                                             </TableCell>
                                             <TableCell>
-                                                <Input placeholder="Description" value={responseDataDesc} onChange={(e) => { onResponseUpdate(e, RESPONSE_DESC) }} />
+                                                <TextField
+                                                    error={questionDataEntryCheck.responseDescBool}
+                                                    helperText={questionDataEntryCheck.responseDescBool ? questionDataEntryCheck.helperText : ""}
+                                                    placeholder="Description"
+                                                    variant="standard"
+                                                    value={responseDataDesc}
+                                                    onChange={(e) => { onResponseUpdate(e, RESPONSE_DESC) }}
+                                                />
                                             </TableCell>
                                             {
                                                 isViewingQuestion === false &&
@@ -473,6 +665,8 @@ const QuestionSection = () => {
                         isApprovingQuestion === true &&
                         <TextField
                             fullWidth
+                            error={questionDataEntryCheck.commentBool}
+                            helperText={questionDataEntryCheck.commentBool ? questionDataEntryCheck.helperText : ""}    
                             id="standard-basic"
                             label="Comments"
                             value={comment}
@@ -481,6 +675,10 @@ const QuestionSection = () => {
                             variant="outlined"
                             onChange={(e) => { onCommentEntry(e.target.value) }}
                         />
+                    }
+                    {
+                        questionDataEntryCheck.responseSizeBool &&
+                        <Alert message="Add atleast 2 Response" type="error" showIcon />
                     }
                 </DialogContent>
                 <DialogActions>
