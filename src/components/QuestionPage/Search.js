@@ -15,7 +15,7 @@ import { display } from '@mui/system';
 
 
 
-const QuestionSearch = ({getSearchText , buttonTitle , extraData}) => {
+const QuestionSearch = ({getSearchText , buttonTitle , extraData , link}) => {
 
     const loginContext = useContext(Context);
     const errorContext = useContext(ErrorContext);
@@ -42,7 +42,7 @@ const QuestionSearch = ({getSearchText , buttonTitle , extraData}) => {
             resolve(
                 (query === 0 || query === '') ? [] :
                 ajax
-                    .get(`${SERVICE_BASE_URL}v1/searchQuestion?search=${query}`, config)
+                    .get(`${SERVICE_BASE_URL}v1/${link}?search=${query}`, config)
                     .then((res) => {
                         
                         return res.data;

@@ -108,7 +108,7 @@ const QuestionTable = ({ questions, editQuestionOnClick, createNewFromExistingOn
                                         </Button>
 
                                         {
-                                            loginContext.userRole.includes(QUESTION_CREATOR_ROLE) && typeOfTable === CAMPAIGNS_SECTION &&
+                                            row.statusDesc === APPROVE && loginContext.userRole.includes(QUESTION_CREATOR_ROLE) && typeOfTable === CAMPAIGNS_SECTION &&
                                             <Button onClick={() => { createNewFromExisting(row) }}>
                                                 <AddCircleIcon />
                                             </Button>
@@ -123,7 +123,6 @@ const QuestionTable = ({ questions, editQuestionOnClick, createNewFromExistingOn
                                             </Button>
 
                                         }
-
 
                                         {
                                             row.statusDesc !== APPROVE && loginContext.userId === row.createdBy &&

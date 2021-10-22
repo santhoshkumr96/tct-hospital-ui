@@ -27,10 +27,10 @@ import ErrorContext from "../NetworkAuthProvider/ErrorContext";
 import { CAMPAIN_APPROVER_ROLE, QUESTION_TYPE_DROPDOWN, QUESTION_TYPE_RADIO, QUESTION_TYPE_TEXT, SERVICE_BASE_URL, TOKEN_EXPIRED, APPROVE, REJECT } from "../../config";
 import { errorHelper } from "../../Helpers/ajaxCatchBlockHelper";
 import ajax from "../../Helpers/ajaxHelper";
-import { Row, Col } from 'antd';
-import 'antd/dist/antd.css';
+import { Row, Col, Alert, message } from 'antd';
+import 'antd/dist/antd.css'; 
 
-const CreateCampain = ({ onCancelCampain, campaignDataFromParent, viewCampaignBool, approveCampaignBool }) => {
+const CreateCampain = ({ onCancelCampain, campaignDataFromParent, viewCampaignBool, approveCampaignBool , editCampaignBool }) => {
 
 
 
@@ -68,7 +68,7 @@ const CreateCampain = ({ onCancelCampain, campaignDataFromParent, viewCampaignBo
     const [list, setList] = useState(defaultSection);
     const [campaignAnswer, setCampaignAnswer] = useState({});
     const [questionList, setQuestionList] = useState([]);
-    const [campaignComment , setCampaignComment] = useState('');
+    const [campaignComment, setCampaignComment] = useState('');
 
 
     const getQuestionData = async (search) => {
@@ -77,7 +77,7 @@ const CreateCampain = ({ onCancelCampain, campaignDataFromParent, viewCampaignBo
             headers: { Authorization: `Bearer ${loginContext.accessToken}` }
         };
         ajax
-            .get(`${SERVICE_BASE_URL}v1/getquestionlist?search=${search}`, config)
+            .get(`${SERVICE_BASE_URL}v1/getquestionlistApproved?search=${search}`, config)
             .then((res) => {
                 // let newList = [...list];
                 // let section = newList[search.sectionIndex]
@@ -109,6 +109,29 @@ const CreateCampain = ({ onCancelCampain, campaignDataFromParent, viewCampaignBo
             .post(`${SERVICE_BASE_URL}v1/create-campaign`, result, config)
             .then((res) => {
                 console.log('campign uploaded');
+                message.success('campign uploaded');
+                onCancelCampain();
+            })
+            .catch((e) => {
+                if (errorHelper(e) == TOKEN_EXPIRED) {
+                    loginContext.setTokenExpired(true);
+                } else {
+                    errorContext.setIsErrorDisplayed(true);
+                    errorContext.setError(errorHelper(e));
+                }
+            }
+            );
+    }
+
+    const editCampaignApi = async (result) => {
+        const config = {
+            headers: { Authorization: `Bearer ${loginContext.accessToken}` }
+        };
+        ajax
+            .post(`${SERVICE_BASE_URL}v1/edit-campaign`, result, config)
+            .then((res) => {
+                console.log('campign uploaded');
+                message.success('campign uploaded');
                 onCancelCampain();
             })
             .catch((e) => {
@@ -129,6 +152,7 @@ const CreateCampain = ({ onCancelCampain, campaignDataFromParent, viewCampaignBo
         ajax
             .post(`${SERVICE_BASE_URL}v1/campaign-answer-update`, result, config)
             .then((res) => {
+                message.success('campign answer uploaded');
                 console.log('campign answer uploaded');
             })
             .catch((e) => {
@@ -149,6 +173,7 @@ const CreateCampain = ({ onCancelCampain, campaignDataFromParent, viewCampaignBo
         ajax
             .post(`${SERVICE_BASE_URL}v1/udpate-campaign-status`, data, config)
             .then((res) => {
+                message.success('campign status uploaded');
                 console.log('campign status uploaded');
                 onCancelCampain();
             })
@@ -359,10 +384,47 @@ const CreateCampain = ({ onCancelCampain, campaignDataFromParent, viewCampaignBo
 
     }
 
+    const checkSectionName = (list) => {
+        let result = true;
+        list.forEach(function (e, i) {
+            if (result && e.title === "") {
+                message.warning('Enter Section Name For Section Number ' + (i+1), 0.5);
+                result = false;
+                return;
+            }
+            if (result && e.questions.length == 0) {
+                message.warning('Add atlest one question for Section Name ' + e.title, 0.5);
+                result = false;
+                return;
+            }
+        })
+        return result;
+    }
+
     const onCreateCampaign = () => {
         let result = { ...campaignData };
         result.sections = list;
-        createCampaignApi(result);
+        if (result.campaignName !== "" &&
+            result.campaignDesc !== "" &&
+            result.campaignObjective !== "" &&
+            checkSectionName(list)
+        ) {
+            createCampaignApi(result);
+        }
+
+    }
+
+    const onEditCampaign = () => {
+        let result = { ...campaignData };
+        result.sections = list;
+        if (result.campaignName !== "" &&
+            result.campaignDesc !== "" &&
+            result.campaignObjective !== "" &&
+            checkSectionName(list)
+        ) {
+            editCampaignApi(result);
+        }
+
     }
 
     const onAddCampaignAnswer = () => {
@@ -440,6 +502,8 @@ const CreateCampain = ({ onCancelCampain, campaignDataFromParent, viewCampaignBo
             <section className={"campaign-section"} id="campain-details-enter">
                 <TextField
                     fullWidth
+                    error={campaignData.campaignName.toString() === "" ? true : false}
+                    helperText={campaignData.campaignName.toString() === "" ? "Enter Data" : ""}
                     id="standard-basic"
                     label="Campaign Name"
                     value={campaignData.campaignName.toString()}
@@ -450,6 +514,8 @@ const CreateCampain = ({ onCancelCampain, campaignDataFromParent, viewCampaignBo
                 <br />
                 <TextField
                     fullWidth
+                    error={campaignData.campaignDesc.toString() === "" ? true : false}
+                    helperText={campaignData.campaignDesc.toString() === "" ? "Enter Data" : ""}
                     id="standard-basic"
                     label="Campaign Desc"
                     value={campaignData.campaignDesc.toString()}
@@ -460,6 +526,8 @@ const CreateCampain = ({ onCancelCampain, campaignDataFromParent, viewCampaignBo
                 <br />
                 <TextField
                     fullWidth
+                    error={campaignData.campaignObjective.toString() === "" ? true : false}
+                    helperText={campaignData.campaignObjective.toString() === "" ? "Enter Data" : ""}
                     id="standard-basic"
                     label="Objective"
                     value={campaignData.campaignObjective.toString()}
@@ -471,12 +539,21 @@ const CreateCampain = ({ onCancelCampain, campaignDataFromParent, viewCampaignBo
             <section id='campaign-create-add-section'>
                 {
                     // Object.keys(campaignDataFromParent).length === 0 &&
-                    !viewCampaignBool &&
+                    !viewCampaignBool && !editCampaignBool &&
                     <Button style={{ marginLeft: '20px' }} variant="contained" onClick={() => { onCreateCampaign() }}>
                         create campaign
                     </Button>
 
                 }
+
+                {
+                    // Object.keys(campaignDataFromParent).length === 0 &&
+                    editCampaignBool &&
+                    <Button style={{ marginLeft: '20px' }} variant="contained" onClick={() => { onEditCampaign() }}>
+                        edit campaign
+                    </Button>
+
+                }       
 
                 {/* {
                    
@@ -490,7 +567,7 @@ const CreateCampain = ({ onCancelCampain, campaignDataFromParent, viewCampaignBo
                 {
                     approveCampaignBool &&
                     <TextField
-                        style = {{   width: '65%', marginLeft: '14px'}}
+                        style={{ width: '65%', marginLeft: '14px' }}
                         id="standard-basic"
                         label="Comment"
                         value={campaignComment}
@@ -590,6 +667,8 @@ const CreateCampain = ({ onCancelCampain, campaignDataFromParent, viewCampaignBo
                                                     <TextField
                                                         placeholder={'Enter Section Name'}
                                                         value={section.title}
+                                                        error={section.title.toString() === "" ? true : false}
+                                                        helperText={section.title.toString() === "" ? "Enter Data" : ""}
                                                         id="standard-basic"
                                                         onChange={(e) => onSectionNameEnter(e, sectionIndex)}
                                                         variant="standard"
@@ -775,7 +854,7 @@ const CreateCampain = ({ onCancelCampain, campaignDataFromParent, viewCampaignBo
                             {
                                 // Object.keys(campaignDataFromParent).length === 0 &&
                                 !viewCampaignBool &&
-                                <QuestionSearch getSearchText={onSearchQuesiton} buttonTitle={'search'} />
+                                <QuestionSearch link={'searchApprovedQuestion'} getSearchText={onSearchQuesiton} buttonTitle={'search'} />
 
                             }
                             <div className="question-list-drag">

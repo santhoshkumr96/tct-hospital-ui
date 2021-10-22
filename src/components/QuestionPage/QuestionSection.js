@@ -607,7 +607,7 @@ const QuestionSection = () => {
                 </Button>
 
                 <div id='questionare-search-bar'>
-                    <QuestionSearch getSearchText={onSearchOkButton} buttonTitle={'Search'} />
+                    <QuestionSearch link={'searchQuestion'} getSearchText={onSearchOkButton} buttonTitle={'Search'} />
                     {/* <TextField  id="outlined-basic" type="search" label="search disabled" variant="outlined" onChange={(e) => { requestSearch(e.target.value) }} /> */}
                 </div>
             </div>

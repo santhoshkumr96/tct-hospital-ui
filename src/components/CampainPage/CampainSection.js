@@ -10,6 +10,8 @@ import { Box } from '@mui/system';
 import ErrorContext from '../NetworkAuthProvider/ErrorContext';
 import ajax from '../../Helpers/ajaxHelper';
 import { errorHelper } from '../../Helpers/ajaxCatchBlockHelper';
+import { Row, Col, Alert, message } from 'antd';
+import 'antd/dist/antd.css';
 
 
 
@@ -23,8 +25,9 @@ const CampainSection = () => {
     const [createCampainBool, setCreateCampainBool] = useState(false);
     const [campaignDetails, setCampaignDetails] = useState({});
     const [campaignData, setCampaignData] = useState({});
-    const [viewCampaignBool,setViewCampaignBool] = useState(false);
+    const [viewCampaignBool, setViewCampaignBool] = useState(false);
     const [approveCampaignBool, setApproveCampaignBool] = useState(false);
+    const [editCampaignBool, setEditCampaignBool] = useState(false);
 
 
 
@@ -37,6 +40,7 @@ const CampainSection = () => {
         setCreateCampainBool(false);
         setViewCampaignBool(false);
         setApproveCampaignBool(false);
+        setEditCampaignBool(false);
     }
 
     const getData = async () => {
@@ -66,6 +70,7 @@ const CampainSection = () => {
         ajax
             .post(`${SERVICE_BASE_URL}v1/delete-campaign`, { campaignId }, config)
             .then((res) => {
+                message.success('campign deleted');
                 getData();
             })
             .catch((e) => {
@@ -120,6 +125,12 @@ const CampainSection = () => {
         getCampaign(campaignId);
     }
 
+    const onEditCampaign = (campaignId) => {
+        setViewCampaignBool(false);
+        setEditCampaignBool(true);
+        getCampaign(campaignId);
+    }
+
     useEffect(() => {
         getData();
     }, [campaignData])
@@ -133,6 +144,10 @@ const CampainSection = () => {
                     <Button variant="contained" onClick={() => { onCreateCampign() }}>
                         Create Campain
                     </Button>
+
+                    <Button style={{ marginLeft: '20px' }}>
+                        Total Campain : {campaignDetails.length}
+                    </Button>
                     {/* <Button id='campain-search-create-button' disabled variant="contained" onClick={() => { onCreateCampign() }}>
                         Create Campain from existing
                     </Button> */}
@@ -142,9 +157,10 @@ const CampainSection = () => {
                 createCampainBool === true &&
                 <CreateCampain
                     onCancelCampain={onCancelCampign}
-                    campaignDataFromParent={{ ...campaignData }} 
-                    viewCampaignBool = {viewCampaignBool}
-                    approveCampaignBool = {approveCampaignBool}
+                    campaignDataFromParent={{ ...campaignData }}
+                    viewCampaignBool={viewCampaignBool}
+                    approveCampaignBool={approveCampaignBool}
+                    editCampaignBool={editCampaignBool}
                 />
             }
             {
@@ -157,6 +173,7 @@ const CampainSection = () => {
                         questions={campaignDetails}
                         createNewFromExistingOnClick={onCreateNewCampaingFromExisting}
                         approveQuestionOnClick={onApproveCampaign}
+                        editQuestionOnClick={onEditCampaign}
                     />
                 </Box>
             }
