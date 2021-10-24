@@ -793,13 +793,13 @@ const QuestionSection = () => {
                     {
                         isViewingQuestion === false && isEditQuestion === false &&
                         <Button variant="contained" onClick={handleDialogOnQuestionCreate} >
-                            create
+                            SUBMIT
                         </Button>
                     }
                     {
                         isEditQuestion === true &&
                         <Button variant="contained" onClick={handleDialogOnQuestionEdit} >
-                            Edit
+                            SUBMIT
                         </Button>
                     }
                     {

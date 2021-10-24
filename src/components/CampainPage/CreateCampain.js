@@ -541,7 +541,7 @@ const CreateCampain = ({ onCancelCampain, campaignDataFromParent, viewCampaignBo
                     // Object.keys(campaignDataFromParent).length === 0 &&
                     !viewCampaignBool && !editCampaignBool &&
                     <Button style={{ marginLeft: '20px' }} variant="contained" onClick={() => { onCreateCampaign() }}>
-                        create campaign
+                        SUBMIT
                     </Button>
 
                 }
@@ -550,7 +550,7 @@ const CreateCampain = ({ onCancelCampain, campaignDataFromParent, viewCampaignBo
                     // Object.keys(campaignDataFromParent).length === 0 &&
                     editCampaignBool &&
                     <Button style={{ marginLeft: '20px' }} variant="contained" onClick={() => { onEditCampaign() }}>
-                        edit campaign
+                        SUBMIT
                     </Button>
 
                 }       
