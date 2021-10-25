@@ -142,11 +142,11 @@ const CampainSection = () => {
                 <div id='campaign-search-create'>
 
                     <Button variant="contained" onClick={() => { onCreateCampign() }}>
-                        Create Campain
+                        Create Campaign
                     </Button>
 
                     <Button style={{ marginLeft: '20px' }}>
-                        Total Campain : {campaignDetails.length}
+                        Total Campaign : {campaignDetails.length}
                     </Button>
                     {/* <Button id='campain-search-create-button' disabled variant="contained" onClick={() => { onCreateCampign() }}>
                         Create Campain from existing

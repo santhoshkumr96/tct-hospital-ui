@@ -85,3 +85,29 @@
 #approve-deny-buttons button{
     margin-right: 10px;
 }
+
+
+
+.query-builder-parent-wrapper{
+    .qb-lite .group--header:not(:hover) .group--actions { /*Query Builder: To show "ADD RULE" & "ADD GROUP" buttons always.*/
+        opacity: 1;
+    }
+    .MuiButton-textPrimary {
+        pointer-events: none;
+        opacity: .5;
+    }
+    .MuiButton-text {
+        border: 1px solid #DCC896;
+        margin-left: 10px;
+    }
+    .group-or-rule-container {
+        margin-bottom: 20px;
+    }
+    .rule--body--wrapper {
+        .rule--body {
+            .rule--field {
+                width: 33%;
+            }
+        }
+    }
+}

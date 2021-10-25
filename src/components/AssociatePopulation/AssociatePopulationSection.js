@@ -19,6 +19,7 @@ import _ from 'lodash';
 import './AssociatePopulation.scss'
 import { Row, Col } from 'antd';
 import { Button, Fab } from "@mui/material";
+import CloudDownloadIcon from '@mui/icons-material/CloudDownload';
 import { CSVLink, CSVDownload } from "react-csv";
 
 import { Query, Builder, Utils as QbUtils } from "react-awesome-query-builder";
@@ -241,7 +242,7 @@ const AssociatePopulationSection = () => {
 
   return (
 
-    <div>
+    <div className="query-builder-parent-wrapper">
 
       <Query
         {...config}
@@ -278,7 +279,7 @@ const AssociatePopulationSection = () => {
 
       <Paper>
         <Row>
-        <Col span={10}>
+        <Col span={14}>
             <TablePagination
               className="pagnation-div"
               rowsPerPageOptions={[10, 25, 100]}
@@ -290,7 +291,7 @@ const AssociatePopulationSection = () => {
               onRowsPerPageChange={handleChangeRowsPerPage}
             />
           </Col>
-          <Col span={14}>
+          <Col span={10}>
         
             <Button   
             className="download-csv" 
@@ -298,7 +299,7 @@ const AssociatePopulationSection = () => {
             variant="contained" 
             onClick = {()=> {downloadFile()}}
             >
-              download
+              <CloudDownloadIcon/>
             </Button>
           </Col>
 
