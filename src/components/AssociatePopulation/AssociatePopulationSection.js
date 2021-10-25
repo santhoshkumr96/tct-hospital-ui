@@ -20,7 +20,7 @@ import './AssociatePopulation.scss'
 import { Row, Col } from 'antd';
 import { Button, Fab } from "@mui/material";
 import CloudDownloadIcon from '@mui/icons-material/CloudDownload';
-import { CSVLink, CSVDownload } from "react-csv";
+
 
 import { Query, Builder, Utils as QbUtils } from "react-awesome-query-builder";
 // types
