@@ -127,7 +127,7 @@ const QuestionTable = ({ questions, editQuestionOnClick, createNewFromExistingOn
                                         {
                                             row.statusDesc !== APPROVE && loginContext.userId === row.createdBy &&
                                             loginContext.userRole.includes(QUESTION_CREATOR_ROLE) &&
-                                            <Button onClick={() => { deleteQuestion(row) }}>
+                                            <Button style={{color:'red'}} onClick={() => { deleteQuestion(row) }}>
                                                 <DeleteForeverIcon />
                                             </Button>
 
@@ -136,7 +136,7 @@ const QuestionTable = ({ questions, editQuestionOnClick, createNewFromExistingOn
 
                                         {
                                             row.statusDesc === PENDING && loginContext.userRole.includes(QUESTION_APPROVER_ROLE) &&
-                                            <Button onClick={() => { approveQuestion(row) }}>
+                                            <Button style={{color:'green'}} onClick={() => { approveQuestion(row) }}>
                                                 <CheckCircleIcon />
                                             </Button>
                                         }

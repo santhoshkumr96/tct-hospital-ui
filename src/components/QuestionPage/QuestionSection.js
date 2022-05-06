@@ -6,6 +6,7 @@ import Context from '../Login/LoginAuthProvider/Context';
 import ajax from '../../Helpers/ajaxHelper';
 import { errorHelper } from '../../Helpers/ajaxCatchBlockHelper';
 import ErrorContext from '../NetworkAuthProvider/ErrorContext';
+import ToggleContext from '../PreTogglesProvider/ErrorContext';
 import { useEffect } from 'react';
 import _ from 'lodash';
 import './Questionpage.css'
@@ -31,6 +32,7 @@ import CancelIcon from '@mui/icons-material/Cancel';
 
 import QuestionTable from './QuestionTable';
 import QuestionSearch from './Search';
+import { object } from 'prop-types';
 
 const QuestionSection = () => {
 
@@ -46,6 +48,9 @@ const QuestionSection = () => {
         questionName: '',
         questionDesc: '',
         responseType: '',
+        categoryType: '',
+        categoryTypeId: 0,
+        responseTypeId: 0,
         questionId: 0,
         comment: '',
         response: []
@@ -56,6 +61,7 @@ const QuestionSection = () => {
         questionNameBool: false,
         questionDescBool: false,
         responseTypeBool: false,
+        questionCategoryBool: false,
         commentBool: false,
         responseNameBool: false,
         responseDescBool: false,
@@ -68,36 +74,39 @@ const QuestionSection = () => {
         responseDesc: ''
     }
 
-    const defaultQuestionData = [
-        {
-            questionName: "seomthing",
-            questionId: 50,
-            questionDesc: "nerw",
-            comments: null,
-            responseType: "dropdown",
-            response: [
-                {
-                    responseId: 37,
-                    responseName: "sdf",
-                    responseDesc: "asdf",
-                    questionId: 50,
-                    createdBy: "santy",
-                    changedBy: null,
-                    approvedBy: null,
-                    statusDesc: null,
-                    createdDate: "2021-09-26T12:55:02.000+00:00",
-                    changedDate: null,
-                    approvedDate: null,
-                    enabled: null,
-                    comments: null
-                }
-            ],
-            statusDesc: "PENDING"
-        }
-    ]
+    const defaultQuestionData = []
+
+    // const defaultQuestionData = [
+    //     {
+    //         questionName: "seomthing",
+    //         questionId: 50,
+    //         questionDesc: "nerw",
+    //         comments: null,
+    //         responseType: "dropdown",
+    //         response: [
+    //             {
+    //                 responseId: 37,
+    //                 responseName: "sdf",
+    //                 responseDesc: "asdf",
+    //                 questionId: 50,
+    //                 createdBy: "santy",
+    //                 changedBy: null,
+    //                 approvedBy: null,
+    //                 statusDesc: null,
+    //                 createdDate: "2021-09-26T12:55:02.000+00:00",
+    //                 changedDate: null,
+    //                 approvedDate: null,
+    //                 enabled: null,
+    //                 comments: null
+    //             }
+    //         ],
+    //         statusDesc: "PENDING"
+    //     }
+    // ]
 
     const loginContext = useContext(Context);
     const errorContext = useContext(ErrorContext);
+    const toggleContext = useContext(ToggleContext);
     const [questionData, setQuestionData] = useState(defaultQuestionData);
     const [createQuestionStore, setCreateQuestionStore] = useState(createdQuestionData);
     const [rows, setRows] = useState(questionData);
@@ -151,7 +160,7 @@ const QuestionSection = () => {
                 if (type === 'editQuestion') {
                     setIsEditQuestion(true);
                 }
-
+                setIsCreatingQuestion(true);
             })
             .catch((e) => {
                 if (errorHelper(e) == TOKEN_EXPIRED) {
@@ -281,6 +290,7 @@ const QuestionSection = () => {
     const handleTypeSelectChange = (event) => {
         let val = { ...createQuestionStore }
         val.responseType = event.target.value;
+        val.responseTypeId = toggleContext.questionResponseType[event.target.value][0].responseId;
         setCreateQuestionStore(val);
         if (event.target.value === "") {
             setQuestionDataEntryCheck(prevState => ({
@@ -294,6 +304,32 @@ const QuestionSection = () => {
             }))
         }
     };
+
+    const handleCategoryTypeSelectChange = (event) => {
+        let val = { ...createQuestionStore }
+        
+        Object.keys(toggleContext.questionCategoryType).map((e)=>{
+            if(toggleContext.questionCategoryType[e] == event.target.value){
+                val.categoryType = toggleContext.questionCategoryType[e];
+                val.categoryTypeId = e;
+            }
+        })
+        console.log(toggleContext.questionCategoryType)
+        
+        setCreateQuestionStore(val);
+        if (event.target.value === 0) {
+            setQuestionDataEntryCheck(prevState => ({
+                ...prevState,
+                questionCategoryBool: true
+            }))
+        } else {
+            setQuestionDataEntryCheck(prevState => ({
+                ...prevState,
+                questionCategoryBool: false
+            }))
+        }
+    };
+
 
     const onNewQuestionDataEntryChange = (e, what) => {
         let data = { ...createQuestionStore }
@@ -402,6 +438,9 @@ const QuestionSection = () => {
     const handleDialogOnQuestionCreate = () => {
         const result = {};
         result.responseType = createQuestionStore.responseType;
+        result.responseTypeId = createQuestionStore.responseTypeId;
+        result.categoryType=createQuestionStore.categoryType
+        result.categoryTypeId=createQuestionStore.categoryTypeId
         result.questionName = createQuestionStore.questionName;
         result.questionDesc = createQuestionStore.questionDesc;
         result.response = createQuestionStore.response;
@@ -438,12 +477,23 @@ const QuestionSection = () => {
                 responseTypeBool: false
             }))
         }
+        if (createQuestionStore.categoryType === "") {
+            setQuestionDataEntryCheck(prevState => ({
+                ...prevState,
+                questionCategoryBool: true
+            }))
+        } else {
+            setQuestionDataEntryCheck(prevState => ({
+                ...prevState,
+                questionCategoryBool: false
+            }))
+        }
         if (
             result.responseType !== "" &&
             result.questionName !== "" &&
             result.questionDesc !== ""
         ) {
-            if (QUESTION_TYPE_TEXT === result.responseType) {
+            if ("TEXTBOX" === result.responseType) {
                 createQuestionRequest(result);
                 handleDialogClose();
             } else {
@@ -465,10 +515,14 @@ const QuestionSection = () => {
     const handleDialogOnQuestionEdit = () => {
         const result = {};
         result.responseType = createQuestionStore.responseType;
+        result.responseTypeId = createQuestionStore.responseTypeId;
+        result.categoryType=createQuestionStore.categoryType
+        result.categoryTypeId=createQuestionStore.categoryTypeId
         result.questionName = createQuestionStore.questionName;
         result.questionDesc = createQuestionStore.questionDesc;
         result.questionId = createQuestionStore.questionId;
         result.response = createQuestionStore.response;
+
         if (createQuestionStore.questionName === "") {
             setQuestionDataEntryCheck(prevState => ({
                 ...prevState,
@@ -502,12 +556,23 @@ const QuestionSection = () => {
                 responseTypeBool: false
             }))
         }
+        if (createQuestionStore.categoryType === "") {
+            setQuestionDataEntryCheck(prevState => ({
+                ...prevState,
+                questionCategoryBool: true
+            }))
+        } else {
+            setQuestionDataEntryCheck(prevState => ({
+                ...prevState,
+                questionCategoryBool: false
+            }))
+        }
         if (
             result.responseType !== "" &&
             result.questionName !== "" &&
             result.questionDesc !== ""
         ) {
-            if (QUESTION_TYPE_TEXT === result.responseType) {
+            if ("TEXTBOX" === result.responseType) {
                 editQuestionRequest(result);
                 handleDialogClose();
             } else {
@@ -530,12 +595,12 @@ const QuestionSection = () => {
     }
 
     const viewQuesiton = (qid) => {
-        setIsCreatingQuestion(true);
+        // setIsCreatingQuestion(true);
         getOneQuestionData(qid, 'viewQuestion');
     }
 
     const onEditQuestionButtonOnTable = (questionId) => {
-        setIsCreatingQuestion(true);
+        
         let temp = { ...createQuestionStore };
         temp.questionId = questionId;
         setCreateQuestionStore(temp);
@@ -652,10 +717,31 @@ const QuestionSection = () => {
                         label="Description"
                         value={createQuestionStore.questionDesc.toString()}
                         multiline
-                        rows={4}
+                        rows={2}
                         variant="outlined"
                         onChange={(e) => { onNewQuestionDataEntryChange(e.target.value, QUESTION_DESC) }}
                     />
+                    <br />
+                    <br />
+                    <FormControl fullWidth>
+                        <InputLabel id="demo-simple-select-label">Question Category</InputLabel>
+                        <Select
+                            disabled={isViewingQuestion}
+                            error={questionDataEntryCheck.questionCategoryBool}
+                            labelId="demo-simple-select-label"
+                            id="demo-simple-select"
+                            value={toggleContext.questionCategoryType[createQuestionStore.categoryTypeId]}
+                            label="Response Type"
+                            onChange={handleCategoryTypeSelectChange}
+                        >
+                            {Object.keys(toggleContext.questionCategoryType).map((e)=>(
+                                 <MenuItem value={toggleContext.questionCategoryType[e]}>{toggleContext.questionCategoryType[e]}</MenuItem>
+                            ))}
+                            {/* <MenuItem value={QUESTION_TYPE_TEXT}>Text</MenuItem>
+                            <MenuItem value={QUESTION_TYPE_RADIO}>Radio</MenuItem>
+                            <MenuItem value={QUESTION_TYPE_DROPDOWN}>Dropdown</MenuItem> */}
+                        </Select>
+                    </FormControl>
                     <br />
                     <br />
                     <FormControl fullWidth>
@@ -669,15 +755,18 @@ const QuestionSection = () => {
                             label="Response Type"
                             onChange={handleTypeSelectChange}
                         >
-                            <MenuItem value={QUESTION_TYPE_TEXT}>Text</MenuItem>
+                            {Object.keys(toggleContext.questionResponseType).map((e)=>(
+                                 <MenuItem value={e}>{e}</MenuItem>
+                            ))}
+                            {/* <MenuItem value={QUESTION_TYPE_TEXT}>Text</MenuItem>
                             <MenuItem value={QUESTION_TYPE_RADIO}>Radio</MenuItem>
-                            <MenuItem value={QUESTION_TYPE_DROPDOWN}>Dropdown</MenuItem>
+                            <MenuItem value={QUESTION_TYPE_DROPDOWN}>Dropdown</MenuItem> */}
                         </Select>
                     </FormControl>
                     <br />
                     <br />
                     {
-                        (createQuestionStore.responseType != 'text' && _.isEqual(createQuestionStore.responseType, '') == false) &&
+                        (createQuestionStore.responseType != 'TEXTBOX' && _.isEqual(createQuestionStore.responseType, '') == false) &&
                         <TableContainer component={Paper}>
                             <Table id='response-table' sx={{ minWidth: 650 }} aria-label="simple table">
                                 <TableHead id='response-table-head'>

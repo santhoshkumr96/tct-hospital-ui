@@ -4,8 +4,8 @@ export const BASE_PATH='';
 export const HOME_PATH=`${BASE_PATH}/`;
 export const LOGIN_PATH =`${BASE_PATH}/login`;
 
-// export const SERVICE_BASE_URL='http://localhost:8080/api/';
-export const SERVICE_BASE_URL='https://45db-103-139-34-238.ngrok.io/api/';
+export const SERVICE_BASE_URL='http://localhost:8080/api/';
+// export const SERVICE_BASE_URL='http://tctmh.eastus.cloudapp.azure.com:8080/tctcampaign/api/';
 
 export const LOGIN_URL=`/v1/auth/login`;
 
@@ -24,7 +24,7 @@ export const POPULATION_ASSOCIATION_ROLE='ROLE_ADMIN';
 export const CAMPAIGNS_SECTION = 'Campaigns'  ;
 export const QUESTIONNAIRE_SECTION = 'Questionnaire';
 export const POPULATION_SECTION = 'Population';
-
+    
 
 //question type
 export const QUESTION_TYPE_TEXT = 'text';
@@ -36,3 +36,4 @@ export const QUESTION_TYPE_DROPDOWN = 'dropdown';
 export const PENDING = 'PENDING'
 export const APPROVE = 'APPROVED';
 export const REJECT = 'REJECTED';
+export const DELETED = 'DELETED';

@@ -7,7 +7,6 @@ const Provider = ({children}) => {
     const [message, setMessage] = useState('');
     const [isErrorDisplayed, setIsErrorDisplayed] = useState(false);
 
-
     return(
         <Context.Provider value={{error, setError,isErrorDisplayed, setIsErrorDisplayed,message, setMessage}}>
             {children}

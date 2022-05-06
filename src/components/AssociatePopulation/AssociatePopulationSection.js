@@ -17,7 +17,7 @@ import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import _ from 'lodash';
 import './AssociatePopulation.scss'
-import { Row, Col } from 'antd';
+import { Row, Col , message} from 'antd';
 import { Button, Fab } from "@mui/material";
 import CloudDownloadIcon from '@mui/icons-material/CloudDownload';
 
@@ -39,6 +39,7 @@ import "antd/dist/antd.css"; // or import "react-awesome-query-builder/css/antd.
 
 import "react-awesome-query-builder/lib/css/styles.css";
 import "react-awesome-query-builder/lib/css/compact_styles.css"; //optional, for more compact styles
+import { TextField } from '@material-ui/core';
 
 // Choose your skin (ant/material/vanilla):
 const InitialConfig = AntdConfig;
@@ -48,8 +49,18 @@ const InitialConfig = AntdConfig;
 const config = {
   ...InitialConfig,
   fields: {
-    block: {
-      label: "block",
+    // block: {
+    //   label: "block",
+    //   type: "text",
+    //   excludeOperators: ["proximity"],
+    //   fieldSettings: {
+    //     min: 0
+    //   },
+    //   valueSources: ["value"],
+    //   preferWidgets: ["number"]
+    // },
+    FAMILY_HEAD_NAME: {
+      label: "Family Head Name",
       type: "text",
       excludeOperators: ["proximity"],
       fieldSettings: {
@@ -58,18 +69,8 @@ const config = {
       valueSources: ["value"],
       preferWidgets: ["number"]
     },
-    form_no: {
-      label: "Form No",
-      type: "number",
-      valueSources: ["value"],
-      // fieldSettings: {
-      //   min: 10,
-      //   max: 100
-      // },
-      // preferWidgets: ["slider", "rangeslider"]
-    },
-    contact_person: {
-      label: "Contact Person",
+    FAMILY_HEAD_ID: {
+      label: "Family Head Id",
       type: "text",
       excludeOperators: ["proximity"],
       fieldSettings: {
@@ -78,6 +79,16 @@ const config = {
       valueSources: ["value"],
       preferWidgets: ["number"]
     },
+    // contact_person: {
+    //   label: "Contact Person",
+    //   type: "text",
+    //   excludeOperators: ["proximity"],
+    //   fieldSettings: {
+    //     min: 0
+    //   },
+    //   valueSources: ["value"],
+    //   preferWidgets: ["number"]
+    // },
     // color: {
     //   label: "Color",
     //   type: "select",
@@ -103,14 +114,17 @@ const AssociatePopulationSection = () => {
   const paginationDefaultData = {
     numberOfRows: 10,
     pageNumber: 0,
-    sqlCondition : ''
+    sqlCondition : '',
+    campaginId : undefined
   }
 
   const loginContext = useContext(Context);
   const errorContext = useContext(ErrorContext);
   const [popData, setPopData] = useState([]);
   const [paginationData, setPaginationData] = useState(paginationDefaultData);
+  const [campaginId , setCampaignId] = useState('');
   const [popDataCount, setPopDataCount] = useState(0);
+  const [updatePage, setUpdatePage] = useState(1);
 
 
   const [state, setState] = useState({
@@ -206,6 +220,28 @@ const AssociatePopulationSection = () => {
       );
   }
 
+  const setCampaignIdToPopulationCall = async () => {
+    const config = {
+      headers: { Authorization: `Bearer ${loginContext.accessToken}` }
+    };
+    const tempData = {...paginationData}
+    tempData.campaignId = campaginId
+    ajax
+      .post(`${SERVICE_BASE_URL}v1/set-population-campaign`, tempData, config)
+      .then((res) => {
+        setUpdatePage(updatePage+1)
+      })
+      .catch((e) => {
+        if (errorHelper(e) == TOKEN_EXPIRED) {
+          loginContext.setTokenExpired(true);
+        } else {
+          errorContext.setIsErrorDisplayed(true);
+          errorContext.setError(errorHelper(e));
+        }
+      }
+      );
+  }
+
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
@@ -235,10 +271,30 @@ const AssociatePopulationSection = () => {
     downloadCsv();
   }
 
+  const setCampaignIdToPopulation = () =>{
+    if(paginationData.sqlCondition == '' || paginationData.sqlCondition == undefined){
+      message.warn('filter something')
+      return
+    }
+    if(campaginId == '' || campaginId == undefined){
+      message.warn('add campaign id')
+      return
+    }
+    setCampaignIdToPopulationCall(campaginId)
+    console.log("pagination", paginationData.sqlCondition)
+    console.log("calling")
+  }
+
   useEffect(() => {
     getData();
     getDataCount();
   }, [paginationData])
+
+  useEffect(() => {
+    setCampaignId('')
+    getData();
+    getDataCount();
+  }, [updatePage])
 
   return (
 
@@ -277,6 +333,25 @@ const AssociatePopulationSection = () => {
         </div> */}
       </div>
 
+        <br/>
+      <Row>
+        <Col span={20}>
+        <TextField
+                    error={false}
+                    id="standard-basic"
+                    label="Enter Campagin Id"
+                    value={campaginId}
+                    variant="outlined"
+                    onChange={(e) => {setCampaignId(e.target.value)}}
+          />
+          <Button style={{ marginLeft: '20px' }} variant="contained" onClick={() => { setCampaignIdToPopulation() }}>
+                          SUBMIT
+          </Button>
+        </Col>
+       
+      </Row>
+
+      <br/>
       <Paper>
         <Row>
         <Col span={14}>

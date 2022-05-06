@@ -451,6 +451,7 @@ const CreateCampain = ({ onCancelCampain, campaignDataFromParent, viewCampaignBo
 
 
     const valueForInupts = (campaignId, sectionId, questionId) => {
+        console.log("kkkkkkkkkkk",campaignId, sectionId, questionId)
         if (Object.keys(campaignDataFromParent).length === 0) {
             return ''
         } else {
@@ -754,6 +755,20 @@ const CreateCampain = ({ onCancelCampain, campaignDataFromParent, viewCampaignBo
                                                                 <br />
                                                                 <br />
                                                                 {
+                                                                 <h3>Type: <span>{question.responseType}</span></h3>   
+                                                                }
+                                                                 <br />
+                                                                {
+                                                                   
+                                                                   question.responseType != "text" && question.responseType != "TEXTBOX" && question.response.length > 0 &&
+                                                                    <h3><span>options: </span></h3>
+                                                                }
+                                                                {   
+                                                                    question.response.map((e, i) => {
+                                                                        return <h3>{e.responseName}</h3>
+                                                                    })
+                                                                 }
+                                                                {/* {
                                                                     question.responseType === QUESTION_TYPE_TEXT &&
                                                                     <TextField
                                                                         fullWidth
@@ -761,8 +776,8 @@ const CreateCampain = ({ onCancelCampain, campaignDataFromParent, viewCampaignBo
                                                                         id="standard-basic"
                                                                         variant="standard"
 
-                                                                        value={valueForInupts(campaignData.campaignId, section.sectionId, question.questionId)}
-                                                                        onChange={(e) => onHandleAnswerChange(e, campaignData.campaignId, section.sectionId, question.questionId)}
+                                                                        value={valueForInupts(campaignData.campaignId,sectionIndex, question.questionId)}
+                                                                        onChange={(e) => onHandleAnswerChange(e, campaignData.campaignId, sectionIndex, question.questionId)}
                                                                     />
 
                                                                 }
@@ -775,9 +790,9 @@ const CreateCampain = ({ onCancelCampain, campaignDataFromParent, viewCampaignBo
                                                                         <Select
                                                                             labelId="demo-simple-select-label"
                                                                             id="demo-simple-select"
-                                                                            value={valueForInupts(campaignData.campaignId, section.sectionId, question.questionId)}
+                                                                            value={valueForInupts(campaignData.campaignId, sectionIndex, question.questionId)}
                                                                             label={'select input'}
-                                                                            onChange={(e) => onHandleAnswerChange(e, campaignData.campaignId, section.sectionId, question.questionId)}
+                                                                            onChange={(e) => onHandleAnswerChange(e, campaignData.campaignId,sectionIndex, question.questionId)}
                                                                         >
                                                                             {
                                                                                 question.response.map((e, i) => {
@@ -793,7 +808,7 @@ const CreateCampain = ({ onCancelCampain, campaignDataFromParent, viewCampaignBo
                                                                     <FormControl component="fieldset">
                                                                         <FormLabel component="legend">options</FormLabel>
                                                                         <RadioGroup
-                                                                            onChange={(e) => onHandleAnswerChange(e, campaignData.campaignId, section.sectionId, question.questionId)}
+                                                                            onChange={(e) => onHandleAnswerChange(e, campaignData.campaignId, sectionIndex, question.questionId)}
                                                                             row aria-label="gender"
                                                                             // value = { valueForInupts(campaignData.campaignId,section.sectionId,question.questionId)}
                                                                             name="row-radio-buttons-group">
@@ -804,7 +819,7 @@ const CreateCampain = ({ onCancelCampain, campaignDataFromParent, viewCampaignBo
                                                                             }
                                                                         </RadioGroup>
                                                                     </FormControl>
-                                                                }
+                                                                } */}
                                                             </Card>
                                                         )
                                                     })}
