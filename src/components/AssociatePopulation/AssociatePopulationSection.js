@@ -69,6 +69,26 @@ const config = {
       valueSources: ["value"],
       preferWidgets: ["number"]
     },
+    CREATED_BY: {
+      label: "Created By",
+      type: "text",
+      excludeOperators: ["proximity"],
+      fieldSettings: {
+        min: 0
+      },
+      valueSources: ["value"],
+      preferWidgets: ["number"]
+    },
+    MOBILE_NUM: {
+      label: "Mobile Num",
+      type: "text",
+      excludeOperators: ["proximity"],
+      fieldSettings: {
+        min: 0
+      },
+      valueSources: ["value"],
+      preferWidgets: ["number"]
+    },
     FAMILY_HEAD_ID: {
       label: "Family Head Id",
       type: "text",
@@ -79,16 +99,16 @@ const config = {
       valueSources: ["value"],
       preferWidgets: ["number"]
     },
-    // contact_person: {
-    //   label: "Contact Person",
-    //   type: "text",
-    //   excludeOperators: ["proximity"],
-    //   fieldSettings: {
-    //     min: 0
-    //   },
-    //   valueSources: ["value"],
-    //   preferWidgets: ["number"]
-    // },
+    contact_person: {
+      label: "Contact Person",
+      type: "text",
+      excludeOperators: ["proximity"],
+      fieldSettings: {
+        min: 0
+      },
+      valueSources: ["value"],
+      preferWidgets: ["number"]
+    },
     // color: {
     //   label: "Color",
     //   type: "select",
