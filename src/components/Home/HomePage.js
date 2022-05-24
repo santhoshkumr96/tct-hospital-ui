@@ -1,6 +1,6 @@
 
 import { useEffect, useState, useContext } from 'react';
-import { CAMPAIGNS_SECTION, POPULATION_SECTION, QUESTIONNAIRE_SECTION, TOKEN_EXPIRED } from '../../config';
+import { CAMPAIGNS_SECTION, POPULATION_SECTION, QUESTIONNAIRE_SECTION, ROLE_ADMIN, TOKEN_EXPIRED, ADD_USER_SECTION } from '../../config';
 import Context from '../Login/LoginAuthProvider/Context';
 import ajax from '../../Helpers/ajaxHelper';
 import { errorHelper } from '../../Helpers/ajaxCatchBlockHelper';
@@ -28,6 +28,7 @@ import {
     VideoCameraOutlined,
     UploadOutlined,
 } from '@ant-design/icons';
+import AddUserSeciton from '../AddUserPage/AddUserSection';
 const { Header, Sider, Content } = Layout;
 const { Paragraph } = Typography;
 
@@ -35,12 +36,6 @@ const { Paragraph } = Typography;
 
 
 const HomePage = () => {
-
-    const actions = [
-        { icon: <FileCopyIcon />, name: CAMPAIGNS_SECTION },
-        { icon: <QuestionAnswerIcon />, name: QUESTIONNAIRE_SECTION },
-        { icon: <StorageIcon />, name: POPULATION_SECTION }
-    ];
 
     const loginContext = useContext(Context);
     const errorContext = useContext(ErrorContext);
@@ -110,6 +105,11 @@ const HomePage = () => {
                     <Menu.Item  onClick={(e) => { selectPage(POPULATION_SECTION) }} key="3" icon={<StorageIcon />}>
                         Associate Population
                     </Menu.Item>
+                    {loginContext.userRole.toString() === ROLE_ADMIN &&
+                        <Menu.Item  onClick={(e) => { selectPage(ADD_USER_SECTION) }} key="4" icon={<StorageIcon />}>
+                            Add User
+                        </Menu.Item>
+                    }
                 </Menu>
             </Sider>
             <Layout className="site-layout">
@@ -134,6 +134,7 @@ const HomePage = () => {
                         {section == QUESTIONNAIRE_SECTION && <QuestionSection />}
                         {section == CAMPAIGNS_SECTION && <CampainSection />}
                         {section == POPULATION_SECTION && <AssociatePopulationSection />}
+                        {section == ADD_USER_SECTION && <AddUserSeciton />}
                         {/* <Box sx={{ position: 'fixed', height: '100%', bottom: '0px', right: '0px', transform: "translateZ(0px)", flexGrow: 1 }}>
                             <Backdrop open={open} />
                             <SpeedDial
