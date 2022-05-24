@@ -175,7 +175,7 @@ const AddUserSeciton = () => {
     <br />
     <br />
     <FormControl fullWidth>
-        <InputLabel id="demo-simple-select-label">Question Category</InputLabel>
+        <InputLabel id="demo-simple-select-label">Select Role</InputLabel>
         <Select
             disabled={false}
             error={false}
