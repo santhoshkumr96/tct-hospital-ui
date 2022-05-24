@@ -11,6 +11,7 @@ import SpeedDialAction from "@mui/material/SpeedDialAction";
 import FileCopyIcon from "@mui/icons-material/FileCopyOutlined";
 import MenuIcon from '@mui/icons-material/Menu';
 import QuestionAnswerIcon from '@mui/icons-material/QuestionAnswer';
+import PersonAddAltIcon from '@mui/icons-material/PersonAddAlt';
 import StorageIcon from '@mui/icons-material/Storage';
 import QuestionSection from '../QuestionPage/QuestionSection';
 import CampainSection from '../CampainPage/CampainSection';
@@ -106,7 +107,7 @@ const HomePage = () => {
                         Associate Population
                     </Menu.Item>
                     {loginContext.userRole.toString() === ROLE_ADMIN &&
-                        <Menu.Item  onClick={(e) => { selectPage(ADD_USER_SECTION) }} key="4" icon={<StorageIcon />}>
+                        <Menu.Item  onClick={(e) => { selectPage(ADD_USER_SECTION) }} key="4" icon={<PersonAddAltIcon />}>
                             Add User
                         </Menu.Item>
                     }
