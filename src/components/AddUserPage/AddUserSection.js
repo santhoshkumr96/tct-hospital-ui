@@ -188,9 +188,6 @@ const AddUserSeciton = () => {
             {roles.map((e)=>(
                   <MenuItem value={e}>{e.name}</MenuItem>
             ))}
-            {/* <MenuItem value={'1'}>Text</MenuItem>
-            <MenuItem value={'2'}>Radio</MenuItem>
-            <MenuItem value={'3'}>Dropdown</MenuItem> */}
         </Select>
     </FormControl>
 

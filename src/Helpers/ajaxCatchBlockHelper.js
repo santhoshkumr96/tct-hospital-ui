@@ -9,7 +9,6 @@ export function errorHelper(e){
         if( e.response.data.message !== undefined && e.response.data.message.includes('JWT expired') ){
             return TOKEN_EXPIRED;
         } else {
-            console.log("cionmginidfjsahgjkdsfhk")
             if(e.response.data.message !== undefined){
                 return e.response.data.message ;
             }
