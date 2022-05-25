@@ -20,12 +20,14 @@ export const CAMPAIN_CREATOR_ROLE='ROLE_USER';
 export const CAMPAIN_APPROVER_ROLE='ROLE_ADMIN';
 export const POPULATION_ASSOCIATION_ROLE='ROLE_ADMIN';
 export const ROLE_ADMIN='ROLE_ADMIN';
+export const ROLE_USER='ROLE_USER';
 
 //section names
 export const CAMPAIGNS_SECTION = 'Campaigns'  ;
 export const QUESTIONNAIRE_SECTION = 'Questionnaire';
 export const POPULATION_SECTION = 'Population';
 export const ADD_USER_SECTION = 'AddUser';
+export const ADD_QUESTION_CATEGORY_SECTION = 'AddQuestionCategory';
 
 //question type
 export const QUESTION_TYPE_TEXT = 'text';

@@ -1,6 +1,6 @@
 
 import { useEffect, useState, useContext } from 'react';
-import { CAMPAIGNS_SECTION, POPULATION_SECTION, QUESTIONNAIRE_SECTION, ROLE_ADMIN, TOKEN_EXPIRED, ADD_USER_SECTION } from '../../config';
+import { CAMPAIGNS_SECTION, POPULATION_SECTION, QUESTIONNAIRE_SECTION, ROLE_ADMIN, TOKEN_EXPIRED, ADD_USER_SECTION, ROLE_USER, ADD_QUESTION_CATEGORY_SECTION } from '../../config';
 import Context from '../Login/LoginAuthProvider/Context';
 import ajax from '../../Helpers/ajaxHelper';
 import { errorHelper } from '../../Helpers/ajaxCatchBlockHelper';
@@ -17,6 +17,7 @@ import QuestionSection from '../QuestionPage/QuestionSection';
 import CampainSection from '../CampainPage/CampainSection';
 import AssociatePopulationSection from '../AssociatePopulation/AssociatePopulationSection';
 import ErrorContext from '../NetworkAuthProvider/ErrorContext';
+import HelpCenterIcon from '@mui/icons-material/HelpCenter';
 import 'antd/dist/antd.css';
 import './Home.scss'
 import { Layout, Menu, Typography } from 'antd';
@@ -30,6 +31,7 @@ import {
     UploadOutlined,
 } from '@ant-design/icons';
 import AddUserSeciton from '../AddUserPage/AddUserSection';
+import AddQuestionCategory from '../AddQuestionCategory/AddQuestionCategory';
 const { Header, Sider, Content } = Layout;
 const { Paragraph } = Typography;
 
@@ -111,6 +113,11 @@ const HomePage = () => {
                             Add User
                         </Menu.Item>
                     }
+                    {loginContext.userRole.toString() === ROLE_USER &&
+                        <Menu.Item  onClick={(e) => { selectPage(ADD_QUESTION_CATEGORY_SECTION) }} key="4" icon={<HelpCenterIcon />}>
+                            Add Question
+                        </Menu.Item>
+                    }
                 </Menu>
             </Sider>
             <Layout className="site-layout">
@@ -136,6 +143,7 @@ const HomePage = () => {
                         {section == CAMPAIGNS_SECTION && <CampainSection />}
                         {section == POPULATION_SECTION && <AssociatePopulationSection />}
                         {section == ADD_USER_SECTION && <AddUserSeciton />}
+                        {section == ADD_QUESTION_CATEGORY_SECTION && <AddQuestionCategory />}
                         {/* <Box sx={{ position: 'fixed', height: '100%', bottom: '0px', right: '0px', transform: "translateZ(0px)", flexGrow: 1 }}>
                             <Backdrop open={open} />
                             <SpeedDial
