@@ -154,7 +154,7 @@ const AddUserSeciton = () => {
       helperText={isUserNameExist?"user name taken": ""}
       fullWidth
       id="standard-basic"
-      label="Enter Usernsame"
+      label="Enter Username"
       variant="outlined"
       value={userName}
       onChange={(e) => { onUserNameEntry(e.target.value) }}
