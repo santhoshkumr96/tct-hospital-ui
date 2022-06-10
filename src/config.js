@@ -3,6 +3,7 @@ export const BASE_PATH='';
 
 export const HOME_PATH=`${BASE_PATH}/`;
 export const LOGIN_PATH =`${BASE_PATH}/login`;
+export const SURVEY_PATH =`${BASE_PATH}/survey`;
 
 export const SERVICE_BASE_URL='http://localhost:8080/api/';
 // export const SERVICE_BASE_URL='http://tctmh.eastus.cloudapp.azure.com:8080/tctcampaign/api/';
