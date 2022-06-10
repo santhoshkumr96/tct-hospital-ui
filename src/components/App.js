@@ -8,7 +8,7 @@ import PrivateRoute from './Login/PrivateRoute/PrivateRoute';
 import NetworkContextProvider from './NetworkAuthProvider/Provider'
 import ToggleContextProvider from './PreTogglesProvider/Provider' 
 import Home from './Home/Home';
-import SurveyTakeSeciton from './SurveyPage/SurveyTakeSection';
+import SurveyTakeSeciton from './SurveyPage/TakeSurveyForPerson/SurveyTakeSection';
 
 function App() {
   return (
@@ -17,8 +17,8 @@ function App() {
         <ToggleContextProvider>
         <Router>
           <Switch>
-            <Route path={LOGIN_PATH} component={Login} />
             <Route path={SURVEY_PATH} render={(props) => <SurveyTakeSeciton {...props} />} />
+            <Route path={LOGIN_PATH} component={Login} />
             <PrivateRoute path={HOME_PATH}>
               <Home />
             </PrivateRoute>

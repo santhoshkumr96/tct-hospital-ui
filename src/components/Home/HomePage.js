@@ -1,6 +1,6 @@
 
 import { useEffect, useState, useContext } from 'react';
-import { CAMPAIGNS_SECTION, POPULATION_SECTION, QUESTIONNAIRE_SECTION, ROLE_ADMIN, TOKEN_EXPIRED, ADD_USER_SECTION, ROLE_USER, ADD_QUESTION_CATEGORY_SECTION } from '../../config';
+import { CAMPAIGNS_SECTION, POPULATION_SECTION, QUESTIONNAIRE_SECTION, ROLE_ADMIN, TOKEN_EXPIRED, ADD_USER_SECTION, ROLE_USER, ADD_QUESTION_CATEGORY_SECTION, ROLE_SURVEYOR, SURVEY_SECTION } from '../../config';
 import Context from '../Login/LoginAuthProvider/Context';
 import ajax from '../../Helpers/ajaxHelper';
 import { errorHelper } from '../../Helpers/ajaxCatchBlockHelper';
@@ -13,6 +13,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import QuestionAnswerIcon from '@mui/icons-material/QuestionAnswer';
 import PersonAddAltIcon from '@mui/icons-material/PersonAddAlt';
 import StorageIcon from '@mui/icons-material/Storage';
+import PollIcon from '@mui/icons-material/Poll';
 import QuestionSection from '../QuestionPage/QuestionSection';
 import CampainSection from '../CampainPage/CampainSection';
 import AssociatePopulationSection from '../AssociatePopulation/AssociatePopulationSection';
@@ -32,6 +33,8 @@ import {
 } from '@ant-design/icons';
 import AddUserSeciton from '../AddUserPage/AddUserSection';
 import AddQuestionCategory from '../AddQuestionCategory/AddQuestionCategory';
+import SurveyTable from '../SurveyPage/SurveyTable';
+import SurveyPersonList from '../SurveyPage/SurveyPersonList';
 const { Header, Sider, Content } = Layout;
 const { Paragraph } = Typography;
 
@@ -44,7 +47,7 @@ const HomePage = () => {
     const errorContext = useContext(ErrorContext);
     const [data, setData] = useState('');
     const [open, setOpen] = useState(false);
-    const [section, setSection] = useState(CAMPAIGNS_SECTION);
+    const [section, setSection] = useState(loginContext.userRole.toString() === ROLE_SURVEYOR ? SURVEY_SECTION : CAMPAIGNS_SECTION);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
     const [searched, setSearched] = useState('');
@@ -99,15 +102,26 @@ const HomePage = () => {
                 <div className="logo" />
                 {/* TCT</div> */}
                 <Menu theme="dark" mode="inline" defaultSelectedKeys={['1']}>
+                    {loginContext.userRole.toString() === ROLE_SURVEYOR &&
+                        <Menu.Item  onClick={(e) => { selectPage(SURVEY_SECTION) }} key="1" icon={<PollIcon />}>
+                            Survey
+                        </Menu.Item>
+                    }
+                    {loginContext.userRole.toString() !== ROLE_SURVEYOR &&
                     <Menu.Item onClick={(e) => { selectPage(CAMPAIGNS_SECTION) }} key="1" icon={<FileCopyIcon />}>
                         Campaign
                     </Menu.Item>
+                    }
+                   {loginContext.userRole.toString() !== ROLE_SURVEYOR && 
                     <Menu.Item  onClick={(e) => { selectPage(QUESTIONNAIRE_SECTION) }} key="2" icon={<QuestionAnswerIcon />}>
                         Questionarre
                     </Menu.Item>
+                    }
+                    {loginContext.userRole.toString() === ROLE_ADMIN &&
                     <Menu.Item  onClick={(e) => { selectPage(POPULATION_SECTION) }} key="3" icon={<StorageIcon />}>
                         Associate Population
-                    </Menu.Item>
+                    </Menu.Item> 
+                    }
                     {loginContext.userRole.toString() === ROLE_ADMIN &&
                         <Menu.Item  onClick={(e) => { selectPage(ADD_USER_SECTION) }} key="4" icon={<PersonAddAltIcon />}>
                             Add User
@@ -144,6 +158,7 @@ const HomePage = () => {
                         {section == POPULATION_SECTION && <AssociatePopulationSection />}
                         {section == ADD_USER_SECTION && <AddUserSeciton />}
                         {section == ADD_QUESTION_CATEGORY_SECTION && <AddQuestionCategory />}
+                        {section == SURVEY_SECTION && <SurveyTable />}
                         {/* <Box sx={{ position: 'fixed', height: '100%', bottom: '0px', right: '0px', transform: "translateZ(0px)", flexGrow: 1 }}>
                             <Backdrop open={open} />
                             <SpeedDial
