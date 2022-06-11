@@ -45,3 +45,4 @@ export const PENDING = 'PENDING'
 export const APPROVE = 'APPROVED';
 export const REJECT = 'REJECTED';
 export const DELETED = 'DELETED';
+export const CLOSED = 'CLOSED';

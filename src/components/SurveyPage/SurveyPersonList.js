@@ -13,11 +13,12 @@ import ajax from '../../Helpers/ajaxHelper';
 import { errorHelper } from '../../Helpers/ajaxCatchBlockHelper';
 import ErrorContext from '../NetworkAuthProvider/ErrorContext';
 import ToggleContext from '../PreTogglesProvider/ErrorContext';
-import { SERVICE_BASE_URL, TOKEN_EXPIRED } from '../../config';
+import { CLOSED, SERVICE_BASE_URL, TOKEN_EXPIRED } from '../../config';
 import CancelPresentationIcon from '@mui/icons-material/CancelPresentation';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { Row, Col , message} from 'antd';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 
 const SurveyPersonList = ({hideTable,surveyId,campaignId}) => {
 
@@ -122,6 +123,18 @@ const SurveyPersonList = ({hideTable,surveyId,campaignId}) => {
     window.open(url, "_blank")
   }
 
+  const copySurveyPage = (data) => {
+    let personId = String(data.personId);
+    let survey = String(surveyId);
+    let url = "http://localhost:3000/api/survey?surveyId=";
+    url = url.concat(survey+"&personId=");
+    url = url.concat(personId+"&user=");
+    url = url.concat(loginContext.userId+"&campaignId=");
+    url = url.concat(campaignId)
+    navigator.clipboard.writeText(url);
+    message.success('URL copied')
+  }
+
 
   useEffect(() => {
     getDataCount();
@@ -185,11 +198,19 @@ const SurveyPersonList = ({hideTable,surveyId,campaignId}) => {
                     <TableCell align="left">{row.district}</TableCell>
                     <TableCell align="left">{row.block}</TableCell>
                     <TableCell align="left">{row.statusDesc}</TableCell>
-                    <TableCell align="left">
-                        <Button onClick={() => { takeToSurveyPage(row) }}>
-                                  <VisibilityIcon />
-                        </Button>
-                    </TableCell>
+                    {row.statusDesc !== CLOSED && 
+                      <TableCell align="left">
+                          <Button onClick={() => { takeToSurveyPage(row) }}>
+                                    <VisibilityIcon />
+                          </Button>
+                          <Button onClick={() => { copySurveyPage(row) }}>
+                                    <ContentCopyIcon />
+                          </Button>
+                      </TableCell>
+                    }
+                    {row.statusDesc === CLOSED && 
+                      <TableCell align="left">{''}</TableCell>
+                    }
                   </TableRow>
               ))
             }

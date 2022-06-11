@@ -26,6 +26,7 @@ const SurveyTakeSeciton = () => {
   const [answerData, setAnswerData] = useState({})
   const [answerState, setAnswerState] = useState({})
   const [answerStateInit, setAnswerStateInit] = useState(false)
+  const [isSurveyDone, setIsSurveyDone] = useState(false)
 
   const getData = async (campaignId) => {
     const config = {};
@@ -46,6 +47,19 @@ const SurveyTakeSeciton = () => {
       .post(`${SERVICE_BASE_URL}v1/set-survey-answer`, data, config)
       .then((res) => {
         message.success('survey submitted')
+      })
+      .catch((e) => {
+        message.error('error pls try again later')
+      }
+      );
+  }
+
+  const checkIfSurveyDone = async (surveyId,personId) => {
+    const config = {};
+    ajax
+      .post(`${SERVICE_BASE_URL}v1/check-if-survey-closed`, {surveyId,personId}, config)
+      .then((res) => {
+        setIsSurveyDone(res);
       })
       .catch((e) => {
         message.error('error pls try again later')
@@ -141,14 +155,14 @@ const SurveyTakeSeciton = () => {
     setPersonId(params.get('personId'))
     setCampaignIdFromLink(params.get('campaignId'))
     setUserId(params.get('user'))
-   
+    checkIfSurveyDone(params.get('surveyId'),params.get('personId'));
     getData(params.get('campaignId'));
   }, [])
 
   return (
 
     <div className="add-user-wrapper-wrapper">
-      {
+      { !setIsSurveyDone &&
         Object.keys(campaignData).length > 0 && campaignData.sections.map((section, index)=> {
           return (
             <Row>
@@ -202,9 +216,14 @@ const SurveyTakeSeciton = () => {
           )
         })
       }
-      <Button style={{ marginBottom: 20 }}  onClick={() => { onSubmitData() }} variant="contained">
-        <DoneIcon />
-      </Button>
+       { !setIsSurveyDone &&
+        <Button style={{ marginBottom: 20 }}  onClick={() => { onSubmitData() }} variant="contained">
+          <DoneIcon />
+        </Button>
+      }
+      { setIsSurveyDone &&
+        <p> This survey is already taken for the person, thanks!.</p>
+      }
     </div>
 
   )
