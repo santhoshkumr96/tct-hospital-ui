@@ -11,7 +11,7 @@ const SurveyTakeSeciton = () => {
     const params = new URLSearchParams(window.location.search)
     setSurveyId(params.get('surveyId'))
     setPersonId(params.get('personId'))
-    setUserId(params.get('userId'))
+    setUserId(params.get('user'))
   }, [])
 
   return (

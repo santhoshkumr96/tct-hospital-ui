@@ -49,18 +49,8 @@ const InitialConfig = AntdConfig;
 const config = {
   ...InitialConfig,
   fields: {
-    // block: {
-    //   label: "block",
-    //   type: "text",
-    //   excludeOperators: ["proximity"],
-    //   fieldSettings: {
-    //     min: 0
-    //   },
-    //   valueSources: ["value"],
-    //   preferWidgets: ["number"]
-    // },
-    FAMILY_HEAD_NAME: {
-      label: "Family Head Name",
+    Panchayat: {
+      label: "Panchayat",
       type: "text",
       excludeOperators: ["proximity"],
       fieldSettings: {
@@ -69,8 +59,8 @@ const config = {
       valueSources: ["value"],
       preferWidgets: ["number"]
     },
-    CREATED_BY: {
-      label: "Created By",
+    Taluk: {
+      label: "Taluk",
       type: "text",
       excludeOperators: ["proximity"],
       fieldSettings: {
@@ -79,8 +69,8 @@ const config = {
       valueSources: ["value"],
       preferWidgets: ["number"]
     },
-    MOBILE_NUM: {
-      label: "Mobile Num",
+    Block	: {
+      label: "Block	",
       type: "text",
       excludeOperators: ["proximity"],
       fieldSettings: {
@@ -89,8 +79,8 @@ const config = {
       valueSources: ["value"],
       preferWidgets: ["number"]
     },
-    FAMILY_HEAD_ID: {
-      label: "Family Head Id",
+    Village_Code: {
+      label: "Village Code",
       type: "text",
       excludeOperators: ["proximity"],
       fieldSettings: {
@@ -99,28 +89,24 @@ const config = {
       valueSources: ["value"],
       preferWidgets: ["number"]
     },
-    contact_person: {
-      label: "Contact Person",
-      type: "text",
-      excludeOperators: ["proximity"],
+    Age: {
+      label: "Age",
+      type: "number",
       fieldSettings: {
         min: 0
       },
       valueSources: ["value"],
       preferWidgets: ["number"]
     },
-    // color: {
-    //   label: "Color",
-    //   type: "select",
-    //   valueSources: ["value"],
-    //   fieldSettings: {
-    //     listValues: [
-    //       { value: "yellow", title: "Yellow" },
-    //       { value: "green", title: "Green" },
-    //       { value: "orange", title: "Orange" }
-    //     ]
-    //   }
-    // }
+    Area_Code: {
+      label: "Area Code",
+      type: "number",
+      fieldSettings: {
+        min: 0
+      },
+      valueSources: ["value"],
+      preferWidgets: ["number"]
+    },
   }
 };
 
@@ -143,6 +129,7 @@ const AssociatePopulationSection = () => {
   const [popData, setPopData] = useState([]);
   const [paginationData, setPaginationData] = useState(paginationDefaultData);
   const [campaginId , setCampaignId] = useState('');
+  const [surveyName , setSurveyName] = useState('');
   const [popDataCount, setPopDataCount] = useState(0);
   const [updatePage, setUpdatePage] = useState(1);
 
@@ -180,7 +167,7 @@ const AssociatePopulationSection = () => {
       headers: { Authorization: `Bearer ${loginContext.accessToken}` }
     };
     ajax
-      .post(`${SERVICE_BASE_URL}v1/population-data-pagination`, paginationData, config)
+      .post(`${SERVICE_BASE_URL}v1/survey-data-pagination`, paginationData, config)
       .then((res) => {
         // console.log(res.data);
         setPopData(res.data);
@@ -200,7 +187,7 @@ const AssociatePopulationSection = () => {
       headers: { Authorization: `Bearer ${loginContext.accessToken}` }
     };
     ajax
-      .post(`${SERVICE_BASE_URL}v1/get-population-count`, paginationData, config)
+      .post(`${SERVICE_BASE_URL}v1/get-survey-count`, paginationData, config)
       .then((res) => {
         setPopDataCount(res.data);
       })
@@ -220,7 +207,7 @@ const AssociatePopulationSection = () => {
       headers: { Authorization: `Bearer ${loginContext.accessToken}` }
     };
     ajax
-      .post(`${SERVICE_BASE_URL}v1/download`, paginationData, config)
+      .post(`${SERVICE_BASE_URL}v1/survey-download`, paginationData, config)
       .then((res) => {
           const url = window.URL.createObjectURL(new Blob([res.data]));
           const link = document.createElement('a');
@@ -246,10 +233,12 @@ const AssociatePopulationSection = () => {
     };
     const tempData = {...paginationData}
     tempData.campaignId = campaginId
+    tempData.surveyName = surveyName
     ajax
-      .post(`${SERVICE_BASE_URL}v1/set-population-campaign`, tempData, config)
+      .post(`${SERVICE_BASE_URL}v1/set-survey-population-campaign`, tempData, config)
       .then((res) => {
         setUpdatePage(updatePage+1)
+        message.success('survey opened')
       })
       .catch((e) => {
         if (errorHelper(e) == TOKEN_EXPIRED) {
@@ -300,9 +289,12 @@ const AssociatePopulationSection = () => {
       message.warn('add campaign id')
       return
     }
-    setCampaignIdToPopulationCall(campaginId)
-    console.log("pagination", paginationData.sqlCondition)
-    console.log("calling")
+    if(surveyName == '' || surveyName == undefined){
+      message.warn('add survey name')
+      return
+    }
+    setCampaignIdToPopulationCall()
+
   }
 
   useEffect(() => {
@@ -312,6 +304,7 @@ const AssociatePopulationSection = () => {
 
   useEffect(() => {
     setCampaignId('')
+    setSurveyName('')
     getData();
     getDataCount();
   }, [updatePage])
@@ -357,6 +350,17 @@ const AssociatePopulationSection = () => {
       <Row>
         <Col span={20}>
         <TextField
+                    style={{ marginRight: '20px' }}
+                    error={false}
+                    id="standard-basic"
+                    label="Enter Survey Name"
+                    value={surveyName}
+                    variant="outlined"
+                    onChange={(e) => {setSurveyName(e.target.value)}}
+          />
+
+        
+        <TextField
                     error={false}
                     id="standard-basic"
                     label="Enter Campagin Id"
@@ -364,8 +368,9 @@ const AssociatePopulationSection = () => {
                     variant="outlined"
                     onChange={(e) => {setCampaignId(e.target.value)}}
           />
+
           <Button style={{ marginLeft: '20px' }} variant="contained" onClick={() => { setCampaignIdToPopulation() }}>
-                          SUBMIT
+                SUBMIT
           </Button>
         </Col>
        

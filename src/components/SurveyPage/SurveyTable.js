@@ -18,12 +18,14 @@ import { SERVICE_BASE_URL, TOKEN_EXPIRED } from '../../config';
 import CancelPresentationIcon from '@mui/icons-material/CancelPresentation';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import SurveyPersonList from './SurveyPersonList';
+import ArrowCircleDownIcon from '@mui/icons-material/ArrowCircleDown';
 
 const SurveyTable = () => {
 
   const loginContext = useContext(Context);
   const errorContext = useContext(ErrorContext);
   const toggleContext = useContext(ToggleContext);
+  const [surveyCampaignList, setSurveyCampaignList] = useState([])
   const [userName, setUserName] = useState('')
   const [password, setPassword] = useState('')
   const [roles, setRoles] = useState([])
@@ -31,14 +33,50 @@ const SurveyTable = () => {
   const [userList, setUserList] = useState([])
   const [isUserNameExist, setIsUserNameExist] = useState(false);
   const [isPasswordValid, setIsPasswordValid] = useState(false);
+  const [viewSurveyId, setViewSurveyId] = useState(0);
+  const [viewCampaignId, setViewCampaignId] = useState(0);
+  const [viewSurveyPeopleBool, setViewSurveyPeopleBool] = useState(false);
 
-  useEffect(() => {
+  const getData = async () => {
+    const config = {
+      headers: { Authorization: `Bearer ${loginContext.accessToken}` }
+    };
+    ajax
+      .get(`${SERVICE_BASE_URL}v1/get-survey-campaign-list`, {}, config)
+      .then((res) => {
+        setSurveyCampaignList(res.data)
+        console.log(res.data);
+      })
+      .catch((e) => {
+        if (errorHelper(e) == TOKEN_EXPIRED) {
+          loginContext.setTokenExpired(true);
+        } else {
+          errorContext.setIsErrorDisplayed(true);
+          errorContext.setError(errorHelper(e));
+        }
+      }
+      );
+  }
+
+  const viewSurveyPeopleTable = (surveyData) => {
+    setViewSurveyId(surveyData.surveyId)
+    setViewCampaignId(surveyData.campaignId)
+    setViewSurveyPeopleBool(true);
+  }
+
+  const viewSurveyTable = (surveyData) => {
+    setViewSurveyPeopleBool(false);
+  }
+
+  useEffect(() => { 
+    getData();
   }, [])
 
   return (
 
     <div className="add-user-wrapper-wrapper">
-      
+    {
+      !viewSurveyPeopleBool && 
     <TableContainer >
       <Table sx={{ minWidth: 800 }} stickyHeader aria-label="sticky table">
         <TableHead id='question-table-head'>
@@ -52,41 +90,37 @@ const SurveyTable = () => {
           </TableRow>
         </TableHead>
         <TableBody>
-            {/* {
-              userList.map((row, index) => (
+            {
+              surveyCampaignList.map((row, index) => (
                   <TableRow
                   sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                   >
                     <TableCell align="left">{index+1}</TableCell>
-                    <TableCell align="left">{row.username}</TableCell>
-                    <TableCell align="left">{row.role}</TableCell>
-                    <TableCell align="left">{row.password}</TableCell>
-                  </TableRow>
-              ))
-            } */}
-                  <TableRow
-                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                    >
-                    <TableCell align="left">{'1'}</TableCell>
-                    <TableCell align="left">{'test'}</TableCell>
-                    <TableCell align="left">{'test'}</TableCell>
-                    <TableCell align="left">{'test'}</TableCell>
-                    <TableCell align="left">{'test'}</TableCell>
+                    <TableCell align="left">{row.surveyId}</TableCell>
+                    <TableCell align="left">{row.surveyName}</TableCell>
+                    <TableCell align="left">{row.campaignId}</TableCell>
+                    <TableCell align="left">{row.campaignName}</TableCell>
                     <TableCell align="left">
-                        <Button onClick={() => { }}>
+                        <Button onClick={() => { viewSurveyPeopleTable(row) }}>
                                   <VisibilityIcon />
                         </Button>
                         <Button onClick={() => { }}>
-                                  <CancelPresentationIcon />
+                                  <ArrowCircleDownIcon />
                         </Button>
                     </TableCell>
                   </TableRow>
+              ))
+            }
         </TableBody>
       </Table>
     </TableContainer>
-
-    <SurveyPersonList />
-
+    }  
+    {
+      
+      viewSurveyPeopleBool && 
+      <SurveyPersonList hideTable={viewSurveyTable} surveyId={viewSurveyId} campaignId={viewCampaignId}/>
+    }
+    
     </div>
 
   )
