@@ -59,7 +59,7 @@ const SurveyTakeSeciton = () => {
     ajax
       .post(`${SERVICE_BASE_URL}v1/check-if-survey-closed`, {surveyId,personId}, config)
       .then((res) => {
-        setIsSurveyDone(res);
+        setIsSurveyDone(res.data);
       })
       .catch((e) => {
         message.error('error pls try again later')
@@ -162,7 +162,7 @@ const SurveyTakeSeciton = () => {
   return (
 
     <div className="add-user-wrapper-wrapper">
-      { !setIsSurveyDone &&
+      { !isSurveyDone &&
         Object.keys(campaignData).length > 0 && campaignData.sections.map((section, index)=> {
           return (
             <Row>
@@ -216,12 +216,12 @@ const SurveyTakeSeciton = () => {
           )
         })
       }
-       { !setIsSurveyDone &&
+       { !isSurveyDone &&
         <Button style={{ marginBottom: 20 }}  onClick={() => { onSubmitData() }} variant="contained">
           <DoneIcon />
         </Button>
       }
-      { setIsSurveyDone &&
+      { isSurveyDone &&
         <p> This survey is already taken for the person, thanks!.</p>
       }
     </div>
