@@ -34,8 +34,10 @@ export const SURVEY_SECTION = 'SurveySection';
 
 //question type
 export const QUESTION_TYPE_TEXT = 'text';
+export const QUESTION_TYPE_TEXTBOX = 'TEXTBOX';
 export const QUESTION_TYPE_RADIO = 'radio';
 export const QUESTION_TYPE_DROPDOWN = 'dropdown';
+export const QUESTION_TYPE_CHECKBOX = 'checkbox';
 
 
 //approve and reject 

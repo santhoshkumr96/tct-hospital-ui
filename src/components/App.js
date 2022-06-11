@@ -14,17 +14,17 @@ function App() {
   return (
     <NetworkContextProvider>
       <LoginContextProvider>
-        <ToggleContextProvider>
         <Router>
           <Switch>
             <Route path={SURVEY_PATH} render={(props) => <SurveyTakeSeciton {...props} />} />
             <Route path={LOGIN_PATH} component={Login} />
             <PrivateRoute path={HOME_PATH}>
-              <Home />
+              <ToggleContextProvider>
+                <Home />
+              </ToggleContextProvider>
             </PrivateRoute>
           </Switch>
         </Router>
-        </ToggleContextProvider>
       </LoginContextProvider>
     </NetworkContextProvider>
   );

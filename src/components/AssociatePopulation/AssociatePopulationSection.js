@@ -382,7 +382,7 @@ const AssociatePopulationSection = () => {
         <Col span={14}>
             <TablePagination
               className="pagnation-div"
-              rowsPerPageOptions={[10, 25, 100]}
+              rowsPerPageOptions={[10, 25, 100, 1000]}
               component="div"
               count={popDataCount}
               rowsPerPage={rowsPerPage}

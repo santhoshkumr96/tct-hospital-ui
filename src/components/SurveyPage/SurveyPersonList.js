@@ -1,7 +1,6 @@
 import { useContext, useState, React , useEffect} from 'react';
 import { TextField, InputLabel, Select, MenuItem, Button } from '@mui/material';
 import FormControl from '@mui/material/FormControl';
-import { Alert, message } from 'antd';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -18,6 +17,7 @@ import { SERVICE_BASE_URL, TOKEN_EXPIRED } from '../../config';
 import CancelPresentationIcon from '@mui/icons-material/CancelPresentation';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { Row, Col , message} from 'antd';
 
 const SurveyPersonList = ({hideTable,surveyId,campaignId}) => {
 
@@ -36,11 +36,31 @@ const SurveyPersonList = ({hideTable,surveyId,campaignId}) => {
   const [password, setPassword] = useState('')
   const [roles, setRoles] = useState([])
   const [selectedRole, setSelectedRole] = useState('')
-  const [userList, setUserList] = useState([])
+  const [popData, setPopData] = useState([]);
   const [isUserNameExist, setIsUserNameExist] = useState(false);
   const [isPasswordValid, setIsPasswordValid] = useState(false);
-  const [paginationData, setPagniationData] = useState(paginationDefaultData);
+  const [paginationData, setPaginationData] = useState(paginationDefaultData);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [popDataCount, setPopDataCount] = useState(0);
 
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+    let temp = paginationData;
+    paginationData.pageNumber = newPage;
+    setPaginationData({ ...temp });
+    // getData();
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(+event.target.value);
+    setPage(0);
+    let temp = paginationData;
+    paginationData.pageNumber = 0;
+    paginationData.numberOfRows = (+event.target.value);
+    setPaginationData({ ...temp });
+    // getData();
+  };
 
   const getData = async () => {
     const config = {
@@ -53,7 +73,31 @@ const SurveyPersonList = ({hideTable,surveyId,campaignId}) => {
     ajax
       .post(`${SERVICE_BASE_URL}v1/get-survey-people-list`, tempData, config)
       .then((res) => {
-        setUserList(res.data);
+        setPopData(res.data);
+      })
+      .catch((e) => {
+        if (errorHelper(e) == TOKEN_EXPIRED) {
+          loginContext.setTokenExpired(true);
+        } else {
+          errorContext.setIsErrorDisplayed(true);
+          errorContext.setError(errorHelper(e));
+        }
+      }
+      );
+  }
+
+  const getDataCount = async () => {
+    const config = {
+      headers: { Authorization: `Bearer ${loginContext.accessToken}` }
+    };
+
+    const tempData = {...paginationData}
+    tempData.surveyId = surveyId
+
+    ajax
+      .post(`${SERVICE_BASE_URL}v1/get-survey-people-list-count`, tempData, config)
+      .then((res) => {
+        setPopDataCount(res.data);
       })
       .catch((e) => {
         if (errorHelper(e) == TOKEN_EXPIRED) {
@@ -78,17 +122,41 @@ const SurveyPersonList = ({hideTable,surveyId,campaignId}) => {
     window.open(url, "_blank")
   }
 
+
+  useEffect(() => {
+    getDataCount();
+  }, [])
+
   useEffect(() => {
     getData();
-  }, [])
+  }, [paginationData])
+
 
   return (
 
+
+
     <div className="add-user-wrapper-wrapper">
 
-    <Button style={{ marginBottom: 20 }}  onClick={() => { hideTable() }} variant="contained">
+    <Row>
+      <Col>
+        <Button style={{ marginBottom: 20 }}  onClick={() => { hideTable() }} variant="contained">
           <ArrowBackIcon />
-    </Button>
+        </Button>
+      </Col>
+      <Col>
+          <TablePagination
+                    className="pagnation-div"
+                    rowsPerPageOptions={[10, 25, 100, 1000]}
+                    component="div"
+                    count={popDataCount}
+                    rowsPerPage={rowsPerPage}
+                    page={page}
+                    onPageChange={handleChangePage}
+                    onRowsPerPageChange={handleChangeRowsPerPage}
+          />
+      </Col>
+    </Row>
       
     <TableContainer >
       <Table sx={{ minWidth: 800 }} stickyHeader aria-label="sticky table">
@@ -106,7 +174,7 @@ const SurveyPersonList = ({hideTable,surveyId,campaignId}) => {
         </TableHead>
         <TableBody>
            {
-              userList.map((row, index) => (
+              popData.map((row, index) => (
                   <TableRow
                   sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                   >
