@@ -13,6 +13,7 @@ import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import DoneIcon from '@mui/icons-material/Done';
 import { Button, Fab } from "@mui/material";
+import './SurveyPage.css'
 
 
 const SurveyTakeSeciton = () => {
@@ -47,6 +48,7 @@ const SurveyTakeSeciton = () => {
       .post(`${SERVICE_BASE_URL}v1/set-survey-answer`, data, config)
       .then((res) => {
         message.success('survey submitted')
+        checkIfSurveyDone(data.surveyId, data.personId)
       })
       .catch((e) => {
         message.error('error pls try again later')
@@ -165,18 +167,17 @@ const SurveyTakeSeciton = () => {
       { !isSurveyDone &&
         Object.keys(campaignData).length > 0 && campaignData.sections.map((section, index)=> {
           return (
-            <Row>
+            <Row className="section-row">
               <Col>
-                  <p>{section.title}</p>
+                  <p>{'Section Name :'+section.title}</p>
                   {
                     section.questions.map((question, qindex)=> {
                       return (
-                        <Row>
+                        <Row className="question-row">
                           <Col>
                             {!answerStateInit && updateInitialAnswerState(question)}
-                            <p>{question.questionId}</p>
-                            <p>{question.questionName}</p>
-                            <p>{question.questionDesc}</p>
+                            <p>{question.questionId+' : '+question.questionName}</p>
+                            <p>{'Question Desc :'+question.questionDesc}</p>
                             {
                               (question.responseType === QUESTION_TYPE_TEXT || question.responseType === QUESTION_TYPE_TEXTBOX) && 
                               <Input onChange={(event)=>onTextChange(event,question)} placeholder="Basic usage" />
@@ -217,9 +218,13 @@ const SurveyTakeSeciton = () => {
         })
       }
        { !isSurveyDone &&
-        <Button style={{ marginBottom: 20 }}  onClick={() => { onSubmitData() }} variant="contained">
-          <DoneIcon />
-        </Button>
+          <Row>
+            <Col>
+              <Button style={{ margin: 20 , float : 'right'}}  onClick={() => { onSubmitData() }} variant="contained">
+                <DoneIcon />
+              </Button>
+            </Col>
+          </Row>
       }
       { isSurveyDone &&
         <p> This survey is already taken for the person, thanks!.</p>

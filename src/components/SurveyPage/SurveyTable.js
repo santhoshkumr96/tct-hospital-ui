@@ -58,6 +58,32 @@ const SurveyTable = () => {
       );
   }
 
+  const getDownLoadData = async (surveyId) => {
+    const config = {
+    };
+    ajax
+      .post(`${SERVICE_BASE_URL}v1/get-survey-answers`, {surveyId}, config)
+      .then((res) => {
+        console.log(res.data);
+        const url = window.URL.createObjectURL(new Blob([res.data]));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', 'surveydata.csv'); //or any other extension
+        document.body.appendChild(link);
+        link.click();
+      })
+      .catch((e) => {
+        if (errorHelper(e) == TOKEN_EXPIRED) {
+          loginContext.setTokenExpired(true);
+        } else {
+          errorContext.setIsErrorDisplayed(true);
+          errorContext.setError(errorHelper(e));
+        }
+      }
+      );
+  }
+
+
   const viewSurveyPeopleTable = (surveyData) => {
     setViewSurveyId(surveyData.surveyId)
     setViewCampaignId(surveyData.campaignId)
@@ -66,6 +92,10 @@ const SurveyTable = () => {
 
   const viewSurveyTable = (surveyData) => {
     setViewSurveyPeopleBool(false);
+  }
+
+  const downloadSurveyData = (row) => {
+    getDownLoadData(row.surveyId);
   }
 
   useEffect(() => { 
@@ -104,7 +134,7 @@ const SurveyTable = () => {
                         <Button onClick={() => { viewSurveyPeopleTable(row) }}>
                                   <VisibilityIcon />
                         </Button>
-                        <Button onClick={() => { }}>
+                        <Button onClick={() => {downloadSurveyData(row) }}>
                                   <ArrowCircleDownIcon />
                         </Button>
                     </TableCell>

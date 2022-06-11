@@ -209,6 +209,7 @@ const AssociatePopulationSection = () => {
     ajax
       .post(`${SERVICE_BASE_URL}v1/survey-download`, paginationData, config)
       .then((res) => {
+          console.log(res.data)
           const url = window.URL.createObjectURL(new Blob([res.data]));
           const link = document.createElement('a');
           link.href = url;

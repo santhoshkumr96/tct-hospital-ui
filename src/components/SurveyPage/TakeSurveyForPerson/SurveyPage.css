@@ -1,0 +1,15 @@
+.section-row {
+    /* border: 0.5px solid #0583D2; */
+    margin: 10px;
+    padding: 10px;
+    border-radius: 100;
+    background-color: #e6f4fa;
+}
+
+.question-row{
+    border: 0.5px solid #0583D2;
+    margin: 10px;
+    padding: 10px;
+    border-radius: 100;
+    width: 100%;
+}
