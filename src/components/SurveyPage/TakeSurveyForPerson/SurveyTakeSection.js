@@ -16,13 +16,9 @@ import { Button, Fab } from "@mui/material";
 import './SurveyPage.css'
 
 
-const SurveyTakeSeciton = () => {
+const SurveyTakeSeciton = (props) => {
 
   const errorContext = useContext(ErrorContext);
-  const [surveyId, setSurveyId] = useState(-1);
-  const [personId, setPersonId] = useState(-1);
-  const [campaignIdFromLink, setCampaignIdFromLink] = useState(-1);
-  const [userId, setUserId] = useState(-1);
   const [campaignData, setCampaignData] = useState({})
   const [answerData, setAnswerData] = useState({})
   const [answerState, setAnswerState] = useState({})
@@ -49,6 +45,7 @@ const SurveyTakeSeciton = () => {
       .then((res) => {
         message.success('survey submitted')
         checkIfSurveyDone(data.surveyId, data.personId)
+        props.closeTakeSurvey();
       })
       .catch((e) => {
         message.error('error pls try again later')
@@ -143,22 +140,16 @@ const SurveyTakeSeciton = () => {
     if(isValid){
       const temp = {}
       temp['data'] = answerData;
-      temp['surveyId'] = surveyId;
-      temp['user'] = userId;
-      temp['personId'] = personId;
-      console.log(temp);
+      temp['surveyId'] = props.surveyId;
+      temp['user'] = props.user;
+      temp['personId'] = props.personId;
       setAnswer(temp);
     }
   }
   
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search)
-    setSurveyId(params.get('surveyId'))
-    setPersonId(params.get('personId'))
-    setCampaignIdFromLink(params.get('campaignId'))
-    setUserId(params.get('user'))
-    checkIfSurveyDone(params.get('surveyId'),params.get('personId'));
-    getData(params.get('campaignId'));
+    checkIfSurveyDone(props.surveyId,props.personId);
+    getData(props.campaignId);
   }, [])
 
   return (
