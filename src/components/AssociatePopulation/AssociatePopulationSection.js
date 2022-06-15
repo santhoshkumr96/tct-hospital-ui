@@ -49,8 +49,8 @@ const InitialConfig = AntdConfig;
 const config = {
   ...InitialConfig,
   fields: {
-    Panchayat: {
-      label: "Panchayat",
+    District: {
+      label: "District",
       type: "text",
       excludeOperators: ["proximity"],
       fieldSettings: {
@@ -69,8 +69,28 @@ const config = {
       valueSources: ["value"],
       preferWidgets: ["number"]
     },
-    Block	: {
-      label: "Block	",
+    Block: {
+      label: "Block",
+      type: "text",
+      excludeOperators: ["proximity"],
+      fieldSettings: {
+        min: 0
+      },
+      valueSources: ["value"],
+      preferWidgets: ["number"]
+    },
+    Panchayat: {
+      label: "Panchayat",
+      type: "text",
+      excludeOperators: ["proximity"],
+      fieldSettings: {
+        min: 0
+      },
+      valueSources: ["value"],
+      preferWidgets: ["number"]
+    },
+    Area_Code: {
+      label: "Area_Code",
       type: "text",
       excludeOperators: ["proximity"],
       fieldSettings: {
@@ -80,7 +100,1037 @@ const config = {
       preferWidgets: ["number"]
     },
     Village_Code: {
-      label: "Village Code",
+      label: "Village_Code",
+      type: "text",
+      excludeOperators: ["proximity"],
+      fieldSettings: {
+        min: 0
+      },
+      valueSources: ["value"],
+      preferWidgets: ["number"]
+    },
+    Village: {
+      label: "Village",
+      type: "text",
+      excludeOperators: ["proximity"],
+      fieldSettings: {
+        min: 0
+      },
+      valueSources: ["value"],
+      preferWidgets: ["number"]
+    },
+    Street_Name: {
+      label: "Street_Name",
+      type: "text",
+      excludeOperators: ["proximity"],
+      fieldSettings: {
+        min: 0
+      },
+      valueSources: ["value"],
+      preferWidgets: ["number"]
+    },
+    Door_No: {
+      label: "Door_No",
+      type: "text",
+      excludeOperators: ["proximity"],
+      fieldSettings: {
+        min: 0
+      },
+      valueSources: ["value"],
+      preferWidgets: ["number"]
+    },
+    Respondent_Name: {
+      label: "Respondent_Name",
+      type: "text",
+      excludeOperators: ["proximity"],
+      fieldSettings: {
+        min: 0
+      },
+      valueSources: ["value"],
+      preferWidgets: ["number"]
+    },
+    Mobile_No: {
+      label: "Mobile_No",
+      type: "text",
+      excludeOperators: ["proximity"],
+      fieldSettings: {
+        min: 0
+      },
+      valueSources: ["value"],
+      preferWidgets: ["number"]
+    },
+    Is_SmartPhone: {
+      label: "Is_SmartPhone",
+      type: "text",
+      excludeOperators: ["proximity"],
+      fieldSettings: {
+        min: 0
+      },
+      valueSources: ["value"],
+      preferWidgets: ["number"]
+    },
+    Family_Caste: {
+      label: "Family_Caste",
+      type: "text",
+      excludeOperators: ["proximity"],
+      fieldSettings: {
+        min: 0
+      },
+      valueSources: ["value"],
+      preferWidgets: ["number"]
+    },
+    Sub_Caste: {
+      label: "Sub_Caste",
+      type: "text",
+      excludeOperators: ["proximity"],
+      fieldSettings: {
+        min: 0
+      },
+      valueSources: ["value"],
+      preferWidgets: ["number"]
+    },
+    Family_Id: {
+      label: "Family_Id",
+      type: "text",
+      excludeOperators: ["proximity"],
+      fieldSettings: {
+        min: 0
+      },
+      valueSources: ["value"],
+      preferWidgets: ["number"]
+    },
+    Date_of_Connection: {
+      label: "Date_of_Connection",
+      type: "text",
+      excludeOperators: ["proximity"],
+      fieldSettings: {
+        min: 0
+      },
+      valueSources: ["value"],
+      preferWidgets: ["number"]
+    },
+    Member_Name: {
+      label: "Member_Name",
+      type: "text",
+      excludeOperators: ["proximity"],
+      fieldSettings: {
+        min: 0
+      },
+      valueSources: ["value"],
+      preferWidgets: ["number"]
+    },
+    Gender: {
+      label: "Gender",
+      type: "text",
+      excludeOperators: ["proximity"],
+      fieldSettings: {
+        min: 0
+      },
+      valueSources: ["value"],
+      preferWidgets: ["number"]
+    },
+    Relationship_to_Head: {
+      label: "Relationship_to_Head",
+      type: "text",
+      excludeOperators: ["proximity"],
+      fieldSettings: {
+        min: 0
+      },
+      valueSources: ["value"],
+      preferWidgets: ["number"]
+    },
+    Date_of_Birth: {
+      label: "Date_of_Birth",
+      type: "text",
+      excludeOperators: ["proximity"],
+      fieldSettings: {
+        min: 0
+      },
+      valueSources: ["value"],
+      preferWidgets: ["number"]
+    },
+    Educational_Status: {
+      label: "Educational_Status",
+      type: "text",
+      excludeOperators: ["proximity"],
+      fieldSettings: {
+        min: 0
+      },
+      valueSources: ["value"],
+      preferWidgets: ["number"]
+    },
+    Marital_Status: {
+      label: "Marital_Status",
+      type: "text",
+      excludeOperators: ["proximity"],
+      fieldSettings: {
+        min: 0
+      },
+      valueSources: ["value"],
+      preferWidgets: ["number"]
+    },
+    Occupation: {
+      label: "Occupation",
+      type: "text",
+      excludeOperators: ["proximity"],
+      fieldSettings: {
+        min: 0
+      },
+      valueSources: ["value"],
+      preferWidgets: ["number"]
+    },
+    Is_Retired: {
+      label: "Is_Retired",
+      type: "text",
+      excludeOperators: ["proximity"],
+      fieldSettings: {
+        min: 0
+      },
+      valueSources: ["value"],
+      preferWidgets: ["number"]
+    },
+    TMHId: {
+      label: "TMHId",
+      type: "text",
+      excludeOperators: ["proximity"],
+      fieldSettings: {
+        min: 0
+      },
+      valueSources: ["value"],
+      preferWidgets: ["number"]
+    },
+    Patient_Id: {
+      label: "Patient_Id",
+      type: "text",
+      excludeOperators: ["proximity"],
+      fieldSettings: {
+        min: 0
+      },
+      valueSources: ["value"],
+      preferWidgets: ["number"]
+    },
+    Is_Dead: {
+      label: "Is_Dead",
+      type: "text",
+      excludeOperators: ["proximity"],
+      fieldSettings: {
+        min: 0
+      },
+      valueSources: ["value"],
+      preferWidgets: ["number"]
+    },
+    Date_of_Death: {
+      label: "Date_of_Death",
+      type: "text",
+      excludeOperators: ["proximity"],
+      fieldSettings: {
+        min: 0
+      },
+      valueSources: ["value"],
+      preferWidgets: ["number"]
+    },
+    Status_of_House: {
+      label: "Status_of_House",
+      type: "text",
+      excludeOperators: ["proximity"],
+      fieldSettings: {
+        min: 0
+      },
+      valueSources: ["value"],
+      preferWidgets: ["number"]
+    },
+    Type_of_House: {
+      label: "Type_of_House",
+      type: "text",
+      excludeOperators: ["proximity"],
+      fieldSettings: {
+        min: 0
+      },
+      valueSources: ["value"],
+      preferWidgets: ["number"]
+    },
+    Number_of_various_Motor_vechicles_owned: {
+      label: "Number_of_various_Motor_vechicles_owned",
+      type: "text",
+      excludeOperators: ["proximity"],
+      fieldSettings: {
+        min: 0
+      },
+      valueSources: ["value"],
+      preferWidgets: ["number"]
+    },
+    Livestocks_Details: {
+      label: "Livestocks_Details",
+      type: "text",
+      excludeOperators: ["proximity"],
+      fieldSettings: {
+        min: 0
+      },
+      valueSources: ["value"],
+      preferWidgets: ["number"]
+    },
+    Toilet_Facility_at_Home: {
+      label: "Toilet_Facility_at_Home",
+      type: "text",
+      excludeOperators: ["proximity"],
+      fieldSettings: {
+        min: 0
+      },
+      valueSources: ["value"],
+      preferWidgets: ["number"]
+    },
+    Government_Insurance_Health_Insurance: {
+      label: "Government_Insurance_Health_Insurance",
+      type: "text",
+      excludeOperators: ["proximity"],
+      fieldSettings: {
+        min: 0
+      },
+      valueSources: ["value"],
+      preferWidgets: ["number"]
+    },
+    Private_Insurance_Health_Insurance: {
+      label: "Private_Insurance_Health_Insurance",
+      type: "text",
+      excludeOperators: ["proximity"],
+      fieldSettings: {
+        min: 0
+      },
+      valueSources: ["value"],
+      preferWidgets: ["number"]
+    },
+    Old_age_pension: {
+      label: "Old_age_pension",
+      type: "text",
+      excludeOperators: ["proximity"],
+      fieldSettings: {
+        min: 0
+      },
+      valueSources: ["value"],
+      preferWidgets: ["number"]
+    },
+    Widowed_Pension: {
+      label: "Widowed_Pension",
+      type: "text",
+      excludeOperators: ["proximity"],
+      fieldSettings: {
+        min: 0
+      },
+      valueSources: ["value"],
+      preferWidgets: ["number"]
+    },
+    Retirement_Pension: {
+      label: "Retirement_Pension",
+      type: "text",
+      excludeOperators: ["proximity"],
+      fieldSettings: {
+        min: 0
+      },
+      valueSources: ["value"],
+      preferWidgets: ["number"]
+    },
+    Other_Financial_Assisant_Schemes: {
+      label: "Other_Financial_Assisant_Schemes",
+      type: "text",
+      excludeOperators: ["proximity"],
+      fieldSettings: {
+        min: 0
+      },
+      valueSources: ["value"],
+      preferWidgets: ["number"]
+    },
+    Smoking_Member_s: {
+      label: "Smoking_Member_s",
+      type: "text",
+      excludeOperators: ["proximity"],
+      fieldSettings: {
+        min: 0
+      },
+      valueSources: ["value"],
+      preferWidgets: ["number"]
+    },
+    Alcohol_Member_s: {
+      label: "Alcohol_Member_s",
+      type: "text",
+      excludeOperators: ["proximity"],
+      fieldSettings: {
+        min: 0
+      },
+      valueSources: ["value"],
+      preferWidgets: ["number"]
+    },
+    Tabacco_Member_s: {
+      label: "Tabacco_Member_s",
+      type: "text",
+      excludeOperators: ["proximity"],
+      fieldSettings: {
+        min: 0
+      },
+      valueSources: ["value"],
+      preferWidgets: ["number"]
+    },
+    For_Minor_Problems: {
+      label: "For_Minor_Problems",
+      type: "text",
+      excludeOperators: ["proximity"],
+      fieldSettings: {
+        min: 0
+      },
+      valueSources: ["value"],
+      preferWidgets: ["number"]
+    },
+    For_Major_Problems: {
+      label: "For_Major_Problems",
+      type: "text",
+      excludeOperators: ["proximity"],
+      fieldSettings: {
+        min: 0
+      },
+      valueSources: ["value"],
+      preferWidgets: ["number"]
+    },
+    Provide_Details_of_Private_Doctors_Hospitals_Clinics_where_you_may_visit: {
+      label: "Provide_Details_of_Private_Doctors_Hospitals_Clinics_where_you_may_visit",
+      type: "text",
+      excludeOperators: ["proximity"],
+      fieldSettings: {
+        min: 0
+      },
+      valueSources: ["value"],
+      preferWidgets: ["number"]
+    },
+    In_your_family_is_any_one_suffering_from_following_diseases: {
+      label: "In_your_family_is_any_one_suffering_from_following_diseases",
+      type: "text",
+      excludeOperators: ["proximity"],
+      fieldSettings: {
+        min: 0
+      },
+      valueSources: ["value"],
+      preferWidgets: ["number"]
+    },
+    Ortho: {
+      label: "Ortho",
+      type: "text",
+      excludeOperators: ["proximity"],
+      fieldSettings: {
+        min: 0
+      },
+      valueSources: ["value"],
+      preferWidgets: ["number"]
+    },
+    Anemia: {
+      label: "Anemia",
+      type: "text",
+      excludeOperators: ["proximity"],
+      fieldSettings: {
+        min: 0
+      },
+      valueSources: ["value"],
+      preferWidgets: ["number"]
+    },
+    Asthma: {
+      label: "Asthma",
+      type: "text",
+      excludeOperators: ["proximity"],
+      fieldSettings: {
+        min: 0
+      },
+      valueSources: ["value"],
+      preferWidgets: ["number"]
+    },
+    Blood_Pressure: {
+      label: "Blood_Pressure",
+      type: "text",
+      excludeOperators: ["proximity"],
+      fieldSettings: {
+        min: 0
+      },
+      valueSources: ["value"],
+      preferWidgets: ["number"]
+    },
+    Cold: {
+      label: "Cold",
+      type: "text",
+      excludeOperators: ["proximity"],
+      fieldSettings: {
+        min: 0
+      },
+      valueSources: ["value"],
+      preferWidgets: ["number"]
+    },
+    Cough: {
+      label: "Cough",
+      type: "text",
+      excludeOperators: ["proximity"],
+      fieldSettings: {
+        min: 0
+      },
+      valueSources: ["value"],
+      preferWidgets: ["number"]
+    },
+    Stress: {
+      label: "Stress",
+      type: "text",
+      excludeOperators: ["proximity"],
+      fieldSettings: {
+        min: 0
+      },
+      valueSources: ["value"],
+      preferWidgets: ["number"]
+    },
+    Diabetes: {
+      label: "Diabetes",
+      type: "text",
+      excludeOperators: ["proximity"],
+      fieldSettings: {
+        min: 0
+      },
+      valueSources: ["value"],
+      preferWidgets: ["number"]
+    },
+    ENT_Infection: {
+      label: "ENT_Infection",
+      type: "text",
+      excludeOperators: ["proximity"],
+      fieldSettings: {
+        min: 0
+      },
+      valueSources: ["value"],
+      preferWidgets: ["number"]
+    },
+    Eye_Problem: {
+      label: "Eye_Problem",
+      type: "text",
+      excludeOperators: ["proximity"],
+      fieldSettings: {
+        min: 0
+      },
+      valueSources: ["value"],
+      preferWidgets: ["number"]
+    },
+    Fever: {
+      label: "Fever",
+      type: "text",
+      excludeOperators: ["proximity"],
+      fieldSettings: {
+        min: 0
+      },
+      valueSources: ["value"],
+      preferWidgets: ["number"]
+    },
+    Elephantiasis: {
+      label: "Elephantiasis",
+      type: "text",
+      excludeOperators: ["proximity"],
+      fieldSettings: {
+        min: 0
+      },
+      valueSources: ["value"],
+      preferWidgets: ["number"]
+    },
+    Gynaecological: {
+      label: "Gynaecological",
+      type: "text",
+      excludeOperators: ["proximity"],
+      fieldSettings: {
+        min: 0
+      },
+      valueSources: ["value"],
+      preferWidgets: ["number"]
+    },
+    Headache: {
+      label: "Headache",
+      type: "text",
+      excludeOperators: ["proximity"],
+      fieldSettings: {
+        min: 0
+      },
+      valueSources: ["value"],
+      preferWidgets: ["number"]
+    },
+    Jaundice: {
+      label: "Jaundice",
+      type: "text",
+      excludeOperators: ["proximity"],
+      fieldSettings: {
+        min: 0
+      },
+      valueSources: ["value"],
+      preferWidgets: ["number"]
+    },
+    Heart_Problems: {
+      label: "Heart_Problems",
+      type: "text",
+      excludeOperators: ["proximity"],
+      fieldSettings: {
+        min: 0
+      },
+      valueSources: ["value"],
+      preferWidgets: ["number"]
+    },
+    Pediatric: {
+      label: "Pediatric",
+      type: "text",
+      excludeOperators: ["proximity"],
+      fieldSettings: {
+        min: 0
+      },
+      valueSources: ["value"],
+      preferWidgets: ["number"]
+    },
+    Kidney_Problems: {
+      label: "Kidney_Problems",
+      type: "text",
+      excludeOperators: ["proximity"],
+      fieldSettings: {
+        min: 0
+      },
+      valueSources: ["value"],
+      preferWidgets: ["number"]
+    },
+    Malaria: {
+      label: "Malaria",
+      type: "text",
+      excludeOperators: ["proximity"],
+      fieldSettings: {
+        min: 0
+      },
+      valueSources: ["value"],
+      preferWidgets: ["number"]
+    },
+    Neuro: {
+      label: "Neuro",
+      type: "text",
+      excludeOperators: ["proximity"],
+      fieldSettings: {
+        min: 0
+      },
+      valueSources: ["value"],
+      preferWidgets: ["number"]
+    },
+    Lung: {
+      label: "Lung",
+      type: "text",
+      excludeOperators: ["proximity"],
+      fieldSettings: {
+        min: 0
+      },
+      valueSources: ["value"],
+      preferWidgets: ["number"]
+    },
+    Obesity_Cholesterol: {
+      label: "Obesity_Cholesterol",
+      type: "text",
+      excludeOperators: ["proximity"],
+      fieldSettings: {
+        min: 0
+      },
+      valueSources: ["value"],
+      preferWidgets: ["number"]
+    },
+    Skin_Problems: {
+      label: "Skin_Problems",
+      type: "text",
+      excludeOperators: ["proximity"],
+      fieldSettings: {
+        min: 0
+      },
+      valueSources: ["value"],
+      preferWidgets: ["number"]
+    },
+    Stomach_Problems: {
+      label: "Stomach_Problems",
+      type: "text",
+      excludeOperators: ["proximity"],
+      fieldSettings: {
+        min: 0
+      },
+      valueSources: ["value"],
+      preferWidgets: ["number"]
+    },
+    Toothache: {
+      label: "Toothache",
+      type: "text",
+      excludeOperators: ["proximity"],
+      fieldSettings: {
+        min: 0
+      },
+      valueSources: ["value"],
+      preferWidgets: ["number"]
+    },
+    TB: {
+      label: "TB",
+      type: "text",
+      excludeOperators: ["proximity"],
+      fieldSettings: {
+        min: 0
+      },
+      valueSources: ["value"],
+      preferWidgets: ["number"]
+    },
+    Wounds: {
+      label: "Wounds",
+      type: "text",
+      excludeOperators: ["proximity"],
+      fieldSettings: {
+        min: 0
+      },
+      valueSources: ["value"],
+      preferWidgets: ["number"]
+    },
+    Thyroid: {
+      label: "Thyroid",
+      type: "text",
+      excludeOperators: ["proximity"],
+      fieldSettings: {
+        min: 0
+      },
+      valueSources: ["value"],
+      preferWidgets: ["number"]
+    },
+    Hernia: {
+      label: "Hernia",
+      type: "text",
+      excludeOperators: ["proximity"],
+      fieldSettings: {
+        min: 0
+      },
+      valueSources: ["value"],
+      preferWidgets: ["number"]
+    },
+    ChickenPox: {
+      label: "ChickenPox",
+      type: "text",
+      excludeOperators: ["proximity"],
+      fieldSettings: {
+        min: 0
+      },
+      valueSources: ["value"],
+      preferWidgets: ["number"]
+    },
+    Cancer: {
+      label: "Cancer",
+      type: "text",
+      excludeOperators: ["proximity"],
+      fieldSettings: {
+        min: 0
+      },
+      valueSources: ["value"],
+      preferWidgets: ["number"]
+    },
+    Paralysis: {
+      label: "Paralysis",
+      type: "text",
+      excludeOperators: ["proximity"],
+      fieldSettings: {
+        min: 0
+      },
+      valueSources: ["value"],
+      preferWidgets: ["number"]
+    },
+    Others: {
+      label: "Others",
+      type: "text",
+      excludeOperators: ["proximity"],
+      fieldSettings: {
+        min: 0
+      },
+      valueSources: ["value"],
+      preferWidgets: ["number"]
+    },
+    Breast_Problems: {
+      label: "Breast_Problems",
+      type: "text",
+      excludeOperators: ["proximity"],
+      fieldSettings: {
+        min: 0
+      },
+      valueSources: ["value"],
+      preferWidgets: ["number"]
+    },
+    Uterus_Problmes: {
+      label: "Uterus_Problmes",
+      type: "text",
+      excludeOperators: ["proximity"],
+      fieldSettings: {
+        min: 0
+      },
+      valueSources: ["value"],
+      preferWidgets: ["number"]
+    },
+    Person_eligible_But_not_screened: {
+      label: "Person_eligible_But_not_screened",
+      type: "text",
+      excludeOperators: ["proximity"],
+      fieldSettings: {
+        min: 0
+      },
+      valueSources: ["value"],
+      preferWidgets: ["number"]
+    },
+    Breast_or_Uterus_Cancer: {
+      label: "Breast_or_Uterus_Cancer",
+      type: "text",
+      excludeOperators: ["proximity"],
+      fieldSettings: {
+        min: 0
+      },
+      valueSources: ["value"],
+      preferWidgets: ["number"]
+    },
+    If_screened_where_have_they_been_screened: {
+      label: "If_screened_where_have_they_been_screened",
+      type: "text",
+      excludeOperators: ["proximity"],
+      fieldSettings: {
+        min: 0
+      },
+      valueSources: ["value"],
+      preferWidgets: ["number"]
+    },
+    Is_diagnosed_as_cancer: {
+      label: "Is_diagnosed_as_cancer",
+      type: "text",
+      excludeOperators: ["proximity"],
+      fieldSettings: {
+        min: 0
+      },
+      valueSources: ["value"],
+      preferWidgets: ["number"]
+    },
+    If_yes_where_have_they_been_treated: {
+      label: "If_yes_where_have_they_been_treated",
+      type: "text",
+      excludeOperators: ["proximity"],
+      fieldSettings: {
+        min: 0
+      },
+      valueSources: ["value"],
+      preferWidgets: ["number"]
+    },
+    Family_Position_Numbers_of_any_mentally_retarded_persons: {
+      label: "Family_Position_Numbers_of_any_mentally_retarded_persons",
+      type: "text",
+      excludeOperators: ["proximity"],
+      fieldSettings: {
+        min: 0
+      },
+      valueSources: ["value"],
+      preferWidgets: ["number"]
+    },
+    Availed_Govt_benefits: {
+      label: "Availed_Govt_benefits",
+      type: "text",
+      excludeOperators: ["proximity"],
+      fieldSettings: {
+        min: 0
+      },
+      valueSources: ["value"],
+      preferWidgets: ["number"]
+    },
+    What_sort_of_benefits: {
+      label: "What_sort_of_benefits",
+      type: "text",
+      excludeOperators: ["proximity"],
+      fieldSettings: {
+        min: 0
+      },
+      valueSources: ["value"],
+      preferWidgets: ["number"]
+    },
+    Are_those_with_mental_illness_taking_any_treatment: {
+      label: "Are_those_with_mental_illness_taking_any_treatment",
+      type: "text",
+      excludeOperators: ["proximity"],
+      fieldSettings: {
+        min: 0
+      },
+      valueSources: ["value"],
+      preferWidgets: ["number"]
+    },
+    Handicap_Person_Name: {
+      label: "Handicap_Person_Name",
+      type: "text",
+      excludeOperators: ["proximity"],
+      fieldSettings: {
+        min: 0
+      },
+      valueSources: ["value"],
+      preferWidgets: ["number"]
+    },
+    Handicap_Type: {
+      label: "Handicap_Type",
+      type: "text",
+      excludeOperators: ["proximity"],
+      fieldSettings: {
+        min: 0
+      },
+      valueSources: ["value"],
+      preferWidgets: ["number"]
+    },
+    Have_ID_card_for_physically_challenged_persons: {
+      label: "Have_ID_card_for_physically_challenged_persons",
+      type: "text",
+      excludeOperators: ["proximity"],
+      fieldSettings: {
+        min: 0
+      },
+      valueSources: ["value"],
+      preferWidgets: ["number"]
+    },
+    Whether_availed_Govt_benefits: {
+      label: "Whether_availed_Govt_benefits",
+      type: "text",
+      excludeOperators: ["proximity"],
+      fieldSettings: {
+        min: 0
+      },
+      valueSources: ["value"],
+      preferWidgets: ["number"]
+    },
+    What_sort_of_govt_benefits: {
+      label: "What_sort_of_govt_benefits",
+      type: "text",
+      excludeOperators: ["proximity"],
+      fieldSettings: {
+        min: 0
+      },
+      valueSources: ["value"],
+      preferWidgets: ["number"]
+    },
+    In_your_family_is_any_one_suffering_from_NCD_s: {
+      label: "In_your_family_is_any_one_suffering_from_NCD_s",
+      type: "text",
+      excludeOperators: ["proximity"],
+      fieldSettings: {
+        min: 0
+      },
+      valueSources: ["value"],
+      preferWidgets: ["number"]
+    },
+    NCD_Diabetes: {
+      label: "NCD_Diabetes",
+      type: "text",
+      excludeOperators: ["proximity"],
+      fieldSettings: {
+        min: 0
+      },
+      valueSources: ["value"],
+      preferWidgets: ["number"]
+    },
+    NCD_Blood_Pressure: {
+      label: "NCD_Blood_Pressure",
+      type: "text",
+      excludeOperators: ["proximity"],
+      fieldSettings: {
+        min: 0
+      },
+      valueSources: ["value"],
+      preferWidgets: ["number"]
+    },
+    Osteoporosis: {
+      label: "Osteoporosis",
+      type: "text",
+      excludeOperators: ["proximity"],
+      fieldSettings: {
+        min: 0
+      },
+      valueSources: ["value"],
+      preferWidgets: ["number"]
+    },
+    Uterus_Cancer: {
+      label: "Uterus_Cancer",
+      type: "text",
+      excludeOperators: ["proximity"],
+      fieldSettings: {
+        min: 0
+      },
+      valueSources: ["value"],
+      preferWidgets: ["number"]
+    },
+    Breast_Cancer: {
+      label: "Breast_Cancer",
+      type: "text",
+      excludeOperators: ["proximity"],
+      fieldSettings: {
+        min: 0
+      },
+      valueSources: ["value"],
+      preferWidgets: ["number"]
+    },
+    Oral_Cancer: {
+      label: "Oral_Cancer",
+      type: "text",
+      excludeOperators: ["proximity"],
+      fieldSettings: {
+        min: 0
+      },
+      valueSources: ["value"],
+      preferWidgets: ["number"]
+    },
+    Obesity: {
+      label: "Obesity",
+      type: "text",
+      excludeOperators: ["proximity"],
+      fieldSettings: {
+        min: 0
+      },
+      valueSources: ["value"],
+      preferWidgets: ["number"]
+    },
+    Heart_Diseases: {
+      label: "Heart_Diseases",
+      type: "text",
+      excludeOperators: ["proximity"],
+      fieldSettings: {
+        min: 0
+      },
+      valueSources: ["value"],
+      preferWidgets: ["number"]
+    },
+    Lung_Related_Diseases: {
+      label: "Lung_Related_Diseases",
+      type: "text",
+      excludeOperators: ["proximity"],
+      fieldSettings: {
+        min: 0
+      },
+      valueSources: ["value"],
+      preferWidgets: ["number"]
+    },
+    NCD_Asthma: {
+      label: "NCD_Asthma",
+      type: "text",
+      excludeOperators: ["proximity"],
+      fieldSettings: {
+        min: 0
+      },
+      valueSources: ["value"],
+      preferWidgets: ["number"]
+    },
+    JointPain: {
+      label: "JointPain",
+      type: "text",
+      excludeOperators: ["proximity"],
+      fieldSettings: {
+        min: 0
+      },
+      valueSources: ["value"],
+      preferWidgets: ["number"]
+    },
+    NCD_Paralysis: {
+      label: "NCD_Paralysis",
+      type: "text",
+      excludeOperators: ["proximity"],
+      fieldSettings: {
+        min: 0
+      },
+      valueSources: ["value"],
+      preferWidgets: ["number"]
+    },
+    Alcoholic: {
+      label: "Alcoholic",
       type: "text",
       excludeOperators: ["proximity"],
       fieldSettings: {
