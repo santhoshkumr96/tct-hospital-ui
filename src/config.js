@@ -23,7 +23,6 @@ export const POPULATION_ASSOCIATION_ROLE='ROLE_ADMIN';
 export const ROLE_ADMIN='ROLE_ADMIN';
 export const ROLE_USER='ROLE_USER';
 export const ROLE_SURVEYOR='ROLE_SURVEYOR';
-
 //section names
 export const CAMPAIGNS_SECTION = 'Campaigns'  ;
 export const QUESTIONNAIRE_SECTION = 'Questionnaire';
@@ -38,7 +37,7 @@ export const QUESTION_TYPE_TEXTBOX = 'TEXTBOX';
 export const QUESTION_TYPE_RADIO = 'radio';
 export const QUESTION_TYPE_DROPDOWN = 'dropdown';
 export const QUESTION_TYPE_CHECKBOX = 'checkbox';
-
+export const QUESTION_TYPE_DATE = 'date';
 
 //approve and reject 
 export const PENDING = 'PENDING'

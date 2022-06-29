@@ -1,7 +1,7 @@
 
 import { Button, Fab, InputLabel, MenuItem, Select, TextField } from '@mui/material';
 import { useContext, useState, React } from 'react';
-import { QUESTION_CREATOR_ROLE, SERVICE_BASE_URL, TOKEN_EXPIRED, QUESTION_TYPE_TEXT, QUESTION_TYPE_RADIO, QUESTION_TYPE_DROPDOWN } from '../../config';
+import { QUESTION_CREATOR_ROLE, SERVICE_BASE_URL, TOKEN_EXPIRED, QUESTION_TYPE_TEXT, QUESTION_TYPE_RADIO, QUESTION_TYPE_DROPDOWN, QUESTION_TYPE_TEXTBOX, QUESTION_TYPE_DATE } from '../../config';
 import Context from '../Login/LoginAuthProvider/Context';
 import ajax from '../../Helpers/ajaxHelper';
 import { errorHelper } from '../../Helpers/ajaxCatchBlockHelper';
@@ -493,7 +493,7 @@ const QuestionSection = () => {
             result.questionName !== "" &&
             result.questionDesc !== ""
         ) {
-            if ("TEXTBOX" === result.responseType) {
+            if (QUESTION_TYPE_TEXTBOX === result.responseType || QUESTION_TYPE_DATE === result.responseType) {
                 createQuestionRequest(result);
                 handleDialogClose();
             } else {
@@ -572,7 +572,7 @@ const QuestionSection = () => {
             result.questionName !== "" &&
             result.questionDesc !== ""
         ) {
-            if ("TEXTBOX" === result.responseType) {
+            if (QUESTION_TYPE_TEXTBOX === result.responseType || QUESTION_TYPE_DATE === result.responseType) {
                 editQuestionRequest(result);
                 handleDialogClose();
             } else {
@@ -766,7 +766,7 @@ const QuestionSection = () => {
                     <br />
                     <br />
                     {
-                        (createQuestionStore.responseType != 'TEXTBOX' && _.isEqual(createQuestionStore.responseType, '') == false) &&
+                        ((createQuestionStore.responseType != QUESTION_TYPE_TEXTBOX && createQuestionStore.responseType != QUESTION_TYPE_DATE) && _.isEqual(createQuestionStore.responseType, '') == false) &&
                         <TableContainer component={Paper}>
                             <Table id='response-table' sx={{ minWidth: 650 }} aria-label="simple table">
                                 <TableHead id='response-table-head'>
