@@ -28,6 +28,7 @@ import { CAMPAIN_APPROVER_ROLE, QUESTION_TYPE_DROPDOWN, QUESTION_TYPE_RADIO, QUE
 import { errorHelper } from "../../Helpers/ajaxCatchBlockHelper";
 import ajax from "../../Helpers/ajaxHelper";
 import { Row, Col, Alert, message } from 'antd';
+import { Switch } from 'antd';
 import 'antd/dist/antd.css'; 
 
 const CreateCampain = ({ onCancelCampain, campaignDataFromParent, viewCampaignBool, approveCampaignBool , editCampaignBool }) => {
@@ -206,7 +207,9 @@ const CreateCampain = ({ onCancelCampain, campaignDataFromParent, viewCampaignBo
         })
         let tempList = list;
         if (isNaN(sectionPosition) !== true) {
-            tempList[sectionPosition].questions.push(dragAndDrop.questionData);
+            let temp = dragAndDrop.questionData
+            temp.isRequired = true
+            tempList[sectionPosition].questions.push(temp);
             setList(tempList);
         }
         console.log("drag over ===>", initialPosition)
@@ -221,83 +224,6 @@ const CreateCampain = ({ onCancelCampain, campaignDataFromParent, viewCampaignBo
 
         console.log("drag end ===>")
     }
-
-
-    // const onDragStart = (event) => {
-    //     const initialPosition = Number(event.currentTarget.dataset.position);
-    //     setDragAndDrop({
-    //         ...dragAndDrop,
-    //         draggedFrom: initialPosition,
-    //         isDragging: true,
-    //         originalOrder: list
-    //     })
-    //     event.dataTransfer.setData("text/html", '');
-
-    // }
-
-    // const onDragOver = (event) => {
-    //     event.preventDefault();
-
-    //     let newList = dragAndDrop.originalOrder;
-    //     const draggedFrom = dragAndDrop.draggedFrom;
-    //     const draggedTo = Number(event.currentTarget.dataset.position);
-
-    //     const itemDragged = newList[draggedFrom];
-    //     const remainingItems = newList.filter((item, index) => index !== draggedFrom);
-
-    //     newList = [
-    //         ...remainingItems.slice(0, draggedTo),
-    //         itemDragged,
-    //         ...remainingItems.slice(draggedTo)
-    //     ];
-
-
-    //     if (draggedTo !== dragAndDrop.draggedTo) {
-    //         // setList([...newList]);
-    //         setDragAndDrop({
-    //             ...dragAndDrop,
-    //             updatedOrder: newList,
-    //             draggedTo: draggedTo
-    //         })
-    //     }
-    // }
-
-    // const onDrop = () => {
-    //     setList([...dragAndDrop.updatedOrder]);
-    //     setDragAndDrop({
-    //         ...dragAndDrop,
-    //         draggedFrom: null,
-    //         draggedEnteredTo: null,
-    //         draggedTo: null,
-    //         isDragging: false
-    //     });
-    // }
-
-    // const onDragLeave = () => {
-    //     setDragAndDrop({
-    //         ...dragAndDrop,
-    //         draggedTo: null
-    //     });
-    // }
-
-    // const onDragEnter = (event) => {
-    //     const draggedTo = Number(event.currentTarget.dataset.position);
-
-    //     if (dragAndDrop.draggedEnteredTo !== draggedTo) {
-
-    //         setDragAndDrop({
-    //             ...dragAndDrop,
-    //             draggedEnteredTo: draggedTo
-    //         });
-    //     }
-    // }
-
-    // const onDragEnd = (event) => {
-    //     setDragAndDrop({
-    //         ...dragAndDrop,
-    //         draggedEnteredTo: null
-    //     });
-    // }
 
     const onCampainCancel = () => {
         onCancelCampain();
@@ -475,6 +401,13 @@ const CreateCampain = ({ onCancelCampain, campaignDataFromParent, viewCampaignBo
 
     const onUpdateCampaignComment = (comment) => {
         setCampaignComment(comment);
+    }
+
+    const onToggleForRequiredField = (value, sectionIndex, questionIndex) => {
+        let temp = list;
+        temp[sectionIndex].questions[questionIndex].isRequired = value;
+        console.log(temp)
+        // setList(temp)
     }
 
     useEffect(() => {
@@ -767,6 +700,11 @@ const CreateCampain = ({ onCancelCampain, campaignDataFromParent, viewCampaignBo
                                                                     question.response.map((e, i) => {
                                                                         return <h3>{e.responseName}</h3>
                                                                     })
+                                                                 }
+                                                                 {
+                                                                     <span>
+                                                                         <p><Switch defaultChecked={question.isRequired} onChange={(e)=> onToggleForRequiredField(e, sectionIndex, questionIndex)}/>   required</p>
+                                                                     </span>
                                                                  }
                                                                 {/* {
                                                                     question.responseType === QUESTION_TYPE_TEXT &&
