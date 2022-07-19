@@ -811,7 +811,7 @@ const QuestionSection = () => {
                                         </TableRow>
                                     ))}
 
-                                    {(_.size(createQuestionStore.response) < 4) && isViewingQuestion === false &&
+                                    {(_.size(createQuestionStore.response) < 18) && isViewingQuestion === false &&
                                         <TableRow
 
                                             sx={{ '&:last-child td, &:last-child th': { border: 0 } }}

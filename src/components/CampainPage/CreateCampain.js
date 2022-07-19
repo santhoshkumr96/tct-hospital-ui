@@ -212,17 +212,17 @@ const CreateCampain = ({ onCancelCampain, campaignDataFromParent, viewCampaignBo
             tempList[sectionPosition].questions.push(temp);
             setList(tempList);
         }
-        console.log("drag over ===>", initialPosition)
+        // console.log("drag over ===>", initialPosition)
 
     }
 
     const onDrop = (event) => {
-        console.log("drag drop ===>")
+        // console.log("drag drop ===>")
     }
 
     const onDragEnd = (event) => {
 
-        console.log("drag end ===>")
+        // console.log("drag end ===>")
     }
 
     const onCampainCancel = () => {
@@ -233,7 +233,16 @@ const CreateCampain = ({ onCancelCampain, campaignDataFromParent, viewCampaignBo
         let arr = [...list];
         let section = arr[sectionIndex];
         section.title = event.target.value;
-        setList([...arr]);
+        let isUnique = true;
+        for (let i = 0; i < arr.length; i++) {
+            if (arr[i].title == section.title && sectionIndex != i){
+                isUnique = false
+                message.warning("section name must be unique")
+            }
+        }
+        if(isUnique){
+            setList([...arr]);
+        }
     }
 
     const onAddSection = (event, index) => {
@@ -408,6 +417,37 @@ const CreateCampain = ({ onCancelCampain, campaignDataFromParent, viewCampaignBo
         temp[sectionIndex].questions[questionIndex].isRequired = value;
         console.log(temp)
         // setList(temp)
+    }
+
+    const sectionConditionalUpdate = (event, sectionIndex,question, questionResponseIndex) => {
+        let arr = [...list];
+        let temp = arr[sectionIndex].sectionCondition;
+        if (temp == undefined) {
+            temp = {}
+        }
+        if (temp[question.questionId] == undefined){
+            temp[question.questionId] = {}
+        }
+        temp[question.questionId][question.response[questionResponseIndex].responseId] = event.target.value
+        arr[sectionIndex].sectionCondition = temp;
+        setList(arr)
+        console.log(arr)
+    }
+
+    const getValueForCondition = (sectionIndex, question, reponseIndex) => {
+        let arr = [...list];
+        let temp = arr[sectionIndex].sectionCondition;
+        if (temp == undefined) {
+            return "";
+        }
+        if (temp[question.questionId] == undefined){
+           return "";
+        }
+        let tempRes = temp[question.questionId];
+        if (tempRes[question.response[reponseIndex].responseId] == undefined){
+            return "";
+        }
+        return tempRes[question.response[reponseIndex].responseId];
     }
 
     useEffect(() => {
@@ -696,7 +736,40 @@ const CreateCampain = ({ onCancelCampain, campaignDataFromParent, viewCampaignBo
                                                                    question.responseType != "text" && question.responseType != "TEXTBOX" && question.response.length > 0 &&
                                                                     <h3><span>options: </span></h3>
                                                                 }
+                                                                {
+                                                                    question.responseType === QUESTION_TYPE_RADIO && 
+                                                                    question.response.map((e, i) => {
+                                                                        return (
+                                                                            <Row style={{padding:"20px"}}>
+                                                                                <Col>
+                                                                                    <h3>{e.responseName}</h3>
+                                                                                </Col>
+                                                                                <Col style={{"width":"200px", "paddingLeft": "20px"}}>
+                                                                                    <FormControl fullWidth>
+                                                                                        <Select
+                                                                                            labelId="demo-simple-select-label"
+                                                                                            id="demo-simple-select"
+                                                                                            value={getValueForCondition(sectionIndex,question,i)}
+                                                                                            label={''}
+
+                                                                                            onChange={(value)=> sectionConditionalUpdate(value, sectionIndex, question, i)}
+                                                                                        >
+                                                                                            {
+                                                                                                list[0] && list.map((sectionCurrent, sectionCurrentIndex) => {
+                                                                                                    if (sectionCurrentIndex !== sectionIndex){
+                                                                                                        return <MenuItem value={sectionCurrent.title}>{sectionCurrent.title}</MenuItem>
+                                                                                                    }
+                                                                                                })
+                                                                                            }
+                                                                                        </Select>
+                                                                                    </FormControl>
+                                                                                </Col>
+                                                                            </Row>
+                                                                        )
+                                                                    })
+                                                                }
                                                                 {   
+                                                                    question.responseType !== QUESTION_TYPE_RADIO && 
                                                                     question.response.map((e, i) => {
                                                                         return <h3>{e.responseName}</h3>
                                                                     })
