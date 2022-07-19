@@ -209,7 +209,8 @@ const SurveyPersonList = ({hideTable,surveyId,campaignId}) => {
                         <TableCell align="left">{row.district}</TableCell>
                         <TableCell align="left">{row.block}</TableCell>
                         <TableCell align="left">{row.statusDesc}</TableCell>
-                        {row.statusDesc !== CLOSED && 
+                        {/* {row.statusDesc !== CLOSED &&  */}
+                        {
                           <TableCell align="left">
                               <Button onClick={() => { takeToSurveyPage(row) }}>
                                         <VisibilityIcon />

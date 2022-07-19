@@ -250,7 +250,8 @@ const SurveyTakeSeciton = (props) => {
   return (
 
     <div className="add-user-wrapper-wrapper">
-      { !isSurveyDone &&
+      {/* { !isSurveyDone && */}
+      {
         Object.keys(campaignData).length > 0 && campaignData.sections.map((section, index)=> {
           if(sectionIndex === index) {
             return (
@@ -313,7 +314,8 @@ const SurveyTakeSeciton = (props) => {
           }
         })
       }
-       { !isSurveyDone &&
+       {/* { !isSurveyDone && */}
+       {
           <Row>
             <Col>
               <Button style={{ margin: 20 , float : 'right'}}  onClick={() => { props.closeTakeSurvey()}} variant="contained">
@@ -340,9 +342,9 @@ const SurveyTakeSeciton = (props) => {
             }
           </Row>
       }
-      { isSurveyDone &&
+      {/* { isSurveyDone &&
         <p> This survey is already taken for the person, thanks!.</p>
-      }
+      } */}
     </div>
 
   )
