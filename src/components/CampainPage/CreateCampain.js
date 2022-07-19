@@ -24,7 +24,7 @@ import QuestionSearch from '../QuestionPage/Search';
 import styleFunctionSx from "@mui/system/styleFunctionSx";
 import Context from "../Login/LoginAuthProvider/Context";
 import ErrorContext from "../NetworkAuthProvider/ErrorContext";
-import { CAMPAIN_APPROVER_ROLE, QUESTION_TYPE_DROPDOWN, QUESTION_TYPE_RADIO, QUESTION_TYPE_TEXT, SERVICE_BASE_URL, TOKEN_EXPIRED, APPROVE, REJECT } from "../../config";
+import { CAMPAIN_APPROVER_ROLE, QUESTION_TYPE_DROPDOWN, QUESTION_TYPE_RADIO, QUESTION_TYPE_TEXT, SERVICE_BASE_URL, TOKEN_EXPIRED, APPROVE, REJECT, SUBMIT_SECTION, NEXT_SECTION } from "../../config";
 import { errorHelper } from "../../Helpers/ajaxCatchBlockHelper";
 import ajax from "../../Helpers/ajaxHelper";
 import { Row, Col, Alert, message } from 'antd';
@@ -44,7 +44,8 @@ const CreateCampain = ({ onCancelCampain, campaignDataFromParent, viewCampaignBo
     const defaultSection = [
         {
             title: "",
-            questions: []
+            afterSection: NEXT_SECTION,
+            questions: [],
         }
     ]
 
@@ -450,6 +451,12 @@ const CreateCampain = ({ onCancelCampain, campaignDataFromParent, viewCampaignBo
         return tempRes[question.response[reponseIndex].responseId];
     }
 
+    const onAfterSectionSelect = (value, sectionIndex) => {
+        let arr = [...list];
+        arr[sectionIndex].afterSection = value.target.value;
+        setList(arr)
+    }
+
     useEffect(() => {
         getQuestionData('');
         if (Object.keys(campaignDataFromParent).length !== 0) {
@@ -647,6 +654,28 @@ const CreateCampain = ({ onCancelCampain, campaignDataFromParent, viewCampaignBo
                                                         onChange={(e) => onSectionNameEnter(e, sectionIndex)}
                                                         variant="standard"
                                                     />
+
+                                                    <FormControl style={{"width":"200px", "paddingLeft": "20px"}}>
+                                                        <InputLabel  style={{"paddingLeft": "20px"}} id="demo-simple-select-label">After Section</InputLabel>
+                                                        <Select
+                                                            labelId="demo-simple-select-label"
+                                                            id="demo-simple-select"
+                                                            value={section.afterSection}
+                                                            label="After Section"
+                                                            onChange={(value)=> onAfterSectionSelect(value, sectionIndex)}
+                                                        >
+                                                            <MenuItem value={NEXT_SECTION}>{NEXT_SECTION}</MenuItem>
+                                                            <MenuItem value={SUBMIT_SECTION}>{SUBMIT_SECTION}</MenuItem>
+                                                            {
+                                                                list[0] && list.map((sectionCurrent, sectionCurrentIndex) => {
+                                                                    if (sectionCurrentIndex !== sectionIndex){
+                                                                        return <MenuItem value={sectionCurrent.title}>{sectionCurrent.title}</MenuItem>
+                                                                    }
+                                                                })
+                                                            }
+                                                        </Select>
+                                                    </FormControl>
+
                                                     {
                                                         !viewCampaignBool &&
                                                         <Button onClick={(e) => onDeleteSection(e, sectionIndex)}>

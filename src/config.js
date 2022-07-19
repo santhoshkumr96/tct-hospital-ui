@@ -30,6 +30,8 @@ export const POPULATION_SECTION = 'Population';
 export const ADD_USER_SECTION = 'AddUser';
 export const ADD_QUESTION_CATEGORY_SECTION = 'AddQuestionCategory';
 export const SURVEY_SECTION = 'SurveySection';
+export const NEXT_SECTION='next'
+export const SUBMIT_SECTION='submit'
 
 //question type
 export const QUESTION_TYPE_TEXT = 'text';
