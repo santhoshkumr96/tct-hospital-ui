@@ -3,7 +3,7 @@ import './SurveyPage.css'
 import Context from '../../Login/LoginAuthProvider/Context';
 import ErrorContext from '../../PreTogglesProvider/ErrorContext';
 import ajax from '../../../Helpers/ajaxHelper';
-import { SERVICE_BASE_URL, TOKEN_EXPIRED, QUESTION_TYPE_TEXT, QUESTION_TYPE_TEXTBOX, QUESTION_TYPE_CHECKBOX, QUESTION_TYPE_RADIO, QUESTION_TYPE_DROPDOWN, QUESTION_TYPE_DATE } from '../../../config';
+import { SERVICE_BASE_URL, TOKEN_EXPIRED, QUESTION_TYPE_TEXT, QUESTION_TYPE_TEXTBOX, QUESTION_TYPE_CHECKBOX, QUESTION_TYPE_RADIO, QUESTION_TYPE_DROPDOWN, QUESTION_TYPE_DATE, NEXT_SECTION , SUBMIT_SECTION } from '../../../config';
 import { Row, Col , message, Input , Checkbox, Radio ,  DatePicker } from 'antd';
 import Paper from '@mui/material/Paper';
 import "antd/dist/antd.css";
@@ -28,6 +28,9 @@ const SurveyTakeSeciton = (props) => {
   const [isSurveyDone, setIsSurveyDone] = useState(false)
   const [sectionIndex, setSectionIndex] = useState(0)
   const [nextSection, setNextSection] = useState('')
+  const [nextSectionObj, setNextSectionObj] = useState({})
+  const [beforeSectionIndex, setBeforeSectionIndex] = useState([])
+  const [afterSection, setAfterSection] = useState('')
 
   const dateFormat = 'YYYY/MM/DD';
 
@@ -117,8 +120,10 @@ const SurveyTakeSeciton = (props) => {
       if(event.target.value === res.responseName){
         if (sectionCondition[questionData.questionId] !== undefined){
           if(sectionCondition[questionData.questionId][res.responseId] !== undefined){
-            console.log(sectionCondition[questionData.questionId][res.responseId] )
+            // console.log(sectionCondition[questionData.questionId][res.responseId] )
             setNextSection(sectionCondition[questionData.questionId][res.responseId])
+            const temp = nextSectionObj;
+            nextSectionObj[sectionIndex] = sectionCondition[questionData.questionId][res.responseId];
           }
         }
       }
@@ -165,6 +170,9 @@ const SurveyTakeSeciton = (props) => {
     })
     let tempState = answerState;
     tempState[key] = true
+    if(event.toString() === ''){
+      tempState[key] = false
+    }
     setAnswerState({
       ...tempState
     })
@@ -211,18 +219,27 @@ const SurveyTakeSeciton = (props) => {
   }
   
   const beforePage = () => {
-    if(sectionIndex > 0) {
-      setSectionIndex(sectionIndex - 1)
+    if(sectionIndex > 0){
+      const temp = [...beforeSectionIndex];
+      setSectionIndex(temp[temp.length - 1])
+      // console.log('setting next section', nextSectionObj[temp[temp.length - 1]],  nextSectionObj)
+      setNextSection(nextSectionObj[temp[temp.length - 1]])
+      temp.pop(sectionIndex);
+      setBeforeSectionIndex(temp);
     }
+    
   }
 
   const afterPage = () => {
     let isValid = true;
     Object.keys(answerState).forEach((key) => {
-      if(answerState[key] === false && isValid){
-        message.warn("please fill question "+ key);
-        isValid = false;
-      }
+      campaignData.sections[sectionIndex].questions.map((ques,index)=>{
+        if(answerState[key] === false && isValid && key === ques.questionId.toString()){
+          message.warn("please fill question "+ key);
+          isValid = false;
+        }
+      })
+
       if(!isValid){
         return false;
       }
@@ -230,16 +247,41 @@ const SurveyTakeSeciton = (props) => {
     });
     if(sectionIndex + 1  < campaignData.sections.length && isValid) {
       if(nextSection == ''){
-        setSectionIndex(sectionIndex + 1)
+        
+        if(campaignData.sections[sectionIndex].afterSection === NEXT_SECTION){
+          setSectionIndex(sectionIndex + 1)
+          nextSectionObj[sectionIndex] = campaignData.sections[sectionIndex + 1].title
+          updateBeforeSection(sectionIndex)
+        }
+
+        if(campaignData.sections[sectionIndex].afterSection === SUBMIT_SECTION){
+          onSubmitData();
+        }
+
+        campaignData.sections.map((section,sectionMapIndex)=>{
+          if(section.title == campaignData.sections[sectionIndex].afterSection){
+            setSectionIndex(sectionMapIndex)
+            nextSectionObj[sectionIndex] = campaignData.sections[sectionMapIndex].title
+            updateBeforeSection(sectionIndex)
+          }
+        })
+        
       } else {
-        campaignData.sections.map((section,sectionIndex)=>{
+        campaignData.sections.map((section,sectionIndexHere)=>{
           if(section.title == nextSection){
-            setSectionIndex(sectionIndex)
+            setSectionIndex(sectionIndexHere)
+            updateBeforeSection(sectionIndex)
           }
         })
         setNextSection('')
       }
     }
+  }
+
+  const updateBeforeSection = (sectionIndex) => {
+    const temp = [...beforeSectionIndex];
+    temp.push(sectionIndex);
+    setBeforeSectionIndex(temp);
   }
 
   useEffect(() => {
@@ -322,11 +364,11 @@ const SurveyTakeSeciton = (props) => {
                 close
               </Button>
             </Col>
-            {/* <Col>
+            <Col>
               <Button style={{ margin: 20 , float : 'right'}}  onClick={() => { beforePage()}} variant="contained">
-                before
+                back
               </Button>
-            </Col> */}
+            </Col>
             <Col>
               <Button style={{ margin: 20 , float : 'right'}}  onClick={() => { afterPage()}} variant="contained">
                 next
