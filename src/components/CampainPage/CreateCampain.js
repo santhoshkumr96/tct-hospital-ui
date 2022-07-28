@@ -30,6 +30,7 @@ import ajax from "../../Helpers/ajaxHelper";
 import { Row, Col, Alert, message } from 'antd';
 import { Switch } from 'antd';
 import 'antd/dist/antd.css'; 
+import SurveyTakeTestSeciton from '../SurveyPage/TakeSurveyForPerson/SurveyTakeTestSection';
 
 const CreateCampain = ({ onCancelCampain, campaignDataFromParent, viewCampaignBool, approveCampaignBool , editCampaignBool }) => {
 
@@ -71,6 +72,7 @@ const CreateCampain = ({ onCancelCampain, campaignDataFromParent, viewCampaignBo
     const [campaignAnswer, setCampaignAnswer] = useState({});
     const [questionList, setQuestionList] = useState([]);
     const [campaignComment, setCampaignComment] = useState('');
+    const [isTakingSurvey, setIsTakingSurvey] = useState(false);
 
 
     const getQuestionData = async (search) => {
@@ -457,6 +459,15 @@ const CreateCampain = ({ onCancelCampain, campaignDataFromParent, viewCampaignBo
         setList(arr)
     }
 
+    const closeAnswerSheet = () => {
+        setIsTakingSurvey(false);
+    }    
+
+
+    const openAnswerSheet = () => {
+        setIsTakingSurvey(true);
+    }    
+
     useEffect(() => {
         getQuestionData('');
         if (Object.keys(campaignDataFromParent).length !== 0) {
@@ -479,7 +490,8 @@ const CreateCampain = ({ onCancelCampain, campaignDataFromParent, viewCampaignBo
     return (
         <div>
 
-
+        { !isTakingSurvey &&
+            <div>
             <section className={"campaign-section"} id="campain-details-enter">
                 <TextField
                     fullWidth
@@ -584,6 +596,15 @@ const CreateCampain = ({ onCancelCampain, campaignDataFromParent, viewCampaignBo
                     </Button>
 
                 }
+
+                {
+                    // Object.keys(campaignDataFromParent).length === 0 &&
+                    viewCampaignBool &&
+                    <Button style={{ marginLeft: '20px' }} variant="contained" onClick={() => { openAnswerSheet() }}>
+                        Test
+                    </Button>
+
+                }       
 
                 <Button onClick={() => { onCampainCancel() }}>
                     cancel
@@ -939,12 +960,11 @@ const CreateCampain = ({ onCancelCampain, campaignDataFromParent, viewCampaignBo
                     </Col>
                 </Row>
             </section>
-
-
-
-
-
-
+            </div>
+        }
+        { isTakingSurvey && 
+            <SurveyTakeTestSeciton closeTakeSurvey={closeAnswerSheet} campaignId={campaignData.campaignId} user={loginContext.userId} />
+        }
         </div>
     )
 }
