@@ -18,11 +18,12 @@ import { color } from '@mui/system';
 import moment from 'moment';
 
 
-const SurveyTakeSeciton = (props) => {
+const SurveyTakeTestSeciton = (props) => {
 
   const errorContext = useContext(ErrorContext);
   const [campaignData, setCampaignData] = useState({})
   const [answerData, setAnswerData] = useState({})
+  const [answerDataActual, setAnswerDataActual] = useState({})
   const [answerState, setAnswerState] = useState({})
   const [answerStateInit, setAnswerStateInit] = useState(false)
   const [isSurveyDone, setIsSurveyDone] = useState(false)
@@ -210,22 +211,18 @@ const SurveyTakeSeciton = (props) => {
     if(isValid){
       const temp = {}
       temp['data'] = answerData;
-      temp['surveyId'] = props.surveyId;
-      temp['user'] = props.user;
-      temp['personId'] = props.personId;
       console.log(temp)
-      setAnswer(temp);
     }
   }
   
   const beforePage = () => {
     if(sectionIndex > 0){
       //to delete and retain answers
-      const answer = {...answerState};
+      const answer = {...answerData};
       campaignData.sections[sectionIndex].questions.map((ques,index)=>{
         delete answer[ques.questionId]
       })
-      setAnswerState(answer)
+      setAnswerDataActual(answer)
 
       const temp = [...beforeSectionIndex];
       setSectionIndex(temp[temp.length - 1])
@@ -240,11 +237,11 @@ const SurveyTakeSeciton = (props) => {
   const afterPage = () => {
     let isValid = true;
      //to delete and retain answers
-    const answer = {...answerState};
+    const answer = {...answerData};
     campaignData.sections[sectionIndex].questions.map((ques,index)=>{
-      answer[ques.questionId] = answerData[ques.questionId] === undefined ? false : true;
+      answer[ques.questionId] = answerData[ques.questionId];
     })
-    setAnswerState(answer)
+    setAnswerDataActual(answer)
 
     //to check if questions are answered in a section
     Object.keys(answerState).forEach((key) => {
@@ -293,17 +290,16 @@ const SurveyTakeSeciton = (props) => {
         setNextSection('')
       }
     }
-    // console.log(answerDataActual)
+    console.log(answerDataActual)
   }
 
   const updateBeforeSection = (sectionIndex) => {
     const temp = [...beforeSectionIndex];
     temp.push(sectionIndex);
-    setBeforeSectionIndex(temp);
+    setBeforeSectionIndex(temp); 
   }
 
   useEffect(() => {
-    checkIfSurveyDone(props.surveyId,props.personId);
     getData(props.campaignId);
   }, [])
 
@@ -410,4 +406,4 @@ const SurveyTakeSeciton = (props) => {
   )
 }
 
-export default SurveyTakeSeciton;
+export default SurveyTakeTestSeciton;
