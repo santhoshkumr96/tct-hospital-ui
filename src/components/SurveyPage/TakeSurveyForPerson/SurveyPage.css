@@ -13,3 +13,10 @@
     border-radius: 100;
     width: 100%;
 }
+
+
+.ant-layout-sider {
+    /* max-width: 52px !important; */
+    /* min-width: 42px !important;
+    width: 70px !important; */
+}

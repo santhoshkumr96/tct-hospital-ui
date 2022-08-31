@@ -92,7 +92,7 @@ const HomePage = () => {
     }
 
     useEffect(() => {
-
+        document.title='My Page Title';
     }, [])
 
     return (

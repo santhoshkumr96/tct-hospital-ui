@@ -2,10 +2,12 @@
 export const BASE_PATH='';
 
 export const HOME_PATH=`${BASE_PATH}/`;
-export const LOGIN_PATH =`${BASE_PATH}/login`;
+export const LOGIN_PATH =`${BASE_PATH}/locallogin`;
 export const SURVEY_PATH =`*/survey`;
 
-export const SERVICE_BASE_URL='http://localhost:8080/api/';
+// export const SERVICE_BASE_URL='http://202.21.44.157:9080/tctcampaign/api/';
+export const SERVICE_BASE_URL='http://192.168.3.37:9080/tctcampaign/api/';
+// export const SERVICE_BASE_URL='http://localhost:8080/api/';
 // export const SERVICE_BASE_URL='http://tctmh.eastus.cloudapp.azure.com:8080/tctcampaign/api/';
 
 export const LOGIN_URL=`/v1/auth/login`;

@@ -23,6 +23,7 @@ const SurveyTakeSeciton = (props) => {
   const errorContext = useContext(ErrorContext);
   const [campaignData, setCampaignData] = useState({})
   const [answerData, setAnswerData] = useState({})
+  const [answerDataActual, setAnswerDataActual] = useState({})
   const [answerState, setAnswerState] = useState({})
   const [answerStateInit, setAnswerStateInit] = useState(false)
   const [isSurveyDone, setIsSurveyDone] = useState(false)
