@@ -190,8 +190,8 @@ const SurveyPersonList = ({hideTable,surveyId,campaignId}) => {
                     <TableCell id='question-table-header' align="left">Person Id</TableCell>
                     <TableCell id='question-table-header' align="left">Name</TableCell>
                     <TableCell id='question-table-header' align="left">Mobile Number</TableCell>
-                    <TableCell id='question-table-header' align="left">District</TableCell>
-                    <TableCell id='question-table-header' align="left">Block</TableCell>
+                    <TableCell id='question-table-header' align="left">Panchayat Code</TableCell>
+                    <TableCell id='question-table-header' align="left">Village Name</TableCell>
                     <TableCell id='question-table-header' align="left">Status</TableCell>
                     <TableCell id='question-table-header' align="left">Options</TableCell>
               </TableRow>
@@ -206,8 +206,8 @@ const SurveyPersonList = ({hideTable,surveyId,campaignId}) => {
                         <TableCell align="left">{row.personId}</TableCell>
                         <TableCell align="left">{row.memberName}</TableCell>
                         <TableCell align="left">{row.mobileNo}</TableCell>
-                        <TableCell align="left">{row.district}</TableCell>
-                        <TableCell align="left">{row.block}</TableCell>
+                        <TableCell align="left">{row.panchayatCode}</TableCell>
+                        <TableCell align="left">{row.villageName}</TableCell>
                         <TableCell align="left">{row.statusDesc}</TableCell>
                         {/* {row.statusDesc !== CLOSED &&  */}
                         {
